@@ -1,0 +1,16 @@
+.bold {
+    font-weight: bold !important;
+}
+.mt-list {
+    margin-top: 8px !important;
+}
+.mt-0 {
+    margin-top: 0px !important;
+}
+.pb-4{
+    padding-bottom: 4px !important;
+}
+.list-padding li {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}

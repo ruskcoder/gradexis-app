@@ -1,0 +1,79 @@
+/* Your app custom styles here */
+
+:root {
+    --f7-navbar-subtitle-font-size: 14px !important;
+    --f7-subnavbar-height: 48px !important;
+}
+
+.overview-icon {
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.grades-number {
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+}
+
+.title-large-text {
+    display: flex;
+}
+
+.subnavbar .button {
+    font-size: 10px;
+    font-weight: bold;
+    height: 24px;
+}
+
+.item-title-row::before {
+    content: none !important;
+}
+
+.gradesList .item-inner>.item-title-row {
+    display: none;
+}
+
+.gradesList .item-inner {
+    display: flex !important;
+}
+
+.gradesList ul li {
+    padding: 0px !important;
+}
+
+.grade .card-header {
+    padding: 10px 10px 10px 12px;
+}
+
+.gradesList .sortable-handler {
+    display: none;
+}
+
+.md .gradesList .item-content {
+    padding: 0px !important;
+}
+
+.md .gradesList .item-inner {
+    padding: 10px 10px 10px 12px !important;
+}
+
+.md .gradesList .item-link {
+    margin: 8px 16px !important;
+    background-color: var(--f7-card-bg-color);
+}
+
+.ios .gradesList .item-inner {
+    padding: 16px 12px 16px 0px !important;
+}
