@@ -40,8 +40,8 @@ const HomePage = () => {
 
       <List dividersIos mediaList outlineIos strongIos
         sortable
-        sortableEnabled
-        className="overviewList mod-list mt-fix no-chevron">
+        // sortableEnabled
+        className="overviewList mod-list mt-fix">
         <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:calendar" iconMd='material:calendar_month' />
           <OverviewItem title="Attendance" subtitle="View your absences"></OverviewItem>

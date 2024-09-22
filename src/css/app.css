@@ -92,12 +92,14 @@
 }
 
 .sortable .sortable-handler:after {
-    color: rgba(0, 0, 0, 0.2) !important;
+    color: var(--f7-text-color);
+    opacity: 0.2;
 }
 
 .chevron {
     font-family: "framework7-core-icons";
-    color: rgba(0, 0, 0, 0.2);
+    color: var(--f7-text-color);
+    opacity: 0.2;
     font-size: 20px;
     width: 24px;
     text-align: right;
@@ -124,6 +126,19 @@
     display: flex;
     content: ""
 }
-.button {
-    color: var(--f7-text-color);
+
+.appearance-settings .item-title.item-label {
+    background-color: var(--f7-card-bg-color);
+}
+.md .appearance-settings .theme-color-picker {
+    padding: 8px 0px !important;
+}
+.md .appearance-settings .theme-color-picker .item-content {
+    margin: 0px 16px !important;
+}
+.md .appearance-settings .theme-color-picker .item-inner {
+    padding: 4px 4px 4px 0px !important;
+}
+.settings-block-title {
+    margin-top: 24px;
 }

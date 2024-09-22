@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 import {
   f7,
@@ -21,20 +21,20 @@ import {
   ListItem,
   ListInput,
   ListButton,
-  BlockFooter
-} from 'framework7-react';
+  BlockFooter,
+} from "framework7-react";
 
-import $ from 'dom7';
-import routes from '../js/routes';
-import store from '../js/store';
+import $ from "dom7";
+import routes from "../js/routes";
+import store from "../js/store";
 
 export function getColorTheme() {
   return new Promise((resolve) => {
-    if (document.readyState === 'complete') {
-      resolve($('html').css('--f7-color-primary').trim());
+    if (document.readyState === "complete") {
+      resolve($("html").css("--f7-color-primary").trim());
     } else {
-      window.addEventListener('load', () => {
-        resolve($('html').css('--f7-color-primary').trim());
+      window.addEventListener("load", () => {
+        resolve($("html").css("--f7-color-primary").trim());
       });
     }
   });
@@ -46,27 +46,29 @@ var isMd;
 
 const MyApp = () => {
   // Login screen demo data
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   // Framework7 Parammdeters
   var f7params = {
-    name: 'Gradexis',
-    theme: 'md',
+    name: "Gradexis",
+    theme: localStorage.getItem("appTheme") || "auto",
 
     pushState: true,
     touch: {
-      tapHold: true
+      tapHold: true,
     },
     store: store,
     routes: routes,
   };
   const alertLoginData = () => {
-    f7.dialog.alert('Username: ' + username + '<br>Password: ' + password, () => {
-      f7.loginScreen.close();
-    });
-  }
+    f7.dialog.alert(
+      "Username: " + username + "<br>Password: " + password,
+      () => {
+        f7.loginScreen.close();
+      }
+    );
+  };
 
   f7ready(() => {
     isDark = f7.darkMode;
@@ -75,15 +77,20 @@ const MyApp = () => {
     isMd = f7.theme === "md";
 
     if (isIos) {
-      document.documentElement.style.setProperty('--f7-navbar-large-title-padding-vertical', '10px');
-      document.documentElement.style.setProperty('--f7-navbar-large-title-height', '64px');
+      document.documentElement.style.setProperty(
+        "--f7-navbar-large-title-padding-vertical",
+        "10px"
+      );
+      document.documentElement.style.setProperty(
+        "--f7-navbar-large-title-height",
+        "64px"
+      );
     }
 
     // f7.setColorTheme("#007aff");
     // f7.setColorTheme("#e08b00");
-    f7.setColorTheme("#11ff00");
-    f7.setDarkMode(true);
-
+    f7.setColorTheme(localStorage.getItem("themeColor") || "#007aff");
+    f7.setDarkMode(localStorage.getItem("theme") === "dark");
   });
 
   return (
@@ -92,11 +99,31 @@ const MyApp = () => {
       <Views tabs className="safe-areas">
         {/* Tabbar for switching views-tabs */}
         <Toolbar tabbar icons bottom>
-          <Link tabLink="#view-home" tabLinkActive iconIos="f7:house_fill" iconMd="material:home" text="Home" />
-          <Link tabLink="#view-grades" iconIos="material:school " iconMd="material:school" text="Grades" />
-          <Link tabLink="#view-gpa" iconIos="f7:chart_bar_alt_fill" iconMd="material:bar_chart" text="GPA" />
-          <Link tabLink="#view-settings" iconIos="f7:gear_alt_fill" iconMd="material:settings" text="Settings" />
-
+          <Link
+            tabLink="#view-home"
+            tabLinkActive
+            iconIos="f7:house_fill"
+            iconMd="material:home"
+            text="Home"
+          />
+          <Link
+            tabLink="#view-grades"
+            iconIos="material:school "
+            iconMd="material:school"
+            text="Grades"
+          />
+          <Link
+            tabLink="#view-gpa"
+            iconIos="f7:chart_bar_alt_fill"
+            iconMd="material:bar_chart"
+            text="GPA"
+          />
+          <Link
+            tabLink="#view-settings"
+            iconIos="f7:gear_alt_fill"
+            iconMd="material:settings"
+            text="Settings"
+          />
         </Toolbar>
 
         <View id="view-home" main tab tabActive url="/" />
@@ -106,7 +133,6 @@ const MyApp = () => {
         <View id="view-gpa" name="gpa" tab url="/gpa/" />
 
         <View id="view-settings" name="settings" tab url="/settings/" />
-
       </Views>
 
       {/* Popup */}
@@ -148,14 +174,16 @@ const MyApp = () => {
             <List>
               <ListButton title="Sign In" onClick={() => alertLoginData()} />
               <BlockFooter>
-                Some text about login information.<br />Click Sign In to close Login Screen
+                Some text about login information.
+                <br />
+                Click Sign In to close Login Screen
               </BlockFooter>
             </List>
           </Page>
         </View>
       </LoginScreen>
     </App>
-  )
-}
+  );
+};
 export default MyApp;
 export { isDark, isLight, isIos, isMd };

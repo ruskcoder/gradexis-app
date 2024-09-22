@@ -31,7 +31,7 @@ const OverviewIcon = ({ iconIos, iconMd }) => {
         className='overview-icon'
         style={{ backgroundColor: 'var(--f7-theme-color)' }}
       >
-        <Link iconIos={iconIos} iconMd={iconMd} style={{ color: f7.darkMode ? "black" : "black" }} />
+        <Link iconIos={iconIos} iconMd={iconMd} style={{ color: "var(--f7-text-editor-bg-color)" }} />
       </div>
     </>
   );

@@ -8,21 +8,32 @@ const GradesItem = ({ title, subtitle, grade }) => {
 
   return (
     <>
-      <div style={{flex: 1}}>
-        <div className="item-title-row"><div className="item-title" style={{ fontWeight: 600, fontSize: 17, lineHeight: "20px" }}>{title}</div></div>
-        <div className="item-subtitle" style={{ fontSize: 14, lineHeight: "17px" }}>{subtitle}</div>
+      <div style={{ flex: 1 }}>
+        <div className="item-title-row">
+          <div
+            className="item-title"
+            style={{ fontWeight: 600, fontSize: 17, lineHeight: "20px" }}
+          >
+            {title}
+          </div>
+        </div>
+        <div
+          className="item-subtitle"
+          style={{ fontSize: 14, lineHeight: "17px" }}
+        >
+          {subtitle}
+        </div>
       </div>
       <div
-        className='grades-number'
+        className="grades-number"
         style={{
-          backgroundColor: "lightgreen",
-          color: f7.darkMode ? "white" : "black",
+          backgroundColor: "#00cf63",
+          color: "white",
         }}
       >
         {grade}
       </div>
-      <div className="chevron" style={{
-      }}></div>
+      <div className="chevron" style={{}}></div>
     </>
   );
 };
