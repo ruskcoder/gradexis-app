@@ -1,4 +1,6 @@
-/* Your app custom styles here */
+/* .grade .card-header {
+    padding: 10px 10px 10px 12px;
+} */
 
 :root {
     --f7-navbar-subtitle-font-size: 14px !important;
@@ -7,7 +9,7 @@
 
 .overview-icon {
     border-radius: 8px;
-    width: 44px;
+    width: 44px !important;
     height: 44px;
     display: flex;
     justify-content: center;
@@ -24,7 +26,6 @@
     padding: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
-
 }
 
 .title-large-text {
@@ -41,26 +42,15 @@
     content: none !important;
 }
 
-.gradesList .item-inner>.item-title-row {
+.mod-list .item-inner>.item-title-row {
     display: none;
 }
 
-.gradesList .item-inner {
+.mod-list .item-inner {
     display: flex !important;
 }
 
-.gradesList ul li {
-    padding: 0px !important;
-}
-
-.grade .card-header {
-    padding: 10px 10px 10px 12px;
-}
-
-.gradesList .sortable-handler {
-    display: none;
-}
-
+.gradesList ul li,
 .md .gradesList .item-content {
     padding: 0px !important;
 }
@@ -74,6 +64,66 @@
     background-color: var(--f7-card-bg-color);
 }
 
+.ios .mt-fix {
+    margin-top: 0px !important;
+}
+
+.md .mt-fix {
+    margin-top: 8px !important;
+}
+
 .ios .gradesList .item-inner {
     padding: 16px 12px 16px 0px !important;
+}
+
+/* Sort and NoSort icons: chevron & sort_(ios)(md) */
+.sortable .sortable-handler {
+    position: absolute;
+    display: none;
+}
+
+.sortable.sortable-enabled .sortable-handler {
+    display: flex;
+}
+
+.md .sortable .sortable-handler {
+    width: 15px;
+    right: 27px;
+}
+
+.sortable .sortable-handler:after {
+    color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.chevron {
+    font-family: "framework7-core-icons";
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 20px;
+    width: 24px;
+    text-align: right;
+    content: "chevron_right";
+}
+
+.md .chevron::before {
+    margin-right: 4px;
+}
+
+.sortable .chevron::before {
+    content: "chevron_right";
+}
+
+.sortable.sortable-enabled .chevron::before {
+    content: "";
+}
+
+.no-chevron:not(.sortable.sortable-enabled) .chevron {
+    display: none;
+}
+
+.no-chevron.sortable.sortable-enabled .chevron::before {
+    display: flex;
+    content: ""
+}
+.button {
+    color: var(--f7-text-color);
 }

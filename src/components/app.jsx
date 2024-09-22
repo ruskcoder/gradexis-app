@@ -80,8 +80,9 @@ const MyApp = () => {
     }
 
     // f7.setColorTheme("#007aff");
-    f7.setColorTheme("#e08b00");
-    // f7.setDarkMode(true);
+    // f7.setColorTheme("#e08b00");
+    f7.setColorTheme("#11ff00");
+    f7.setDarkMode(true);
 
   });
 
@@ -92,7 +93,7 @@ const MyApp = () => {
         {/* Tabbar for switching views-tabs */}
         <Toolbar tabbar icons bottom>
           <Link tabLink="#view-home" tabLinkActive iconIos="f7:house_fill" iconMd="material:home" text="Home" />
-          <Link tabLink="#view-grades" iconIos="material:school" iconMd="material:school" text="Grades" />
+          <Link tabLink="#view-grades" iconIos="material:school " iconMd="material:school" text="Grades" />
           <Link tabLink="#view-gpa" iconIos="f7:chart_bar_alt_fill" iconMd="material:bar_chart" text="GPA" />
           <Link tabLink="#view-settings" iconIos="f7:gear_alt_fill" iconMd="material:settings" text="Settings" />
 

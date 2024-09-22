@@ -21,9 +21,8 @@ const GradesItem = ({ title, subtitle, grade }) => {
       >
         {grade}
       </div>
-      <div style={{fontFamily: "framework7-core-icons", color: "rgba(0, 0, 0, 0.2)", fontSize: 20, paddingLeft: "12px", paddingRight: "4px"}}>
-        chevron_right
-      </div>
+      <div className="chevron" style={{
+      }}></div>
     </>
   );
 };

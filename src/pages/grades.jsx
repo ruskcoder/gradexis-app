@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Card, CardHeader, CardContent } from 'framework7-react';
+import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Icon, CardHeader, CardContent } from 'framework7-react';
 import GradesItem from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
 import { isMd } from '../components/app.jsx';
@@ -63,7 +63,7 @@ const GradesPage = () => {
       </CardHeader>
     </Card> */}
 
-      <List dividersIos mediaList outlineIos strongIos className={`${isMd ? "mt-list" : "mt-0"} gradesList list-padding`} 
+      <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
         sortable
         sortableEnabled
         sortableTapHold

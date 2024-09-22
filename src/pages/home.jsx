@@ -10,13 +10,13 @@ import {
   NavTitleLarge,
   f7
 } from 'framework7-react';
-import OverviewIcon from '../components/overview-icon.jsx';
+import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
 import { isMd } from '../components/app.jsx';
 
 const HomePage = () => {
-  
+
   return (
-    <Page name="home"> 
+    <Page name="home">
       <Navbar large>
         <NavTitle>
           Overview
@@ -38,27 +38,37 @@ const HomePage = () => {
         </NavRight>
       </Navbar>
 
-      <List dividersIos mediaList outlineIos strongIos className = {`${isMd ? "mt-list" : "mt-list"}`}>
-        <ListItem link="#" title="Attendance" subtitle="View your absences">
+      <List dividersIos mediaList outlineIos strongIos
+        sortable
+        sortableEnabled
+        className="overviewList mod-list mt-fix no-chevron">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:calendar" iconMd='material:calendar_month' />
+          <OverviewItem title="Attendance" subtitle="View your absences"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Bell Schedule" subtitle="Track periods and the bell">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:bell_fill" iconMd='material:notifications' />
+          <OverviewItem title="Bell Schedule" subtitle="Track periods and the bell"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Class Schedule" subtitle="View classes and course requests">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:square_list_fill" iconMd='material:list_alt' />
+          <OverviewItem title="Class Schedule" subtitle="View classes and course requests"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Contact Teachers" subtitle="View email your teachers">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:at" iconMd='material:alternate_email' />
+          <OverviewItem title="Contact Teachers" subtitle="View email your teachers"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Progress Report" subtitle="View interim scores">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:gauge" iconMd='material:speed' />
+          <OverviewItem title="Progress Report" subtitle="View interim scores"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Report Card" subtitle="View reporting period scores">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:doc_chart" iconMd='material:query_stats' />
+          <OverviewItem title="Report Card" subtitle="View reporting period scores"></OverviewItem>
         </ListItem>
-        <ListItem link="#" title="Transcript" subtitle="View your credits">
+        <ListItem link="#">
           <OverviewIcon slot="media" iconIos="f7:checkmark_seal_fill" iconMd='material:verified' />
+          <OverviewItem title="Transcript" subtitle="View your credits"></OverviewItem>
         </ListItem>
       </List>
 

@@ -14,3 +14,6 @@
     padding-top: 4px;
     padding-bottom: 4px;
 }
+.no-padding {
+    padding: 0px !important;
+}
