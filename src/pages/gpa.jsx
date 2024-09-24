@@ -3,32 +3,35 @@ import { Page, Navbar, List, ListItem, Block, Button, useStore } from 'framework
 import store from '../js/store';
 
 const GpaPage = () => {
-  const products = useStore('products');
-
-  const addProduct = () => {
-    store.dispatch('addProduct', {
-      id: '4',
-      title: 'Apple iPhone 12',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi tempora similique reiciendis, error nesciunt vero, blanditiis pariatur dolor, minima sed sapiente rerum, dolorem corrupti hic modi praesentium unde saepe perspiciatis.',
-    });
-  };
+  const users = useStore('users');
 
   return (
     <Page name="catalog">
       <Navbar title="aasdasd" />
       <List strong dividersIos outlineIos insetMd>
-        {products.map((product) => (
-          <ListItem key={product.id} title={product.title} link={`/product/${product.id}/`} />
+        {users.map((user) => (
+          <ListItem
+            key={user.username}
+            title={user.username}
+            link={`/product/${user.username}/`}
+          />
         ))}
       </List>
-      {products.length === 3 && (
-        <Block>
-          <Button fill onClick={addProduct}>
-            Add Product
-          </Button>
-        </Block>
-      )}
+      <Block>
+        <Button
+          fill
+          onClick={() =>
+            store.dispatch("addUser", {
+              username: "k2429602",
+              password: "Kisd08232010",
+              platform: "hac",
+              link: 'https://homeaccess.katyisd.org'
+            })
+          }
+        >
+          Add Product
+        </Button>
+      </Block>
     </Page>
   );
 };

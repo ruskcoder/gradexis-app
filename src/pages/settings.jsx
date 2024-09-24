@@ -117,7 +117,7 @@ const SettingsPage = () => {
               value={{ hex: themeColor }}
               onColorPickerChange={(value) => setCustomColor(value.hex)}
               colorPickerParams={{
-                modules: ["hue-slider"],
+                modules: f7.theme === "md" ? ["hue-slider"] : ["wheel"],
                 targetEl: ".wheel-picker-target",
               }}
               className="theme-color-picker"

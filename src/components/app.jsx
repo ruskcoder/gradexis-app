@@ -4,7 +4,7 @@ import {
   f7,
   f7ready,
   App,
-  Panel,
+  ListItem,
   Views,
   View,
   Popup,
@@ -18,7 +18,7 @@ import {
   LoginScreen,
   LoginScreenTitle,
   List,
-  ListItem,
+  Button,
   ListInput,
   ListButton,
   BlockFooter,
@@ -44,12 +44,11 @@ var isLight;
 var isIos;
 var isMd;
 
-const MyApp = () => {
-  // Login screen demo data
+const Gradexis = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginScreenOpened, setLoginScreenOpened] = useState(localStorage.getItem("username") != null);
 
-  // Framework7 Parammdeters
   var f7params = {
     name: "Gradexis",
     theme: localStorage.getItem("appTheme") || "auto",
@@ -61,6 +60,7 @@ const MyApp = () => {
     store: store,
     routes: routes,
   };
+
   const alertLoginData = () => {
     f7.dialog.alert(
       "Username: " + username + "<br>Password: " + password,
@@ -69,6 +69,12 @@ const MyApp = () => {
       }
     );
   };
+
+  // useEffect(() => {
+  //   if (!localStorage.getItem("username")) {
+  //     f7.views.main.router.navigate("/login/");
+  //   }
+  // }, []);
 
   f7ready(() => {
     isDark = f7.darkMode;
@@ -92,12 +98,20 @@ const MyApp = () => {
     f7.setColorTheme(localStorage.getItem("themeColor") || "#007aff");
     f7.setDarkMode(localStorage.getItem("theme") === "dark");
   });
+  const [isLoading1, setIsLoading1] = useState(false);
+
+  const load1 = () => {
+    if (isLoading1) return;
+    setIsLoading1(true);
+    setTimeout(() => {
+      setIsLoading1(false);
+      f7.dialog.alert("Incorrect username or password")
+    }, 4000);
+  };
 
   return (
     <App {...f7params}>
-      {/* Views/Tabs container */}
       <Views tabs className="safe-areas">
-        {/* Tabbar for switching views-tabs */}
         <Toolbar tabbar icons bottom>
           <Link
             tabLink="#view-home"
@@ -135,48 +149,45 @@ const MyApp = () => {
         <View id="view-settings" name="settings" tab url="/settings/" />
       </Views>
 
-      {/* Popup */}
-      <Popup id="my-popup">
-        <View>
-          <Page>
-            <Navbar title="Popup">
-              <NavRight>
-                <Link popupClose>Close</Link>
-              </NavRight>
-            </Navbar>
-            <Block>
-              <p>Popup content goes here.</p>
-            </Block>
-          </Page>
-        </View>
-      </Popup>
-
-      <LoginScreen id="my-login-screen">
+      <LoginScreen id="my-login-screen" opened={true}>
         <View>
           <Page loginScreen>
             <LoginScreenTitle>Login</LoginScreenTitle>
             <List form>
               <ListInput
+                outline
+                floatingLabel
+                label="Username"
                 type="text"
                 name="username"
                 placeholder="Your username"
                 value={username}
                 onInput={(e) => setUsername(e.target.value)}
               ></ListInput>
+
               <ListInput
+                outline
+                floatingLabel
+                label="Password"
                 type="password"
                 name="password"
-                placeholder="Your password"
+                placeholder="Password"
                 value={password}
                 onInput={(e) => setPassword(e.target.value)}
+                className=""
               ></ListInput>
             </List>
+            <Block>
+              <Button preloader loading={isLoading1} onClick={load1} large fill>
+                Login
+              </Button>
+            </Block>
             <List>
-              <ListButton title="Sign In" onClick={() => alertLoginData()} />
+              <ListItem></ListItem>
               <BlockFooter>
-                Some text about login information.
+                Login information may be stored on this
                 <br />
-                Click Sign In to close Login Screen
+                device.
               </BlockFooter>
             </List>
           </Page>
@@ -185,5 +196,5 @@ const MyApp = () => {
     </App>
   );
 };
-export default MyApp;
+export default Gradexis;
 export { isDark, isLight, isIos, isMd };

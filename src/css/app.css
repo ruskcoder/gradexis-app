@@ -7,6 +7,11 @@
     --f7-subnavbar-height: 48px !important;
 }
 
+.list .item-inner div:nth-child(2) {
+    padding-right: 0px;
+    overflow: hidden;
+}
+
 .overview-icon {
     border-radius: 8px;
     width: 44px !important;
@@ -63,7 +68,6 @@
     margin: 8px 16px !important;
     background-color: var(--f7-card-bg-color);
 }
-
 .ios .mt-fix {
     margin-top: 0px !important;
 }
@@ -127,8 +131,8 @@
     content: ""
 }
 
-.appearance-settings .item-title.item-label {
-    background-color: var(--f7-card-bg-color);
+.ios .item-title.item-label {
+    background-color: var(--f7-card-bg-color) !important;
 }
 .md .appearance-settings .theme-color-picker {
     padding: 8px 0px !important;
