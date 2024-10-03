@@ -13,19 +13,22 @@ import {
   Icon,
   f7,
   f7ready,
-  ListButton
+  ListButton,
+  useStore
 } from "framework7-react";
 import $ from "dom7";
-
+import store from "../js/store.js";
+import { terminal } from 'virtual:terminal'
 var globalScheme;
 var globalThemeColor;
 var globalAppTheme;
 
-const SettingsPage = () => {
+const SettingsPage = ({ f7router }) => {
   const [theme, changeScheme] = useState(globalScheme);
   const [themeColor, changeThemeColor] = useState(globalThemeColor);
   const [appTheme, changeAppTheme] = useState(globalThemeColor);
-
+  // const [user, changeUser] = useState(store.state.currentUser);
+  const user = useStore('currentUser');
   useEffect(() => {
     f7ready(() => {
       const savedScheme = localStorage.getItem('theme');
@@ -39,7 +42,7 @@ const SettingsPage = () => {
         changeScheme($("html").hasClass("dark") ? "dark" : "light");
       }
 
-      if (savedThemeColor) {
+      if (savedThemeColor && savedThemeColor !== "undefined") {
         changeThemeColor(savedThemeColor);
         f7.setColorTheme(savedThemeColor);
       } else {
@@ -72,8 +75,54 @@ const SettingsPage = () => {
     globalAppTheme = newAppTheme;
     changeAppTheme(globalAppTheme);
     localStorage.setItem('appTheme', newAppTheme);
-    f7.dialog.alert("Please restart the app to apply the changes");
+    location.reload();
   }
+  const changeName = () => {
+    return () => {
+      f7.dialog.prompt("Enter your new name", "Change Name", (name) => {
+        store.dispatch("changeUserData", {
+          userNumber: store.state.currentUserNumber,
+          item: "name",
+          value: name,
+        });
+        f7router.refreshPage();
+      });
+    };
+  }
+  
+  const pickPfp = () => {
+    return () => {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            store.dispatch("changeUserData", {
+              userNumber: store.state.currentUserNumber,
+              item: "pfp",
+              value: e.target.result,
+            });
+              f7router.refreshPage();
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      fileInput.click();
+    }
+  }
+
+  const logout = () => {
+    return () => {
+      store.dispatch("removeUser", store.state.currentUser.username);
+      f7.dialog.confirm("Are you sure you want to logout?", "Logout", () => {
+        location.reload()
+      });
+    };
+  }
+  
   return (
     <Page name="settings">
       <Navbar large title="Settings" />
@@ -81,7 +130,7 @@ const SettingsPage = () => {
         <CardContent>
           <div className="profile-top display-flex align-items-center justify-content-center flex-direction-column">
             <img
-              src="https://cdn.framework7.io/placeholder/people-160x160-1.jpg"
+              src={user.pfp}
               className="profile-image"
               style={{
                 width: "50px",
@@ -91,13 +140,13 @@ const SettingsPage = () => {
                 marginBottom: 2,
               }}
             />
-            <h2 className="no-padding no-margin">Vatsal Sharda</h2>
+            <h2 className="no-padding no-margin">{user.name}</h2>
           </div>
           <p className="grid grid-cols-2 grid-gap" style={{ marginTop: 4 }}>
-            <Button small tonal>
+            <Button small tonal onClick={changeName()}>
               Change Name
             </Button>
-            <Button small tonal>
+            <Button small tonal onClick={pickPfp()}>
               Profile Picture
             </Button>
           </p>
@@ -181,6 +230,14 @@ const SettingsPage = () => {
               <span>Require Biometrics</span>
               <Toggle checked={false} />
             </ListItem>
+            <ListItem link="/settings/accounts/" className="">
+              <Icon
+                slot="media"
+                ios="f7:person_circle"
+                md="material:group"
+              ></Icon>
+              <span>Acount Manager</span>
+            </ListItem>
           </List>
         </CardContent>
       </Card>
@@ -189,7 +246,7 @@ const SettingsPage = () => {
         <CardContent>
           <List dividers>
             <ListButton>Review</ListButton>
-            <ListButton color="red" fill>
+            <ListButton color="red" fill onClick={logout()}>
               Logout
             </ListButton>
           </List>

@@ -1,0 +1,69 @@
+.item-title-row::before {
+    content: none !important;
+}
+
+.mod-list .item-inner>.item-title-row {
+    display: none;
+}
+
+.mod-list .item-inner {
+    display: flex !important;
+}
+
+.ios .mt-fix {
+    margin-top: 0px !important;
+}
+
+.md .mt-fix {
+    margin-top: 8px !important;
+}
+
+.sortable .sortable-handler {
+    position: absolute;
+    display: none;
+}
+
+.sortable.sortable-enabled .sortable-handler {
+    display: flex;
+}
+
+.md .sortable .sortable-handler {
+    width: 15px;
+    right: 27px;
+}
+
+.sortable .sortable-handler:after {
+    color: var(--f7-text-color);
+    opacity: 0.2;
+}
+
+.chevron {
+    font-family: "framework7-core-icons";
+    color: var(--f7-text-color);
+    opacity: 0.2;
+    font-size: 20px;
+    width: 24px;
+    text-align: right;
+    content: "chevron_right";
+}
+
+.md .chevron::before {
+    margin-right: 4px;
+}
+
+.sortable .chevron::before {
+    content: "chevron_right";
+}
+
+.sortable.sortable-enabled .chevron::before {
+    content: "";
+}
+
+.no-chevron:not(.sortable.sortable-enabled) .chevron {
+    display: none;
+}
+
+.no-chevron.sortable.sortable-enabled .chevron::before {
+    display: flex;
+    content: ""
+}

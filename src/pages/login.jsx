@@ -1,56 +1,92 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from 'react';
-import { Page, ListButton, BlockFooter, List, LoginScreenTitle, ListInput, f7 } from 'framework7-react';
-import PropTypes from 'prop-types';
+import {
+    f7,
+    f7ready,
+    App,
+    ListItem,
+    Views,
+    View,
+    Popup,
+    Page,
+    Navbar,
+    Toolbar,
+    NavRight,
+    Link,
+    Block,
+    BlockTitle,
+    LoginScreen,
+    LoginScreenTitle,
+    List,
+    Button,
+    ListInput,
+    ListButton,
+    BlockFooter,
+    useStore
+  } from "framework7-react";
+import React, { useState, useEffect } from "react";
+import { terminal } from 'virtual:terminal'
+import store from "../js/store";
 
 const LoginPage = ({ f7router }) => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [loginLoading, setLoginLoading] = useState(false);
+    const signIn = () => {
+        setLoginLoading(true);
+        store.dispatch("addUser", { username: username, password: password, link: "https://homeaccess.katyisd.org/", platform: "hac"}).then((result) => {
+          if (result) {
+            setLoginLoading(false)
+            f7.emit('login')
+            f7router.back()
+          }
+          else {
+            f7.dialog.alert("Invalid username or password", "Login Failed");
+            setLoginLoading(false)
+          }
+        })
+      };
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const signIn = () => {
-    f7.dialog.alert(`Username: ${username}<br>Password: ${password}`, () => {
-      f7router.back();
-    });
-  };
-  return (
-    <Page noToolbar noNavbar noSwipeback loginScreen>
-      <LoginScreenTitle>Framework7</LoginScreenTitle>
-      <List form>
-        <ListInput
-          label="Username"
-          type="text"
-          placeholder="Your username"
-          value={username}
-          onInput={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-        <ListInput
-          label="Password"
-          type="password"
-          placeholder="Your password"
-          value={password}
-          onInput={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-      </List>
-      <List inset>
-        <ListButton onClick={signIn}>Sign In</ListButton>
-        <BlockFooter>
-          Some text about login information.
-          <br />
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </BlockFooter>
-      </List>
-    </Page>
-  );
-};
+    return (
+      <Page loginScreen>
+        <LoginScreenTitle>Login</LoginScreenTitle>
+        <List form>
+          <ListInput
+            outline
+            floatingLabel
+            label="Username"
+            type="text"
+            name="username"
+            placeholder="Your username"
+            value={username}
+            onInput={(e) => setUsername(e.target.value)}
+          ></ListInput>
 
-LoginPage.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }).isRequired,
+          <ListInput
+            outline
+            floatingLabel
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onInput={(e) => setPassword(e.target.value)}
+            className=""
+          ></ListInput>
+        </List>
+        <Block>
+          <Button preloader loading={loginLoading} onClick={signIn} large fill>
+            Login
+          </Button>
+        </Block>
+        <List>
+          <ListItem></ListItem>
+          <BlockFooter>
+            Login information may be stored on this
+            <br />
+            device.
+          </BlockFooter>
+        </List>
+      </Page>
+  )
 };
 
 export default LoginPage;

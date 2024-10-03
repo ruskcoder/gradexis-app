@@ -1,0 +1,22 @@
+.card .item-label {
+    background-color: var(--f7-card-bg-color) !important
+}
+.md .appearance-settings .theme-color-picker {
+    padding: 8px 0px !important;
+}
+.md .appearance-settings .theme-color-picker .item-content {
+    margin: 0px 16px !important;
+}
+.md .appearance-settings .theme-color-picker .item-inner {
+    padding: 4px 4px 4px 0px !important;
+}
+.settings-block-title {
+    margin-top: 24px;
+}
+.user-info .item-title{
+    font-size: var(--f7-list-font-size);
+    font-weight: var(--f7-list-media-item-title-font-weight, var(--f7-list-item-title-font-weight, inherit));;
+}
+.user-info .item-subtitle{
+    font-size: var(--f7-list-item-subtitle-font-size);
+}

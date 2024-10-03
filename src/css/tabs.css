@@ -1,0 +1,22 @@
+.tabbar {
+    transform: translateY(0px);
+    transition: transform 0.3s;
+}
+.tabbar-hidden{
+    transform: translateY(100px);
+}
+.tabs .tab {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    z-index: 99;
+    transition: opacity 0.3s;
+}
+.tabs .tab-active {
+    z-index: 100;
+    display: block !important;
+    opacity: 1;
+}

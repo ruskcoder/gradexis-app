@@ -16,6 +16,11 @@ import '../css/icons.css';
 import '../css/app.css';
 import '../css/quick-styles.css';
 
+import '../css/tabs.css';
+import '../css/grades.css';
+import '../css/list.css';
+import '../css/settings.css';
+
 import $ from 'dom7';
 
 // Import App Component

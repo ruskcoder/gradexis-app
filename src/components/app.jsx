@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { terminal } from 'virtual:terminal'
 
 import {
   f7,
@@ -22,8 +23,9 @@ import {
   ListInput,
   ListButton,
   BlockFooter,
+  useStore
 } from "framework7-react";
-
+import PropTypes from 'prop-types';
 import $ from "dom7";
 import routes from "../js/routes";
 import store from "../js/store";
@@ -44,16 +46,15 @@ var isLight;
 var isIos;
 var isMd;
 
-const Gradexis = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginScreenOpened, setLoginScreenOpened] = useState(localStorage.getItem("username") != null);
 
+const Gradexis = ({ f7router }) => {
+  // const users = useStore('users')
+  
   var f7params = {
     name: "Gradexis",
     theme: localStorage.getItem("appTheme") || "auto",
-
     pushState: true,
+    browserHistory: true,
     touch: {
       tapHold: true,
     },
@@ -61,22 +62,8 @@ const Gradexis = () => {
     routes: routes,
   };
 
-  const alertLoginData = () => {
-    f7.dialog.alert(
-      "Username: " + username + "<br>Password: " + password,
-      () => {
-        f7.loginScreen.close();
-      }
-    );
-  };
-
-  // useEffect(() => {
-  //   if (!localStorage.getItem("username")) {
-  //     f7.views.main.router.navigate("/login/");
-  //   }
-  // }, []);
-
   f7ready(() => {
+    
     isDark = f7.darkMode;
     isLight = !f7.darkMode;
     isIos = f7.theme === "ios";
@@ -98,103 +85,69 @@ const Gradexis = () => {
     f7.setColorTheme(localStorage.getItem("themeColor") || "#007aff");
     f7.setDarkMode(localStorage.getItem("theme") === "dark");
   });
-  const [isLoading1, setIsLoading1] = useState(false);
-
-  const load1 = () => {
-    if (isLoading1) return;
-    setIsLoading1(true);
-    setTimeout(() => {
-      setIsLoading1(false);
-      f7.dialog.alert("Incorrect username or password")
-    }, 4000);
-  };
-
+  const secondaryRoutes = ['/login/',
+    ...routes
+    .filter((route) => (route.path.slice(0, -1).match(/\//g) || []).length > 1)
+    .map((route) => route.path)
+  ];
+  const [showTabbar, setShowTabbar] = useState(true);
+  
+  useEffect(() => {
+    f7ready(() => {
+      if (store.state.users.length == 0) {
+        f7.views.main.router.navigate("/login/")
+      }
+      f7.on("routeChange", (route) => {
+        setShowTabbar(!secondaryRoutes.includes(route.path));
+      });
+    });
+  })
+  
   return (
-    <App {...f7params}>
-      <Views tabs className="safe-areas">
-        <Toolbar tabbar icons bottom>
-          <Link
-            tabLink="#view-home"
-            tabLinkActive
-            iconIos="f7:house_fill"
-            iconMd="material:home"
-            text="Home"
-          />
-          <Link
-            tabLink="#view-grades"
-            iconIos="material:school "
-            iconMd="material:school"
-            text="Grades"
-          />
-          <Link
-            tabLink="#view-gpa"
-            iconIos="f7:chart_bar_alt_fill"
-            iconMd="material:bar_chart"
-            text="GPA"
-          />
-          <Link
-            tabLink="#view-settings"
-            iconIos="f7:gear_alt_fill"
-            iconMd="material:settings"
-            text="Settings"
-          />
-        </Toolbar>
+    <App {...f7params} store={store}>
+      <Views className="safe-areas" tabs>
 
-        <View id="view-home" main tab tabActive url="/" />
+          <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>
+            <Link
+              tabLink="#view-home"
+              tabLinkActive
+              iconIos="f7:house_fill"
+              iconMd="material:home"
+              text="Home"
+            />
+            <Link
+              tabLink="#view-grades"
+              iconIos="material:school "
+              iconMd="material:school"
+              text="Grades"
+            />
+            <Link
+              tabLink="#view-gpa"
+              iconIos="f7:chart_bar_alt_fill"
+              iconMd="material:bar_chart"
+              text="GPA"
+            />
+            <Link
+              tabLink="#view-settings"
+              iconIos="f7:gear_alt_fill"
+              iconMd="material:settings"
+              text="Settings"
+            />
+          </Toolbar>
+          
+          <View id="view-home" tab tabActive main url="/" />
 
-        <View id="view-grades" name="grades" tab url="/grades/" />
+          <View id="view-grades" name="grades" tab url="/grades/" />
 
-        <View id="view-gpa" name="gpa" tab url="/gpa/" />
+          <View id="view-gpa" name="gpa" tab url="/gpa/" />
 
-        <View id="view-settings" name="settings" tab url="/settings/" />
+          <View id="view-settings" name="settings" tab url="/settings/" />
       </Views>
-
-      <LoginScreen id="my-login-screen" opened={true}>
-        <View>
-          <Page loginScreen>
-            <LoginScreenTitle>Login</LoginScreenTitle>
-            <List form>
-              <ListInput
-                outline
-                floatingLabel
-                label="Username"
-                type="text"
-                name="username"
-                placeholder="Your username"
-                value={username}
-                onInput={(e) => setUsername(e.target.value)}
-              ></ListInput>
-
-              <ListInput
-                outline
-                floatingLabel
-                label="Password"
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={password}
-                onInput={(e) => setPassword(e.target.value)}
-                className=""
-              ></ListInput>
-            </List>
-            <Block>
-              <Button preloader loading={isLoading1} onClick={load1} large fill>
-                Login
-              </Button>
-            </Block>
-            <List>
-              <ListItem></ListItem>
-              <BlockFooter>
-                Login information may be stored on this
-                <br />
-                device.
-              </BlockFooter>
-            </List>
-          </Page>
-        </View>
-      </LoginScreen>
     </App>
   );
+};
+Gradexis.propTypes = {
+  f7router: PropTypes.any,
 };
 export default Gradexis;
 export { isDark, isLight, isIos, isMd };

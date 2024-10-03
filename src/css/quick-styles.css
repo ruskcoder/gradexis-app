@@ -20,3 +20,6 @@
 .text-white {
     color: white !important;
 }
+.outline {
+    border: 1px solid var(--f7-theme-color) !important;
+}

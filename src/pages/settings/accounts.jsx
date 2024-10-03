@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Page,
+  Navbar,
+  Block,
+  Toggle,
+  ListItem,
+  ListInput,
+  BlockTitle,
+  Button,
+  Card,
+  CardContent,
+  Icon,
+  f7,
+  f7ready,
+  ListButton,
+  useStore
+} from "framework7-react";
+import $ from "dom7";
+import store from "../../js/store.js";
+import { terminal } from 'virtual:terminal'
+
+const AccountsPage = ({ f7router }) => {
+  var users = store.state.users;
+  const logout = (username) => {
+    return () => {
+      f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {
+        if (store.state.currentUser.username == username) {
+          store.dispatch("removeUser", username);
+          location.reload();
+        }
+        else {
+          f7router.refreshPage();
+        }
+        
+      });
+    } 
+  }
+
+  return (
+    <Page name="settings">
+      <Navbar small title="Accounts" backLink="Back"/>
+      {
+        users.map(function(user, index){
+          return (
+            <Card key={index}>
+              <CardContent>
+                  <div className='display-flex margin-bottom-half align-items-center'>
+                      <img
+                      src={user.pfp}
+                      className="profile-image"
+                      style={{
+                        width: "50px",
+                        borderRadius: "50%",
+                        aspectRatio: "1/1",
+                        border: "4px solid var(--f7-theme-color)",
+                        marginBottom: 2,
+                      }}
+                    />
+                    <div className='padding-left user-info'>
+                      <p className="no-margin item-title">{user.name}</p>
+                      <p className="no-margin item-subtitle">{user.username}</p>
+                    </div>
+                  </div>
+                  <Button fill color="red" onClick={logout(user.username)}>
+                    Logout
+                  </Button>
+              </CardContent>
+            </Card>
+          )
+        })
+      }
+      <Block>
+        <Button round fill onClick={() => {f7router.navigate('/login/')}}>
+          Add Account
+        </Button>
+      </Block>
+    </Page>
+  );
+};
+
+export default AccountsPage;

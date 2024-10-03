@@ -4,6 +4,7 @@ import SettingsPage from '../pages/settings.jsx';
 import NotFoundPage from '../pages/404.jsx';
 import GradesPage from '../pages/grades.jsx';
 import GpaPage from '../pages/gpa.jsx';
+import AccountsPage from '../pages/settings/accounts.jsx';
 import LoginPage from '../pages/login.jsx';
 
 
@@ -21,12 +22,16 @@ var routes = [
     component: GpaPage,
   },
   {
+    path: '/login/',
+    component: LoginPage,
+  },
+  {
     path: '/settings/',
     component: SettingsPage,
   },
   {
-    path: '/login/',
-    component: LoginPage,
+    path: '/settings/accounts/',
+    component: AccountsPage,
   },
   {
     path: '(.*)',

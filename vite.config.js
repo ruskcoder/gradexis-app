@@ -1,6 +1,7 @@
 
 import path from 'path';
 import react from '@vitejs/plugin-react';
+import Terminal from 'vite-plugin-terminal'
 
 
 const SRC_DIR = path.resolve(__dirname, './src');
@@ -11,6 +12,7 @@ export default async () => {
   return  {
     plugins: [
       react(),
+      Terminal()
 
     ],
     root: SRC_DIR,

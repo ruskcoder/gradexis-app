@@ -13,6 +13,7 @@
   },
   "plugins": ["react", "react-hooks"],
   "rules": {
-    "no-unused-vars": "off" // Disable the no-unused-vars rule
+    "no-unused-vars": "off", // Disable the no-unused-vars rule
+    "react/prop-types": "off" // Disable prop-types validation
   }
 }

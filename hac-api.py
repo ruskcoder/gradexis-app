@@ -3,9 +3,10 @@ import json
 import os
 import requests
 from bs4 import BeautifulSoup
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 login_data = {
     "__RequestVerificationToken": "",
     "SCKTY00328510CustomEnabled": True,
@@ -22,7 +23,10 @@ link = "https://homeaccess.katyisd.org/"
 
 @app.after_request
 def add_cors_headers(response):
+    print("Adding CORS headers")
     response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
 
 @app.route("/favicon.ico")
