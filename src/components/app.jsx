@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { terminal } from 'virtual:terminal'
+import { terminal } from 'virtual:terminal';
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 import {
   f7,
@@ -36,6 +37,7 @@ export const primaryFromColor = (theme) => {
 
 const Gradexis = ({ f7router }) => {
   // const users = useStore('users')
+  
   var f7params = {
     name: "Gradexis",
     theme: store.state.currentUser.layout,
@@ -48,7 +50,7 @@ const Gradexis = ({ f7router }) => {
     routes: routes,
   };
 
-  f7ready(() => {
+  f7ready(async () => {
     if (store.state.currentUser.layout === "ios") {
       document.documentElement.style.setProperty(
         "--f7-navbar-large-title-padding-vertical",
@@ -62,7 +64,12 @@ const Gradexis = ({ f7router }) => {
     
     f7.setColorTheme(store.state.currentUser.theme);
     f7.setDarkMode(store.state.currentUser.scheme === "dark");
+
+    await StatusBar.setStyle({ style: Style.Light });
+    await StatusBar.setBackgroundColor({ color: primaryFromColor(store.state.currentUser.theme) });
+    await StatusBar.show();
   });
+
   const secondaryRoutes = ['/login/',
     ...routes
     .filter((route) => (route.path.slice(0, -1).match(/\//g) || []).length > 1)
