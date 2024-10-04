@@ -26,33 +26,19 @@ import {
   useStore
 } from "framework7-react";
 import PropTypes from 'prop-types';
-import $ from "dom7";
 import routes from "../js/routes";
 import store from "../js/store";
+import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 
-export function getColorTheme() {
-  return new Promise((resolve) => {
-    if (document.readyState === "complete") {
-      resolve($("html").css("--f7-color-primary").trim());
-    } else {
-      window.addEventListener("load", () => {
-        resolve($("html").css("--f7-color-primary").trim());
-      });
-    }
-  });
+export const primaryFromColor = (theme) => {
+  return (store.state.currentUser.layout == "md" ? hexFromArgb(themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme].primary) : theme)
 }
-var isDark;
-var isLight;
-var isIos;
-var isMd;
-
 
 const Gradexis = ({ f7router }) => {
   // const users = useStore('users')
-  
   var f7params = {
     name: "Gradexis",
-    theme: localStorage.getItem("appTheme") || "auto",
+    theme: store.state.currentUser.layout,
     pushState: true,
     browserHistory: true,
     touch: {
@@ -63,13 +49,7 @@ const Gradexis = ({ f7router }) => {
   };
 
   f7ready(() => {
-    
-    isDark = f7.darkMode;
-    isLight = !f7.darkMode;
-    isIos = f7.theme === "ios";
-    isMd = f7.theme === "md";
-
-    if (isIos) {
+    if (store.state.currentUser.layout === "ios") {
       document.documentElement.style.setProperty(
         "--f7-navbar-large-title-padding-vertical",
         "10px"
@@ -79,11 +59,9 @@ const Gradexis = ({ f7router }) => {
         "64px"
       );
     }
-
-    // f7.setColorTheme("#007aff");
-    // f7.setColorTheme("#e08b00");
-    f7.setColorTheme(localStorage.getItem("themeColor") || "#007aff");
-    f7.setDarkMode(localStorage.getItem("theme") === "dark");
+    
+    f7.setColorTheme(store.state.currentUser.theme);
+    f7.setDarkMode(store.state.currentUser.scheme === "dark");
   });
   const secondaryRoutes = ['/login/',
     ...routes
@@ -91,7 +69,7 @@ const Gradexis = ({ f7router }) => {
     .map((route) => route.path)
   ];
   const [showTabbar, setShowTabbar] = useState(true);
-  
+
   useEffect(() => {
     f7ready(() => {
       if (store.state.users.length == 0) {
@@ -102,7 +80,7 @@ const Gradexis = ({ f7router }) => {
       });
     });
   })
-  
+
   return (
     <App {...f7params} store={store}>
       <Views className="safe-areas" tabs>
@@ -150,4 +128,3 @@ Gradexis.propTypes = {
   f7router: PropTypes.any,
 };
 export default Gradexis;
-export { isDark, isLight, isIos, isMd };

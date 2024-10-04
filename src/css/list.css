@@ -1,7 +1,10 @@
 .item-title-row::before {
     content: none !important;
 }
-
+.list .item-inner div {
+    padding-right: 0px;
+    overflow: hidden;
+}
 .mod-list .item-inner>.item-title-row {
     display: none;
 }

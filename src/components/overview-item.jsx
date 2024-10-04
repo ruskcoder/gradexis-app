@@ -1,7 +1,6 @@
-import { Link, f7 } from 'framework7-react';
+import { Icon, f7 } from 'framework7-react';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getColorTheme } from './app';
 
 const OverviewItem = ({ title, subtitle }) => {
   return (
@@ -31,7 +30,7 @@ const OverviewIcon = ({ iconIos, iconMd }) => {
         className='overview-icon'
         style={{ backgroundColor: 'var(--f7-theme-color)' }}
       >
-        <Link iconIos={iconIos} iconMd={iconMd} style={{ color: "var(--f7-text-editor-bg-color)" }} />
+        <Icon ios={iconIos} md={iconMd} style={{ color: "var(--f7-text-editor-bg-color)" }} />
       </div>
     </>
   );

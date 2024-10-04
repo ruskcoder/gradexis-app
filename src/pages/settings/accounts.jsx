@@ -3,25 +3,18 @@ import {
   Page,
   Navbar,
   Block,
-  Toggle,
-  ListItem,
-  ListInput,
-  BlockTitle,
   Button,
   Card,
   CardContent,
-  Icon,
   f7,
-  f7ready,
-  ListButton,
   useStore
 } from "framework7-react";
-import $ from "dom7";
 import store from "../../js/store.js";
-import { terminal } from 'virtual:terminal'
+import { primaryFromColor } from "../../components/app.jsx";
 
 const AccountsPage = ({ f7router }) => {
-  var users = store.state.users;
+  var users = useStore('users');
+  
   const logout = (username) => {
     return () => {
       f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {
@@ -53,7 +46,7 @@ const AccountsPage = ({ f7router }) => {
                         width: "50px",
                         borderRadius: "50%",
                         aspectRatio: "1/1",
-                        border: "4px solid var(--f7-theme-color)",
+                        border: `4px solid ${primaryFromColor(user.theme)}`,
                         marginBottom: 2,
                       }}
                     />

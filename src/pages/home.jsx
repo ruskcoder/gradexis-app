@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Page,
   Navbar,
@@ -9,12 +9,79 @@ import {
   NavTitle,
   NavTitleLarge,
   Button,
-  f7
+  f7,
+  f7ready,
+  useStore
 } from 'framework7-react';
 import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
-import { isMd } from '../components/app.jsx';
+import store from '../js/store.js';
+import { primaryFromColor } from '../components/app.jsx';
 
-const HomePage = () => {
+const HomePage = ({ f7router }) => {
+  const users = useStore('users')
+  
+  const switchAccount = () => {
+    return () => {
+      var chooseList = []
+      
+      for (const user of users) {
+        chooseList.push(`
+          <li class="media-item">
+              <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
+                <div class="item-content">
+                  <div class="item-media">
+                    <img slot="media" src=${user.pfp} 
+                    style="
+                      width: 44px;
+                      border-radius: 50%;
+                      aspect-ratio: 1/1;
+                      border: 4px solid ${primaryFromColor(user.theme)};
+                    ">
+                  </div>
+                  <div class="item-inner" style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: start;
+                    justify-content: center;  
+                  ">
+                    <div>
+                      <div class="item-title-row">
+                        <div class="item-title">${user.name}</div>
+                      </div>
+                      <div class="item-subtitle" style="text-align: left">${user.username}</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+        `)
+      }
+      
+      const accountPicker = f7.dialog.create({
+        title: "Account Switcher",
+        cssClass: 'account-switcher',
+        closeByBackdropClick: true,
+        content: `
+        <div class="list list-strong-ios list-outline-ios list-dividers-ios media-list">
+          <ul>
+            ${chooseList.join('')}
+          </ul>
+        </div>
+        `
+      })
+      accountPicker.open()
+      window.pickAccount =  (username) => {
+        const currentLayout = f7.theme
+        store.dispatch('switchUser', users.findIndex((user) => user.username === username))
+        accountPicker.close()
+        if (store.state.currentUser.layout !== f7.theme) {
+          location.reload()
+        }
+      }
+    }
+  }
+  
+  const today = (`${new Date().toLocaleString("en-US", { month: "long" })} ${new Date().getDate()}, ${new Date().getFullYear()}`);
   return (
     <Page name="home">
       <Navbar large>
@@ -22,9 +89,8 @@ const HomePage = () => {
         <NavTitleLarge>
           <div>
             Overview
-            {/* <span className={`subtitle ${f7.theme === 'ios' ? 'bold' : 'bold'}`}>September 21, 2024</span> */}
-            <span className="subtitle if-md">September 21, 2024</span>
-            <span className="subtitle bold if-ios">September 21, 2024</span>
+            <span className="subtitle if-md">{today}</span>
+            <span className="subtitle bold if-ios">{today}</span>
           </div>
           <div className="right">
             {/* <Link iconIos="f7:person_crop_circle" iconMd="material:account_circle" /> */}
@@ -34,10 +100,10 @@ const HomePage = () => {
           <Link
             iconIos="f7:person_crop_circle"
             iconMd="material:account_circle"
+            onClick={switchAccount()}
           />
         </NavRight>
       </Navbar>
-
       <List
         dividersIos
         mediaList

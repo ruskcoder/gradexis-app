@@ -16,67 +16,44 @@ import {
   ListButton,
   useStore
 } from "framework7-react";
-import $ from "dom7";
+import $, { change } from "dom7";
 import store from "../js/store.js";
 import { terminal } from 'virtual:terminal'
-var globalScheme;
-var globalThemeColor;
-var globalAppTheme;
 
 const SettingsPage = ({ f7router }) => {
-  const [theme, changeScheme] = useState(globalScheme);
-  const [themeColor, changeThemeColor] = useState(globalThemeColor);
-  const [appTheme, changeAppTheme] = useState(globalThemeColor);
-  // const [user, changeUser] = useState(store.state.currentUser);
   const user = useStore('currentUser');
-  useEffect(() => {
-    f7ready(() => {
-      const savedScheme = localStorage.getItem('theme');
-      const savedThemeColor = localStorage.getItem('themeColor');
-      const savedAppTheme = localStorage.getItem('appTheme');
-
-      if (savedScheme) {
-        changeScheme(savedScheme);
-        f7.setDarkMode(savedScheme === "dark");
-      } else {
-        changeScheme($("html").hasClass("dark") ? "dark" : "light");
-      }
-
-      if (savedThemeColor && savedThemeColor !== "undefined") {
-        changeThemeColor(savedThemeColor);
-        f7.setColorTheme(savedThemeColor);
-      } else {
-        changeThemeColor($("html").css("--f7-color-primary").trim());
-      }
-
-      if (savedAppTheme) {
-        changeAppTheme(savedAppTheme);
-      } else {
-        changeAppTheme($("html").hasClass("md") ? "md" : "ios");
-      }
-    });
-  }, []);
+  const [theme, changeTheme] = useState(user.theme);
+  const [scheme, changeScheme] = useState(user.scheme);
 
   const setScheme = (newScheme) => {
-    f7.setDarkMode(newScheme === "dark");
-    globalScheme = newScheme;
     changeScheme(newScheme);
-    localStorage.setItem('theme', newScheme);
+    f7.setDarkMode(newScheme === "dark");
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "scheme",
+      value: newScheme,
+    });
   };
 
-  const setCustomColor = (newColor) => {
-    globalThemeColor = newColor;
-    changeThemeColor(globalThemeColor);
-    f7.setColorTheme(globalThemeColor);
-    localStorage.setItem('themeColor', newColor);
+  const setTheme = (newColor) => {
+    changeTheme(newColor);
+    f7.setColorTheme(newColor);
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "theme",
+      value: newColor,
+    });
   };
 
-  const setAppTheme = (newAppTheme) => { 
-    globalAppTheme = newAppTheme;
-    changeAppTheme(globalAppTheme);
-    localStorage.setItem('appTheme', newAppTheme);
+  const setLayout = (newLayout) => { 
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "layout",
+      value: newLayout,
+    });
     location.reload();
   }
+
   const changeName = () => {
     return () => {
       f7.dialog.prompt("Enter your new name", "Change Name", (name) => {
@@ -161,10 +138,9 @@ const SettingsPage = ({ f7router }) => {
               outline
               type="colorpicker"
               placeholder="Color"
-              readonly
               label="Theme Color"
-              value={{ hex: themeColor }}
-              onColorPickerChange={(value) => setCustomColor(value.hex)}
+              value={{ hex: user.theme }}
+              onColorPickerChange={(value) => setTheme(value.hex)}
               colorPickerParams={{
                 modules: f7.theme === "md" ? ["hue-slider"] : ["wheel"],
                 targetEl: ".wheel-picker-target",
@@ -174,7 +150,7 @@ const SettingsPage = ({ f7router }) => {
               <i
                 slot="media"
                 style={{
-                  backgroundColor: `${themeColor}`,
+                  backgroundColor: `${theme}`,
                   width: "28px",
                   height: "28px",
                   borderRadius: "50%",
@@ -185,13 +161,13 @@ const SettingsPage = ({ f7router }) => {
             <ListItem
               link="#"
               className="no-chevron"
-              onClick={() => setScheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => setScheme(scheme === "dark" ? "light" : "dark")}
             >
               <span>Dark Mode</span>
               <Toggle
-                checked={theme === "dark"}
+                checked={scheme === "dark"}
                 onToggleChange={() =>
-                  setScheme(theme === "dark" ? "light" : "dark")
+                  setScheme(scheme === "dark" ? "light" : "dark")
                 }
               />
             </ListItem>
@@ -202,7 +178,7 @@ const SettingsPage = ({ f7router }) => {
             >
               <select
                 name="app-theme"
-                onChange={(selection) => setAppTheme(selection.target.value)}
+                onChange={(selection) => setLayout(selection.target.value)}
                 value={f7.theme}
               >
                 <option value="md">

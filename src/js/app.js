@@ -2,6 +2,7 @@
 import React, {useState} from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { terminal } from 'virtual:terminal'
 // Import Framework7
 import Framework7 from 'framework7/lite-bundle';
 
@@ -28,7 +29,5 @@ import App from '../components/app.jsx';
 
 // Init F7 React Plugin with configuration
 Framework7.use(Framework7React);
-
-// Mount React App
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));

@@ -3,9 +3,14 @@
     --f7-subnavbar-height: 48px !important;
 }
 
-.list .item-inner div:nth-child(2) {
-    padding-right: 0px;
-    overflow: hidden;
+.title-large-text {
+    display: flex;
+}
+
+.subnavbar .button {
+    font-size: 10px;
+    font-weight: bold;
+    height: 24px;
 }
 
 .overview-icon {
@@ -17,15 +22,18 @@
     align-items: center;
 }
 
-
-
-.title-large-text {
-    display: flex;
+.account-switcher .dialog-inner{
+    padding: 0px !important;
 }
-
-.subnavbar .button {
-    font-size: 10px;
-    font-weight: bold;
-    height: 24px;
+.md .account-switcher .dialog-inner{
+    padding-bottom: 8px !important;
 }
-
+.account-switcher .dialog-title{
+    padding: 24px 24px 12px 24px !important;
+}
+.ios .account-switcher .dialog-title{
+    padding: 12px 24px 12px 24px !important;
+}
+.account-switcher .list {
+    margin: 0px !important;
+}

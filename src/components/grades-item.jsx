@@ -1,7 +1,6 @@
 import { Card, ListItem, f7 } from 'framework7-react';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getColorTheme } from './app';
 
 
 const GradesItem = ({ title, subtitle, grade }) => {

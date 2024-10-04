@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Icon, CardHeader, CardContent } from 'framework7-react';
 import GradesItem from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
-import { isMd } from '../components/app.jsx';
 
 const GradesPage = () => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
