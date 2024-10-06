@@ -3,6 +3,20 @@
     --f7-subnavbar-height: 48px !important;
 }
 
+.login {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    transition: all 0.3s;
+}
+
+.login-hidden {
+    transform: translateY(100%);
+}
+
 .title-large-text {
     display: flex;
 }
@@ -22,18 +36,38 @@
     align-items: center;
 }
 
-.account-switcher .dialog-inner{
+.account-switcher .dialog-inner {
     padding: 0px !important;
 }
-.md .account-switcher .dialog-inner{
+
+.md .account-switcher .dialog-inner {
     padding-bottom: 8px !important;
 }
-.account-switcher .dialog-title{
+
+.account-switcher .dialog-title {
     padding: 24px 24px 12px 24px !important;
 }
-.ios .account-switcher .dialog-title{
+
+.ios .account-switcher .dialog-title {
     padding: 12px 24px 12px 24px !important;
 }
+
 .account-switcher .list {
     margin: 0px !important;
 }
+
+
+.grades-number {
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold !important;
+    font-size: 18px;
+    padding: 4px 8px;
+}
+
+
+
+

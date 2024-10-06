@@ -1,4 +1,3 @@
-
 import HomePage from '../pages/home.jsx';
 import SettingsPage from '../pages/settings.jsx';
 import NotFoundPage from '../pages/404.jsx';
@@ -6,7 +5,7 @@ import GradesPage from '../pages/grades.jsx';
 import GpaPage from '../pages/gpa.jsx';
 import AccountsPage from '../pages/settings/accounts.jsx';
 import LoginPage from '../pages/login.jsx';
-
+import AssignmentsPage from '../pages/assignments.jsx';
 
 var routes = [
   {
@@ -24,6 +23,7 @@ var routes = [
   {
     path: '/login/',
     component: LoginPage,
+    hideTabbar: true
   },
   {
     path: '/settings/',
@@ -32,6 +32,12 @@ var routes = [
   {
     path: '/settings/accounts/',
     component: AccountsPage,
+    hideTabbar: true
+  },
+  {
+    path: '/assignments/:course/',
+    component: AssignmentsPage,
+    hideTabbar: true
   },
   {
     path: '(.*)',

@@ -1,0 +1,68 @@
+.assignment-grade-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: auto;
+    gap: var(--f7-typography-margin);
+}
+
+.assignment-grade-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    flex: 0 0 calc(50% - calc(var(--f7-typography-margin) + calc(var(--f7-typography-margin) / 2)))
+}
+
+.grade-categories {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--f7-typography-margin);
+    flex-wrap: wrap;
+}
+
+.grade-category-item {
+    width: calc(100% - var(--f7-typography-margin) * 2);
+    padding: calc(var(--f7-typography-margin) / 2) var(--f7-typography-margin);
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.category-number {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 28px;
+}
+
+.assignments-list .item-content {
+    padding-left: calc(var(--f7-typography-margin) * 3/4) !important;
+}
+
+.assignments-list .item-inner {
+    padding: calc(var(--f7-typography-margin) / 2) 0 !important;
+    padding-right: calc(var(--f7-typography-margin) / 2) !important;
+}
+
+.assignments-icon {
+    width: 16px;
+    height: 34px;
+    border-radius: 6px;
+}
+
+.assignments-item {
+    flex: 1
+}
+
+.assignments-item .item-title {
+    font-weight: 600 !important;
+    font-size: var(--f7-list-item-title-font-size);
+    line-height: var(--f7-list-item-title-font-size);
+}
+
+.assignments-item .item-subtitle {
+    font-size: var(--f7-list-item-subtitle-font-size);
+    line-height: var(--f7-list-item-subtitle-font-size);
+}

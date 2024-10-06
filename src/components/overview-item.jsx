@@ -6,8 +6,8 @@ const OverviewItem = ({ title, subtitle }) => {
   return (
     <>
       <div style={{ flex: 1 }}>
-        <div className="item-title-row"><div className="item-title" style={{ fontSize: 16 }}>{title}</div></div>
-        <div className="item-subtitle" style={{ fontSize: 14 }}>{subtitle}</div>
+        <div className="item-title-row"><div className="item-title" style={{ fontSize: "var(--f7-list-item-title-font-size)" }}>{title}</div></div>
+        <div className="item-subtitle" style={{ fontSize: "var(--f7-list-item-subtitle-font-size)" }}>{subtitle}</div>
       </div>
       <div className="chevron" style={{
       }}>

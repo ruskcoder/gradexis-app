@@ -47,6 +47,7 @@ const Gradexis = ({ f7router }) => {
     store: store,
     routes: routes,
   };
+  const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
 
   f7ready(() => {
     if (store.state.currentUser.layout === "ios") {
@@ -62,27 +63,21 @@ const Gradexis = ({ f7router }) => {
     
     f7.setColorTheme(store.state.currentUser.theme);
     f7.setDarkMode(store.state.currentUser.scheme === "dark");
-  });
-  const secondaryRoutes = ['/login/',
-    ...routes
-    .filter((route) => (route.path.slice(0, -1).match(/\//g) || []).length > 1)
-    .map((route) => route.path)
-  ];
-  const [showTabbar, setShowTabbar] = useState(true);
 
-  useEffect(() => {
-    f7ready(() => {
-      if (store.state.users.length == 0) {
-        f7.views.main.router.navigate("/login/")
-      }
-      f7.on("routeChange", (route) => {
-        setShowTabbar(!secondaryRoutes.includes(route.path));
-      });
+    const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
+    f7.on("routeChange", (route) => {
+      setShowTabbar(!hideTabsRoutes.includes(route.route.path));
     });
-  })
+    f7.on('login', () => { 
+      setShowLogin(false)
+    })
+  });
+
+  const [showTabbar, setShowTabbar] = useState(true);
 
   return (
     <App {...f7params} store={store}>
+      <View url="/login/" className={`login ${showLogin ? "" : "login-hidden"}`}></View>
       <Views className="safe-areas" tabs>
 
           <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>
