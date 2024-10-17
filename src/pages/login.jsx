@@ -33,14 +33,10 @@ const LoginPage = ({ f7router }) => {
     const signIn = () => {
         setLoginLoading(true);
         store.dispatch("addUser", { username: username, password: password, link: "https://homeaccess.katyisd.org/", platform: "hac"}).then((result) => {
+          setLoginLoading(false)
           if (result) {
-            setLoginLoading(false)
             f7.emit('login')
             f7router.back()
-          }
-          else {
-            f7.dialog.alert("Invalid username or password", "Login Failed");
-            setLoginLoading(false)
           }
         })
       };

@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 function colorFromGrade(grade) { 
+  if (grade == "0.00" || grade == "···") {
+    return "#a9a9a9";
+  }
   if (grade >= 90) {
     return "#00cf63";
   } else if (grade >= 80) {
@@ -15,6 +18,7 @@ function colorFromGrade(grade) {
 }
 
 const ClassGradeItem = ({ title, subtitle, grade }) => {
+  grade = grade == "" ? "0.00" : parseFloat(grade.slice(0, -1)).toPrecision(4);
   return (
     <>
       <div className="grades-item">
@@ -33,7 +37,6 @@ const ClassGradeItem = ({ title, subtitle, grade }) => {
         className="grades-number"
         style={{
           backgroundColor: colorFromGrade(grade),
-          color: "white",
         }}
       >
         {grade}
@@ -46,10 +49,11 @@ const ClassGradeItem = ({ title, subtitle, grade }) => {
 ClassGradeItem.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
-  grade: PropTypes.number.isRequired,
+  grade: PropTypes.string.isRequired,
 };
 
 const AssignmentGradeItem = ({ name, date, color, grade }) => {
+  grade = grade == "" ? "···" : parseFloat(grade).toPrecision(4);
   return (
     <>
       <i
@@ -74,10 +78,11 @@ const AssignmentGradeItem = ({ name, date, color, grade }) => {
         </div>
       </div>
       <span
-        className="grades-number"
+        className="grades-number assignments-number"
         style={{
           backgroundColor: colorFromGrade(grade),
           padding: "2px 6px",
+          marginRight: "4px"
         }}
       >
         {grade}
@@ -91,7 +96,7 @@ AssignmentGradeItem.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
-  grade: PropTypes.number.isRequired,
+  grade: PropTypes.any.isRequired,
 };
 
 export { AssignmentGradeItem, ClassGradeItem };

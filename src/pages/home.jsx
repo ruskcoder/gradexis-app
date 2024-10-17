@@ -16,14 +16,24 @@ import {
 import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
 import store from '../js/store.js';
 import { primaryFromColor } from '../components/app.jsx';
+import { createRoot } from 'react-dom/client';
 
 const HomePage = ({ f7router }) => {
   const users = useStore('users')
-  
+
   const switchAccount = () => {
     return () => {
       var chooseList = []
-      
+      const container = document.createElement('div');
+      createRoot(container).render(
+        <>
+          <List dividersIos simpleList>
+            <ListItem title="Item 1" />
+            <ListItem title="Item 2" />
+            <ListItem title="Item 3" />
+          </List>
+        </>
+      )
       for (const user of users) {
         chooseList.push(`
           <li class="media-item">
@@ -56,30 +66,40 @@ const HomePage = ({ f7router }) => {
             </li>
         `)
       }
-      
-      const accountPicker = f7.dialog.create({
-        title: "Account Switcher",
-        cssClass: 'account-switcher',
-        closeByBackdropClick: true,
-        content: `
-        <div class="list list-strong-ios list-outline-ios list-dividers-ios media-list">
-          <ul>
-            ${chooseList.join('')}
-          </ul>
-        </div>
-        `
-      })
-      accountPicker.open()
-      window.pickAccount =  (username) => {
-        store.dispatch('switchUser', users.findIndex((user) => user.username === username))
-        accountPicker.close()
-        if (store.state.currentUser.layout !== f7.theme) {
-          location.reload()
+      var accountPicker;
+      setTimeout(() => {
+        accountPicker = f7.dialog.create({
+          title: "Account Switcher",
+          cssClass: 'account-switcher',
+          closeByBackdropClick: true,
+          content: container.outerHTML
+        })
+        accountPicker.open()
+        window.pickAccount = (username) => {
+          store.dispatch('switchUser', users.findIndex((user) => user.username === username))
+          accountPicker.close()
+          if (store.state.currentUser.layout !== f7.theme) {
+            location.reload()
+          }
         }
-      }
+      }, 0)
+      // const accountPicker = f7.dialog.create({
+      //   title: "Account Switcher",
+      //   cssClass: 'account-switcher',
+      //   closeByBackdropClick: true,
+      //   content: `
+      //   <div class="list list-strong-ios list-outline-ios list-dividers-ios media-list">
+      //     <ul>
+      //       ${chooseList.join('')}
+      //     </ul>
+      //   </div>
+      //   `
+      // })
+
+
     }
   }
-  
+
   const today = (`${new Date().toLocaleString("en-US", { month: "long" })} ${new Date().getDate()}, ${new Date().getFullYear()}`);
   return (
     <Page name="home">

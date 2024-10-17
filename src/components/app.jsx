@@ -34,6 +34,9 @@ import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/materi
 export const primaryFromColor = (theme) => {
   return (store.state.currentUser.layout == "md" ? hexFromArgb(themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme].primary) : theme)
 }
+export const mdThemeFromColor = (theme) => {
+  return themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme]
+}
 
 const Gradexis = ({ f7router }) => {
   // const users = useStore('users')
@@ -66,18 +69,18 @@ const Gradexis = ({ f7router }) => {
     f7.setColorTheme(store.state.currentUser.theme);
     f7.setDarkMode(store.state.currentUser.scheme === "dark");
 
-    await StatusBar.setStyle({ style: Style.Light });
-    await StatusBar.setBackgroundColor({ color: primaryFromColor(store.state.currentUser.theme) });
-    await StatusBar.show();
-
-  
-  const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
+    const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
+    
     f7.on("routeChange", (route) => {
       setShowTabbar(!hideTabsRoutes.includes(route.route.path));
     });
     f7.on('login', () => { 
       setShowLogin(false)
     })
+
+    // await StatusBar.setStyle({ style: Style.Light });
+    // await StatusBar.setBackgroundColor({ color: primaryFromColor(store.state.currentUser.theme) });
+    // await StatusBar.show();
   });
 
   const [showTabbar, setShowTabbar] = useState(true);

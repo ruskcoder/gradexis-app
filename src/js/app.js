@@ -22,7 +22,7 @@ import '../css/grades.css';
 import '../css/list.css';
 import '../css/settings.css';
 import '../css/assignments.css';
-
+import '../css/account-switcher.css'
 
 import $ from 'dom7';
 

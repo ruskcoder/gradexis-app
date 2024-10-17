@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    flex: 0 0 calc(50% - calc(var(--f7-typography-margin) + calc(var(--f7-typography-margin) / 2)))
+    flex: 0 0 calc(50% - calc(var(--f7-typography-margin) / 2))
 }
 
 .grade-categories {
@@ -25,9 +25,10 @@
     width: calc(100% - var(--f7-typography-margin) * 2);
     padding: calc(var(--f7-typography-margin) / 2) var(--f7-typography-margin);
     display: flex;
-    flex-grow: 1;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
+    max-height: calc(50% - calc(var(--f7-typography-margin) * 1.5));
 }
 
 .category-number {

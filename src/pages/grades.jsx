@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
-import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Icon, CardHeader, CardContent } from 'framework7-react';
+import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
-
+import { averages, assignments } from '../js/grades-api.js';
+import store from '../js/store.js';
 const GradesPage = ({ f7router }) => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
-
+  const user = useStore('currentUser');
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
   };
+  const [loading, setLoading] = useState(true);
+  const [classAverages, setAverages] = useState([]);
 
+  // alert(JSON.stringify(user));
+  if (user.username) {
+    averages().then((data) => {
+      setLoading(false);
+      setAverages(data);
+    })
+    assignments().then((data) => {
+      store.dispatch('setAssignments', data)
+    })
+  }
   return (
     <Page name="grades">
       <Navbar title="Grades">
@@ -28,44 +41,24 @@ const GradesPage = ({ f7router }) => {
           </Segmented>
         </Subnavbar>
       </Navbar>
-
-      {/* <Card link="#" className="grade" outlineIos>
-        <CardHeader className='flex'>
-        <div>
-          <div style={{ fontWeight: 600, fontSize: 17, lineHeight: "20px" }}>
-            {title}
-          </div>
-          <div style={{ fontSize: 14, lineHeight: "17px" }}>
-            {subtitle}
-          </div>
-        </div>
-        <div
-          className='grades-number'
-          style={{
-            backgroundColor: "lightgreen",
-            color: f7.darkMode ? "white" : "black",
-          }}
+      {loading && 
+        <Block className='display-flex align-items-center justify-content-center'>
+          <Preloader />
+        </Block>
+      }
+      {!loading && 
+        <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
+          sortable
+          sortableEnabled
+          sortableTapHold
         >
-          {grade}
-        </div>
-      </CardHeader>
-    </Card> */}
-
-      <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
-        sortable
-        sortableEnabled
-        sortableTapHold
-      >
-        <ListItem link='/assignments/AP COMP SCI/'>
-          <ClassGradeItem title={"AP COMP SCI"} subtitle={"Room 1610"} grade={97.84} />
-        </ListItem>
-        <ListItem link='#'>
-          <ClassGradeItem title={"AP COMP SCI"} subtitle={"Room 1610"} grade={97.84} />
-        </ListItem>
-        <ListItem link='#'>
-          <ClassGradeItem title={"AP COMP SCI"} subtitle={"Room 1610"} grade={97.84} />
-        </ListItem>
+        {Object.entries(classAverages).map(([title, grade], index) => (
+          <ListItem key={index} link={`/assignments/${title}/`}>
+            <ClassGradeItem title={title} subtitle={""} grade={grade} />
+          </ListItem>
+        ))}
       </List>
+      }
     </Page>
   );
 };
