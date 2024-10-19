@@ -2,7 +2,7 @@
     --f7-navbar-subtitle-font-size: 14px !important;
     --f7-subnavbar-height: 48px !important;
 }
-
+/* .tab-link .ripple-wave {display: none;} */
 .login {
     display: block;
     position: absolute;

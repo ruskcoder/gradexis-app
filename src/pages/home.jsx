@@ -17,10 +17,45 @@ import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
 import store from '../js/store.js';
 import { primaryFromColor } from '../components/app.jsx';
 import { createRoot } from 'react-dom/client';
+import { averages, assignments, term } from '../js/grades-api.js';
 
 const HomePage = ({ f7router }) => {
+  const errorDialog = () => {
+    f7.dialog.create({
+      title: 'Error',
+      text: 'There was an error while fetching your data. Please restart the app and try again.',
+      buttons: [
+        {
+          text: 'Ok',
+          onClick: () => {
+            f7.dialog.close()
+          }
+        },
+        { text: 'Restart', onClick: () => { window.location.reload() } },
+      ]
+    }).open()
+  }
   const users = useStore('users')
-
+  const user = useStore('currentUser')
+    useEffect(() => {
+      if (user.username) {
+        term().then((data) => {
+          if (!('success' in data)) {
+            store.dispatch('setTerm', data['term']);
+          }
+        }).catch(() => {errorDialog()})
+        averages().then((data) => {
+          if (!('success' in data)) {
+            store.dispatch('setAverages', data);
+          }
+        }).catch(() => {errorDialog()})
+        assignments().then((data) => {
+          if (!('success' in data)) {
+            store.dispatch('setAssignments', data);
+          }
+        }).catch(() => {errorDialog()})
+      }
+    }, [user.username])
   const switchAccount = () => {
     return () => {
       var chooseList = []
@@ -83,20 +118,6 @@ const HomePage = ({ f7router }) => {
           }
         }
       }, 0)
-      // const accountPicker = f7.dialog.create({
-      //   title: "Account Switcher",
-      //   cssClass: 'account-switcher',
-      //   closeByBackdropClick: true,
-      //   content: `
-      //   <div class="list list-strong-ios list-outline-ios list-dividers-ios media-list">
-      //     <ul>
-      //       ${chooseList.join('')}
-      //     </ul>
-      //   </div>
-      //   `
-      // })
-
-
     }
   }
 
@@ -132,7 +153,7 @@ const HomePage = ({ f7router }) => {
         // sortableEnabled
         className="overviewList mod-list mt-fix"
       >
-        <ListItem link="#">
+        <ListItem link="/info/attendance/">
           <OverviewIcon
             slot="media"
             iconIos="f7:calendar"
@@ -143,7 +164,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View your absences"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        <ListItem link="">
           <OverviewIcon
             slot="media"
             iconIos="f7:bell_fill"
@@ -154,7 +175,7 @@ const HomePage = ({ f7router }) => {
             subtitle="Track periods and the bell"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        <ListItem link="/info/schedule/">
           <OverviewIcon
             slot="media"
             iconIos="f7:square_list_fill"

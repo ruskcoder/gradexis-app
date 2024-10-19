@@ -18,11 +18,11 @@
     flex-direction: column;
     justify-content: space-between;
     gap: var(--f7-typography-margin);
-    flex-wrap: wrap;
 }
 
 .grade-category-item {
     width: calc(100% - var(--f7-typography-margin) * 2);
+    height: 100%;
     padding: calc(var(--f7-typography-margin) / 2) var(--f7-typography-margin);
     display: flex;
     flex: 1;
@@ -30,7 +30,6 @@
     justify-content: center;
     max-height: calc(50% - calc(var(--f7-typography-margin) * 1.5));
 }
-
 .category-number {
     display: flex;
     justify-content: space-between;

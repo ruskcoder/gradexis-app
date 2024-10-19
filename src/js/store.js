@@ -1,5 +1,5 @@
 import { createStore } from 'framework7/lite';
-import {login} from './grades-api.js';
+import {averages, login} from './grades-api.js';
 import {f7} from 'framework7-react';
 import { terminal } from 'virtual:terminal'
 import { assignments } from '../js/grades-api.js';
@@ -20,7 +20,9 @@ const store = createStore({
     users: users,
     currentUser: users.length != 0 ? users[currentUserNumber] : {scheme: 'light', theme: '#007aff', layout: 'md'},
     currentUserNumber: currentUserNumber,
-    assignments: [],
+    assignments: {},
+    averages: {},
+    term: 0
   },
   getters: {
     users({ state }) {
@@ -31,6 +33,12 @@ const store = createStore({
     },
     assignments({ state }) {
       return state.assignments;
+    },
+    averages({ state }) {
+      return state.averages;
+    },
+    term({ state }) {
+      return state.term;
     }
   },
   actions: {
@@ -87,6 +95,12 @@ const store = createStore({
 
     setAssignments({ state }, assignments) {
       state.assignments = assignments;
+    },
+    setAverages({ state }, averages) {
+      state.averages = averages;
+    },
+    setTerm({ state }, term) {
+      state.term = term;
     }
   }
 });

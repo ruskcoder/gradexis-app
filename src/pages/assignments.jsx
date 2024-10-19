@@ -45,7 +45,6 @@ const AssignmentsPage = ({ f7router, ...props }) => {
 
   const infoDialog = (assignment) => {
     return () => {
-      terminal.log(assignment['Weighted Total Points']);
       const container = document.createElement('div');
       Object.keys(assignment).forEach(key => {
         if (assignment[key] === "") {
@@ -206,7 +205,7 @@ const AssignmentsPage = ({ f7router, ...props }) => {
       categoryDivs.push(
         <div className="grade-categories assignment-grade-item" key={i}>
           {categoryCards[i]}
-          {categoryCards[i + 1] ? categoryCards[i + 1] : <div className="no-margin margin-top assignment-grade-item"></div>}
+          {categoryCards[i + 1] ? categoryCards[i + 1] : ""}
         </div>
       );
     }
