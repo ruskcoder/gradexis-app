@@ -38,13 +38,13 @@ export const mdThemeFromColor = (theme) => {
   return themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme]
 }
 
-export const errorDialog = () => {
+export const errorDialog = (err = "") => {
   f7.dialog.create({
     title: 'Error',
-    text: 'There was an error while fetching your data. Please restart the app and try again.',
+    text: 'There was an error while fetching your data. Please restart the app and try again.\n Error: ' + err,
     buttons: [
       {
-        text: 'Ok',
+        text: 'OK',
         onClick: () => {
           f7.dialog.close()
         }
@@ -64,6 +64,11 @@ const Gradexis = ({ f7router }) => {
     browserHistory: true,
     touch: {
       tapHold: true,
+    },
+    view: {
+        pushState: true, 
+        history: true,
+        pushStateSeparator:"/"
     },
     store: store,
     routes: routes,

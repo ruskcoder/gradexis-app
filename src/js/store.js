@@ -14,6 +14,10 @@ if (!currentUserNumber) {
   localStorage.setItem("currentUserNumber", -1);
   currentUserNumber = -1;
 }
+if (currentUserNumber >= users.length) {
+  currentUserNumber = users.length - 1;
+}
+
 const store = createStore({
   state: {
     users: users,
@@ -91,9 +95,9 @@ const store = createStore({
         state.currentUserNumber = userNumber;
       }
       localStorage.setItem('currentUserNumber', state.currentUserNumber); 
-      state.classes = [];
-      state.term = -1;
-      state.session = {};
+      store.dispatch('setClasses', []);
+      store.dispatch('setTerm', -1);
+      store.dispatch('setSession', {});
       f7.setColorTheme(state.currentUser.theme);
       f7.setDarkMode(state.currentUser.scheme === "dark");
     },

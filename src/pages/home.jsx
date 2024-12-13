@@ -94,7 +94,7 @@ const HomePage = ({ f7router }) => {
         window.pickAccount = (username) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
           accountPicker.close()
-          f7router.reload()
+          f7router.refreshPage()
           if (store.state.currentUser.layout !== f7.theme) {
             location.reload()
           }

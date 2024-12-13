@@ -1,0 +1,25 @@
+{
+    "categories": {
+        "Major": {
+            "Student'sPoints": "190.0000",
+            "MaximumPoints": "200.00",
+            "Percent": "95.000%",
+            "CategoryWeight": "60.00",
+            "CategoryPoints": "57.000000"
+        },
+        "Minor": {
+            "Student'sPoints": "385.0000",
+            "MaximumPoints": "400.00",
+            "Percent": "96.250%",
+            "CategoryWeight": "30.00",
+            "CategoryPoints": "28.875000"
+        },
+        "Other": {
+            "Student'sPoints": "490.0000",
+            "MaximumPoints": "600.00",
+            "Percent": "81.666%",
+            "CategoryWeight": "10.00",
+            "CategoryPoints": "8.166700"
+        }
+    }
+}

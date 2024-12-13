@@ -23,6 +23,7 @@ const AccountsPage = ({ f7router }) => {
           location.reload();
         }
         else {
+          store.dispatch("removeUser", username);
           f7router.refreshPage();
         }
         

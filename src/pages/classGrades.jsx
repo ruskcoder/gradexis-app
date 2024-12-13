@@ -3,12 +3,13 @@ import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, us
 import terminal from 'virtual:terminal';
 import { AssignmentGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { primaryFromColor } from '../components/app.jsx';
+import { errorDialog, primaryFromColor } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import store from '../js/store.js';
 import { EffectCoverflow } from 'swiper/modules';
+import { getGrades } from '../js/grades-api.js';
 
-const AssignmentsPage = ({ f7router, ...props }) => {
+const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeStrongButton, setActiveStrongButton] = useState(0);
   const user = useStore('currentUser');
   const gaugeBackgroundColor = (theme) => {
@@ -25,16 +26,26 @@ const AssignmentsPage = ({ f7router, ...props }) => {
       return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
     }
   }
-  const [storedAssignments, setStoredAssignments] = useState(store.state.assignments);
-  const [loading, setLoading] = useState(storedAssignments.length === 0);
-  const [currentAssignments, setCurrentAssignments] = useState(storedAssignments[props.course]);
-
   useEffect(() => {
-    if (storedAssignments.length === 0) {
-      setLoading(true);
-      
+    if (user.username) {
+      getGrades(props.course).then((data) => {
+        if (data.success != false) {
+          setGrades(data.assigments);
+          setCategories(data.categories);
+          setAverage(data.average);
+        }
+        else {
+          errorDialog(data.message);
+        }
+      }).catch(() => {errorDialog()})
     }
-  }, [storedAssignments, props.course]);
+  });
+
+  const [grades, setGrades] = useState([]);
+  const [categories, setCategories] = useState({});
+  const [average, setAverage] = useState(0);
+
+  const [loading, setLoading] = useState(true);
 
   const infoDialog = (assignment) => {
     return () => {
@@ -60,38 +71,39 @@ const AssignmentsPage = ({ f7router, ...props }) => {
           </div>
 
           <div className="assignment-info last-info grid grid-cols-2 grid-gap">
-            {assignment["Date Assigned"] &&
+            {assignment["dateAssigned"] &&
             <div>
               <p className="info-category-title">Date Assigned</p>
-              <p className="info-category-data">{assignment["Date Assigned"]}</p>
+              <p className="info-category-data">{assignment["dateAssigned"]}</p>
             </div>
             }
-            {assignment["Date Due"] &&
+            {assignment["dateDue"] &&
             <div>
               <p className="info-category-title">Date Due</p>
-              <p className="info-category-data">{assignment["Date Due"]}</p>
+              <p className="info-category-data">{assignment["dateDue"]}</p>
             </div>
             }
             <div>
               <p className="info-category-title">Score</p>
-              <p className="info-category-data">{`${assignment.Score} / ${assignment["Total Points"]}`}</p>
+              <p className="info-category-data">{`${assignment.score} / ${assignment.totalPoints}`}</p>
             </div>
             <div>
               <p className="info-category-title">Weighted Points</p>
-              <p className="info-category-data">{`${(parseFloat(assignment["Weight"])*100).toPrecision(4)} / ${parseFloat(assignment["Weighted Total Points"]).toPrecision(4)}`}</p>
+              <p className="info-category-data">{`${(parseFloat(assignment.weight)*100).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
             </div>
             <div>
               <p className="info-category-title">Weight</p>
-              <p className="info-category-data">{assignment.Weight}</p>
+              <p className="info-category-data">{assignment.weight}</p>
             </div>
-            <div>
+            <div> 
+      
               <p className="info-category-title">Percentage</p>
-              <p className="info-category-data">{assignment.Percentage}</p>
+              <p className="info-category-data">{assignment.percentage}</p>
             </div>
           </div>
           <div className="assignment-info grid grid-cols-1 margin-top-half">
             {assignment['Average Score'] && 
-              <div>
+            <div>
               <p className="info-category-title">Average Score</p>
               <p className="info-category-data">{assignment['Average Score']}</p>
             </div>
@@ -111,18 +123,15 @@ const AssignmentsPage = ({ f7router, ...props }) => {
     }
   }
 
-  const createAssignments = () => {
+  const createGrades = () => {
     var assignmentList = [];
-    for (let i = 1; i < currentAssignments.assignments.length - 1; i++) {
-      var currentAssignment = Object.fromEntries(
-        currentAssignments.assignments[0].map((key, index) => [key, currentAssignments.assignments[i][index]])
-      );
+    grades.forEach((assignment, i) => {
       assignmentList.push(
-        <ListItem link='#' onClick={infoDialog(currentAssignment)} key={i}>
-          <AssignmentGradeItem name={currentAssignment["Assignment"]} date={currentAssignment["Date Assigned"] ? currentAssignment["Date Assigned"] : (currentAssignment["Date Due"] ? currentAssignment["Date Due"] : "None")} grade={currentAssignment["Score"]} color={colorFromCategory(currentAssignment.Category)} />
+        <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
+          <AssignmentGradeItem name={assignment.assigment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.score} color={colorFromCategory(assignment.category)} />
         </ListItem>
       )
-    }
+    });
     return assignmentList;
   }
 
@@ -165,23 +174,21 @@ const AssignmentsPage = ({ f7router, ...props }) => {
 
   const createCategories = () => {
     let categoryCards = []
-    currentAssignments.categories[0] = currentAssignments.categories[0].map(item => item.replace(/[^a-z0-9]/gi, ''));
-    for (let i = 1; i < currentAssignments.categories.length - 1; i++) {
-      const currentCategory = Object.fromEntries(
-        currentAssignments.categories[0].map((key, index) => [key, currentAssignments.categories[i][index]])
-      );
+    
+
+    for (let category of Object.keys(categories)) {
       categoryCards.push(
         <div
           style={{ display: "contents", cursor: "pointer" }}
-          onClick={categoryDialog(currentCategory)}
+          onClick={categoryDialog(categories[category])}
         >
           <Card className="no-margin grade-category-item">
-            <h4 className="no-margin">{currentAssignments.categories[i][0]}</h4>
+            <h4 className="no-margin">{category}</h4>
             <h1 className="no-margin category-number">
-              {parseFloat(currentAssignments.categories[i][3].slice(0, -1)).toPrecision(4)}
+              {parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4)}
               <i
                 style={{
-                  backgroundColor: `${colorFromCategory(currentAssignments.categories[i][0])}`,
+                  backgroundColor: `${colorFromCategory(category)}`,
                   width: '20px',
                   height: '20px',
                   borderRadius: '30%',
@@ -234,11 +241,11 @@ const AssignmentsPage = ({ f7router, ...props }) => {
               <Gauge
                 className="margin-half"
                 type="circle"
-                value={parseFloat(currentAssignments.average.slice(0, -1)) / 100}
+                value={parseFloat(average.slice(0, -1)) / 100}
                 borderColor={primaryFromColor(user.theme)}
                 borderBgColor={gaugeBackgroundColor(user.theme)}
                 borderWidth={20}
-                valueText={`${parseFloat(currentAssignments.average.slice(0, -1)).toPrecision(4)}`}
+                valueText={`${parseFloat(average.slice(0, -1)).toPrecision(4)}`}
                 valueFontSize={50}
                 valueTextColor={primaryFromColor(user.theme)}
                 labelText="Overall"
@@ -251,12 +258,12 @@ const AssignmentsPage = ({ f7router, ...props }) => {
       </Block>
 
       {!loading &&
-      <List dividersIos mediaList strongIos strong inset className="assignments-list no-chevron mod-list margin-top">
-        {createAssignments()}
+      <List dividersIos mediaList strongIos strong inset className="grades-list no-chevron mod-list margin-top">
+        {createGrades()}
       </List>
       }
     </Page>
   )
 }
 
-export default AssignmentsPage;
+export default ClassGradesPage;

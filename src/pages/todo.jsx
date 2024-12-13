@@ -8,6 +8,13 @@ const TodoPage = () => {
   return (
     <Page name="todo">
       <Navbar title="Todo" />
+      <Block>
+        This todo list will link with google calendar and canvas!!!
+        <Button outline disabled>
+          <img src="./assets/canvas-logo.png" alt="Canvas Logo" style={{ width: '1.5em', marginRight: '0.5em' }} />
+          Link with Canvas (coming soon!)
+        </Button>
+      </Block>
     </Page>
   );
 };
