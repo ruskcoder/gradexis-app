@@ -2,28 +2,46 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
+import { errorDialog } from '../components/app.jsx';
+import { getClasses } from '../js/grades-api.js';
+
 import store from '../js/store.js';
 const GradesPage = ({ f7router }) => {
-  const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
   const user = useStore('currentUser');
-  const [userChanged, setUserChanged] = useState(false);
-  const termList = useMemo(() => ['MP1', 'MP2', 'MP3', 'MP4', 'MP5', 'MP6'], []);
-  const [loadedAverages, setLoadedAverages] = useState({});
+  const classes = useStore('classes');
+  const term = useStore('term');
+  const termList = useStore('termList');
 
-  const termChanged = (index) => {
-    setUserChanged(true);
-    setActiveButtonIndex(index);
-    setLoading(true);
-  };
+  useEffect(() => {
+    if (term == -1) {
+      setTermsLoading(true);
+    }
+    if (classes.length != 0) {
+      setLoading(false);
+      setActiveButtonIndex(termList.indexOf(term));
+      setTermsLoading(false);
+    }
+  }, [classes, term, termList]);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
+
   const [loading, setLoading] = useState(true);
   const [termsLoading, setTermsLoading] = useState(true);
-
+  const switchTerm = (index) => {
+    setLoading(true);
+    setActiveButtonIndex(index);
+    getClasses(termList[index]).then((data) => {
+      if (!('success' in data)) {
+        store.dispatch('setClasses', data.classes);
+        store.dispatch('setTerm', data.term);
+      }
+    }).catch(() => {errorDialog()})
+  }
   const createAverages = () => {
-    return (Object.entries({}).map(([title, grade], index) => (
-      <ListItem key={index} link={grade != "" ? `/assignments/${title}/` : "#"}>
-        <ClassGradeItem title={title} subtitle={""} grade={grade} />
+    return classes.map(({ average, course, name }, index) => (
+      <ListItem key={index} link={average !== "" ? `/assignments/${name}/` : "#"}>
+        <ClassGradeItem title={name} subtitle={course} grade={average} />
       </ListItem>
-    )))
+    ));
   }
   return (
     <Page name="grades">
@@ -44,7 +62,7 @@ const GradesPage = ({ f7router }) => {
                 key={index}
                 smallMd
                 active={activeButtonIndex === index}
-                onClick={() => termChanged(index)}
+                onClick={() => switchTerm(index)}
               >
                 {termList[index]}
               </Button>
@@ -52,6 +70,7 @@ const GradesPage = ({ f7router }) => {
           </Segmented>
         </Subnavbar>
       }
+      {/*       
       {
         termList.map((_, index) => (
           (
@@ -61,20 +80,28 @@ const GradesPage = ({ f7router }) => {
                 sortableEnabled
                 sortableTapHold
               >
-                {createAverages()}
+                
               </List>
             </div>
           )
         ))
-      }
+      } */}
 
       {!loading &&
         <>
+          <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
+            sortable
+            sortableEnabled
+            sortableTapHold
+          >
 
+            {createAverages()}
+
+          </List>
         </>
       }
     </Page>
   );
 };
 
-export default GradesPage;
+export default GradesPage; 

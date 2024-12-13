@@ -38,6 +38,22 @@ export const mdThemeFromColor = (theme) => {
   return themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme]
 }
 
+export const errorDialog = () => {
+  f7.dialog.create({
+    title: 'Error',
+    text: 'There was an error while fetching your data. Please restart the app and try again.',
+    buttons: [
+      {
+        text: 'Ok',
+        onClick: () => {
+          f7.dialog.close()
+        }
+      },
+      { text: 'Restart', onClick: () => { window.location.reload() } },
+    ]
+  }).open()
+}
+
 const Gradexis = ({ f7router }) => {
   // const users = useStore('users')
   

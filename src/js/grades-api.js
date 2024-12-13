@@ -1,12 +1,14 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
+const apiUrl = 'https://api.gradexis.com';
+
 const platformList = ['hac']
 export async function login(loginData) {
     try {   
         if (platformList.includes(loginData.platform)) {
             const response = await fetch(
-                `https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev/${loginData.platform}/info?link=${loginData.link}&username=${loginData.username}&password=${loginData.password}`,
+                `${apiUrl}/${loginData.platform}/info?link=${loginData.link}&username=${loginData.username}&password=${loginData.password}`,
             );
             const data = await response.json();
 
@@ -19,12 +21,12 @@ export async function login(loginData) {
     }
 }
 
-export async function classes(term = null) {
+export async function getClasses(term = null) {
     const user = store.state.currentUser;
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev/${user.platform}/classes?link=${user.link}&username=${user.username}&password=${user.password}${term ? `&term=${term}` : ""}`, 
+                `${apiUrl}/${user.platform}/classes?link=${user.link}&username=${user.username}&password=${user.password}${term ? `&term=${term}` : ""}`, 
             );
             const data = await response.json();
 
@@ -41,7 +43,7 @@ export async function ipr(user = store.state.currentUser) {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev/${user.platform}/ipr?link=${user.link}&username=${user.username}&password=${user.password}`,
+                `${apiUrl}/${user.platform}/ipr?link=${user.link}&username=${user.username}&password=${user.password}`,
             );
             const data = await response.json();
 

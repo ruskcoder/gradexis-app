@@ -15,33 +15,19 @@ import {
 } from 'framework7-react';
 import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
 import store from '../js/store.js';
-import { primaryFromColor } from '../components/app.jsx';
+import { primaryFromColor, errorDialog } from '../components/app.jsx';
 import { createRoot } from 'react-dom/client';
-import { classes } from '../js/grades-api.js';
-
+import { getClasses } from '../js/grades-api.js';
 const HomePage = ({ f7router }) => {
-  const errorDialog = () => {
-    f7.dialog.create({
-      title: 'Error',
-      text: 'There was an error while fetching your data. Please restart the app and try again.',
-      buttons: [
-        {
-          text: 'Ok',
-          onClick: () => {
-            f7.dialog.close()
-          }
-        },
-        { text: 'Restart', onClick: () => { window.location.reload() } },
-      ]
-    }).open()
-  }
+  
   const users = useStore('users')
   const user = useStore('currentUser')
     useEffect(() => {
       if (user.username) {
-        classes().then((data) => {
+        getClasses().then((data) => {
           if (!('success' in data)) {
-            store.dispatch('setClasses', data);
+            store.dispatch('setClasses', data.classes);
+            store.dispatch('setTerm', data.term);
           }
         }).catch(() => {errorDialog()})
       }
@@ -99,15 +85,16 @@ const HomePage = ({ f7router }) => {
           closeByBackdropClick: true,
           // content: container.outerHTML
           content: `
-            <div class="list">
+            <ul class="list" style="list-style: none; padding: 0">
               ${chooseList.join('')}
-            </div>
+            </ul>
           `
         })
         accountPicker.open()
         window.pickAccount = (username) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
           accountPicker.close()
+          f7router.reload()
           if (store.state.currentUser.layout !== f7.theme) {
             location.reload()
           }

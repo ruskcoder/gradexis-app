@@ -19,7 +19,10 @@ const store = createStore({
     users: users,
     currentUser: users.length != 0 ? users[currentUserNumber] : {scheme: 'light', theme: '#007aff', layout: 'md'},
     currentUserNumber: currentUserNumber,
-    classes: {}
+    classes: [],
+    term: -1,
+    termList: ["1", "2", "3", "4", "5", "6"],
+    session: {}
   },
   getters: {
     users({ state }) {
@@ -28,8 +31,17 @@ const store = createStore({
     currentUser({ state }) {
       return state.currentUser;
     },
+    term({ state }) {
+      return state.term;
+    },
+    termList({ state }) {
+      return state.termList;
+    },
     classes({ state }) {
       return state.classes;
+    },
+    session({ state }) {
+      return state.session;
     }
   },
   actions: {
@@ -79,11 +91,23 @@ const store = createStore({
         state.currentUserNumber = userNumber;
       }
       localStorage.setItem('currentUserNumber', state.currentUserNumber); 
+      state.classes = [];
+      state.term = -1;
+      state.session = {};
       f7.setColorTheme(state.currentUser.theme);
       f7.setDarkMode(state.currentUser.scheme === "dark");
     },
     setClasses({ state }, classes) {
       state.classes = classes;
+    },
+    setTerm({ state }, term) {
+      state.term = term;
+    },
+    setTermList({ state }, termList) {
+      state.termList = termList;
+    },
+    setSession({ state }, session) {
+      state.session = session;  
     }
   }
 });
