@@ -105,10 +105,10 @@ const Gradexis = ({ f7router }) => {
               text="Grades"
             />
             <Link
-              tabLink="#view-gpa"
-              iconIos="f7:chart_bar_alt_fill"
-              iconMd="material:bar_chart"
-              text="GPA"
+              tabLink="#view-todo"
+              iconIos="f7:checkmark_2"
+              iconMd="material:done_all"
+              text="Todo"
             />
             <Link
               tabLink="#view-settings"
@@ -122,7 +122,7 @@ const Gradexis = ({ f7router }) => {
 
           <View id="view-grades" name="grades" tab url="/grades/" />
 
-          <View id="view-gpa" name="gpa" tab url="/gpa/" />
+          <View id="view-todo" name="todo" tab url="/todo/" />
 
           <View id="view-settings" name="settings" tab url="/settings/" />
       </Views>

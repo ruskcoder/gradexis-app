@@ -5,7 +5,6 @@ import { AssignmentGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { primaryFromColor } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
-import { assignments } from '../js/grades-api.js';
 import store from '../js/store.js';
 import { EffectCoverflow } from 'swiper/modules';
 
@@ -33,19 +32,12 @@ const AssignmentsPage = ({ f7router, ...props }) => {
   useEffect(() => {
     if (storedAssignments.length === 0) {
       setLoading(true);
-      assignments().then((data) => {
-        store.dispatch('setAssignments', data);
-        const updatedAssignments = store.state.assignments;
-        setStoredAssignments(updatedAssignments);
-        setCurrentAssignments(updatedAssignments[props.course]);
-        setLoading(false);
-      });
+      
     }
   }, [storedAssignments, props.course]);
 
   const infoDialog = (assignment) => {
     return () => {
-      terminal.log(assignment['Weighted Total Points']);
       const container = document.createElement('div');
       Object.keys(assignment).forEach(key => {
         if (assignment[key] === "") {
@@ -206,7 +198,7 @@ const AssignmentsPage = ({ f7router, ...props }) => {
       categoryDivs.push(
         <div className="grade-categories assignment-grade-item" key={i}>
           {categoryCards[i]}
-          {categoryCards[i + 1] ? categoryCards[i + 1] : <div className="no-margin margin-top assignment-grade-item"></div>}
+          {categoryCards[i + 1] ? categoryCards[i + 1] : ""}
         </div>
       );
     }

@@ -2,10 +2,12 @@ import HomePage from '../pages/home.jsx';
 import SettingsPage from '../pages/settings.jsx';
 import NotFoundPage from '../pages/404.jsx';
 import GradesPage from '../pages/grades.jsx';
-import GpaPage from '../pages/gpa.jsx';
+import TodoPage from '../pages/todo.jsx';
 import AccountsPage from '../pages/settings/accounts.jsx';
 import LoginPage from '../pages/login.jsx';
 import AssignmentsPage from '../pages/assignments.jsx';
+import SchedulePage from '../pages/info/schedule.jsx';
+import AttendancePage from '../pages/info/attendance.jsx';
 
 var routes = [
   {
@@ -17,8 +19,8 @@ var routes = [
     component: GradesPage,
   },
   {
-    path: '/gpa/',
-    component: GpaPage,
+    path: '/todo/',
+    component: TodoPage,
   },
   {
     path: '/login/',
@@ -38,6 +40,16 @@ var routes = [
     path: '/assignments/:course/',
     component: AssignmentsPage,
     hideTabbar: true
+  },
+  {
+    path: '/info/schedule/',
+    component: SchedulePage,
+    hideTabbar: false
+  },
+  {
+    path: '/info/attendance/',
+    component: AttendancePage,
+    hideTabbar: false
   },
   {
     path: '(.*)',

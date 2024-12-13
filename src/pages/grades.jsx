@@ -1,63 +1,77 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
-import { averages, assignments } from '../js/grades-api.js';
 import store from '../js/store.js';
 const GradesPage = ({ f7router }) => {
-  const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
   const user = useStore('currentUser');
-  const handleButtonClick = (index) => {
+  const [userChanged, setUserChanged] = useState(false);
+  const termList = useMemo(() => ['MP1', 'MP2', 'MP3', 'MP4', 'MP5', 'MP6'], []);
+  const [loadedAverages, setLoadedAverages] = useState({});
+
+  const termChanged = (index) => {
+    setUserChanged(true);
     setActiveButtonIndex(index);
+    setLoading(true);
   };
   const [loading, setLoading] = useState(true);
-  const [classAverages, setAverages] = useState([]);
+  const [termsLoading, setTermsLoading] = useState(true);
 
-  // alert(JSON.stringify(user));
-  if (user.username) {
-    averages().then((data) => {
-      setLoading(false);
-      setAverages(data);
-    })
-    assignments().then((data) => {
-      store.dispatch('setAssignments', data)
-    })
+  const createAverages = () => {
+    return (Object.entries({}).map(([title, grade], index) => (
+      <ListItem key={index} link={grade != "" ? `/assignments/${title}/` : "#"}>
+        <ClassGradeItem title={title} subtitle={""} grade={grade} />
+      </ListItem>
+    )))
   }
   return (
     <Page name="grades">
       <Navbar title="Grades">
-        <Subnavbar sliding={true} >
-          <Segmented strong>
-            {[...Array(6)].map((_, index) => (
-              <Button
-                key={index}
-                smallMd
-                active={activeButtonIndex === index}
-                onClick={() => handleButtonClick(index)}
-              >
-                {`MP${index + 1}`}
-              </Button>
-            ))}
-          </Segmented>
-        </Subnavbar>
+
       </Navbar>
-      {loading && 
+      {loading &&
         <Block className='display-flex align-items-center justify-content-center'>
           <Preloader />
         </Block>
       }
-      {!loading && 
-        <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
-          sortable
-          sortableEnabled
-          sortableTapHold
-        >
-        {Object.entries(classAverages).map(([title, grade], index) => (
-          <ListItem key={index} link={`/assignments/${title}/`}>
-            <ClassGradeItem title={title} subtitle={""} grade={grade} />
-          </ListItem>
-        ))}
-      </List>
+
+      {!termsLoading &&
+        <Subnavbar sliding={true} >
+          <Segmented strong>
+            {termList.map((_, index) => (
+              <Button
+                key={index}
+                smallMd
+                active={activeButtonIndex === index}
+                onClick={() => termChanged(index)}
+              >
+                {termList[index]}
+              </Button>
+            ))}
+          </Segmented>
+        </Subnavbar>
+      }
+      {
+        termList.map((_, index) => (
+          (
+            <div key={index} style={{ display: (!loading && activeButtonIndex === index) ? "block" : "none" }}>
+              <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
+                sortable
+                sortableEnabled
+                sortableTapHold
+              >
+                {createAverages()}
+              </List>
+            </div>
+          )
+        ))
+      }
+
+      {!loading &&
+        <>
+
+        </>
       }
     </Page>
   );
