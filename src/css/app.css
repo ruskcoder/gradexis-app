@@ -98,3 +98,18 @@
     font-weight: 600;
     font-size: 14px;
 }
+.link-input .item-floating-label {
+    width: 24px;
+    transition-delay: 0.1s;
+    transition: all 0.2s ease-out;
+}
+.link-input .item-content:not(.item-input-focused) .item-floating-label {
+    width: 3em;
+}
+.link-input .item-input-wrap {
+    display: flex
+}
+.link-input .item-input-wrap::before{
+    content: "https://";
+    color: gray;
+}

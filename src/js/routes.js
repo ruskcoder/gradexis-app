@@ -5,7 +5,7 @@ import GradesPage from '../pages/grades.jsx';
 import TodoPage from '../pages/todo.jsx';
 import AccountsPage from '../pages/settings/accounts.jsx';
 import LoginPage from '../pages/login.jsx';
-import ClassGradesPage from '../pages/classGrades.jsx';
+import ClassGradesPage from '../pages/class-grades.jsx';
 import SchedulePage from '../pages/info/schedule.jsx';
 import AttendancePage from '../pages/info/attendance.jsx';
 
@@ -19,7 +19,7 @@ var routes = [
     component: GradesPage,
   },
   {
-    path: '/assignments/:course/',
+    path: '/grades/:course/',
     component: ClassGradesPage,
     hideTabbar: true
   },

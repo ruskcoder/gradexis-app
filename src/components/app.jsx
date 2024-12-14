@@ -56,7 +56,7 @@ export const errorDialog = (err = "") => {
 
 const Gradexis = ({ f7router }) => {
   // const users = useStore('users')
-  
+
   var f7params = {
     name: "Gradexis",
     theme: store.state.currentUser.layout,
@@ -66,9 +66,9 @@ const Gradexis = ({ f7router }) => {
       tapHold: true,
     },
     view: {
-        pushState: true, 
-        history: true,
-        pushStateSeparator:"/"
+      pushState: true,
+      history: true,
+      pushStateSeparator: "/"
     },
     store: store,
     routes: routes,
@@ -86,16 +86,16 @@ const Gradexis = ({ f7router }) => {
         "64px"
       );
     }
-    
+
     f7.setColorTheme(store.state.currentUser.theme);
     f7.setDarkMode(store.state.currentUser.scheme === "dark");
 
     const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
-    
+
     f7.on("routeChange", (route) => {
       setShowTabbar(!hideTabsRoutes.includes(route.route.path));
     });
-    f7.on('login', () => { 
+    f7.on('login', () => {
       setShowLogin(false)
     })
 
@@ -108,44 +108,53 @@ const Gradexis = ({ f7router }) => {
 
   return (
     <App {...f7params} store={store}>
+      {!showTabbar &&
+        <style>
+          {`
+        .page-content {
+          padding-bottom: 0px;
+        }
+      `}
+        </style>
+      }
       <View url="/login/" className={`login ${showLogin ? "" : "login-hidden"}`}></View>
       <Views className="safe-areas" tabs>
 
-          <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>
-            <Link
-              tabLink="#view-home"
-              tabLinkActive
-              iconIos="f7:house_fill"
-              iconMd="material:home"
-              text="Home"
-            />
-            <Link
-              tabLink="#view-grades"
-              iconIos="material:school "
-              iconMd="material:school"
-              text="Grades"
-            />
-            <Link
-              tabLink="#view-todo"
-              iconIos="f7:checkmark_2"
-              iconMd="material:done_all"
-              text="Todo"
-            />
-            <Link
-              tabLink="#view-settings"
-              iconIos="f7:gear_alt_fill"
-              iconMd="material:settings"
-              text="Settings"
-            />
-          </Toolbar>
-          
-          <View id="view-home" tab tabActive main url="/" />
+        <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>
+          <Link
+            tabLink="#view-home"
+            tabLinkActive
+            iconIos="f7:house_fill"
+            iconMd="material:home"
+            text="Home"
+          />
+          <Link
+            tabLink="#view-grades"
+            iconIos="material:school "
+            iconMd="material:school"
+            text="Grades"
+          />
+          <Link
+            tabLink="#view-todo"
+            iconIos="f7:checkmark_2"
+            iconMd="material:done_all"
+            text="Todo"
+          />
+          <Link
+            tabLink="#view-settings"
+            iconIos="f7:gear_alt_fill"
+            iconMd="material:settings"
+            text="Settings"
+          />
+        </Toolbar>
 
-          <View id="view-grades" name="grades" tab url="/grades/" />
+        <View id="view-home" tab tabActive main url="/" />
 
-          <View id="view-todo" name="todo" tab url="/todo/" />
+        <View id="view-grades" name="grades" tab url="/grades/" />
 
-          <View id="view-settings" name="settings" tab url="/settings/" />
+        <View id="view-todo" name="todo" tab url="/todo/" />
+
+        <View id="view-settings" name="settings" tab url="/settings/" />
       </Views>
     </App>
   );

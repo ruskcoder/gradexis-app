@@ -1,24 +1,11 @@
 import {
   f7,
-  f7ready,
-  App,
-  ListItem,
-  Views,
-  View,
-  Popup,
   Page,
-  Navbar,
-  Toolbar,
-  NavRight,
-  Link,
   Block,
-  BlockTitle,
-  LoginScreen,
   LoginScreenTitle,
   List,
   Button,
   ListInput,
-  ListButton,
   BlockFooter,
   useStore
 } from "framework7-react";
@@ -30,12 +17,13 @@ const LoginPage = ({ f7router }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [platform, setPlatform] = useState("hac");
-  const [link, setLink] = useState("https://homeaccess.katyisd.org/");
+  const [link, setLink] = useState("homeaccess.katyisd.org");
 
   const [loginLoading, setLoginLoading] = useState(false);
   const signIn = () => {
     setLoginLoading(true);
-    store.dispatch("addUser", { username: username, password: password, link: link, platform: platform }).then((result) => {
+    setLink(link.replace(/^(https?:\/\/)?([^/]+).*/, '$2'));
+    store.dispatch("addUser", { username: username, password: password, link: "https://" + link, platform: platform }).then((result) => {
       setLoginLoading(false)
       if (result) {
         f7.emit('login')
@@ -54,6 +42,7 @@ const LoginPage = ({ f7router }) => {
           outline
           value={platform}
           onChange={(e) => {setPlatform(e.target.value); setLink("")}}
+          tabindex={-1}
         >
           <option value="hac">HAC</option>
           <option value="powerschool">PowerSchool SIS</option>
@@ -65,9 +54,11 @@ const LoginPage = ({ f7router }) => {
           label="Link"
           type="text"
           name="link"
-          placeholder="Type link here..."
+          placeholder=""
           value={link}
           onInput={(e) => setLink(e.target.value)}
+          className="link-input"
+          tabindex={-1}
         >
         </ListInput>
 
@@ -80,6 +71,7 @@ const LoginPage = ({ f7router }) => {
           placeholder="Username"
           value={username}
           onInput={(e) => setUsername(e.target.value)}
+          tabindex={-1}
         ></ListInput>
 
         <ListInput
@@ -92,7 +84,7 @@ const LoginPage = ({ f7router }) => {
           value={password}
           onInput={(e) => setPassword(e.target.value)}
           clearButton
-          
+          tabindex={-1}
         ></ListInput>
       </List>
       <Block>

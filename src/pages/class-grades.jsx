@@ -29,10 +29,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   useEffect(() => {
     if (user.username) {
       getGrades(props.course).then((data) => {
-        if (data.success != false) {
-          setGrades(data.assigments);
+        if (!('success' in data)) {
+          setGrades(data.assignments);
           setCategories(data.categories);
           setAverage(data.average);
+          setLoading(false);
         }
         else {
           errorDialog(data.message);
@@ -44,7 +45,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [grades, setGrades] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
-
+  
   const [loading, setLoading] = useState(true);
 
   const infoDialog = (assignment) => {
@@ -60,7 +61,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <div className="assignment-info grid grid-cols-1 margin-top">
             <div>
               <p className="info-category-title">Category</p>
-              <p className="info-category-data">{assignment.Category}</p>
+              <p className="info-category-data">{assignment.category}</p>
             </div>
             {assignment.Date && 
               <div>
@@ -128,7 +129,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     grades.forEach((assignment, i) => {
       assignmentList.push(
         <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
-          <AssignmentGradeItem name={assignment.assigment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.score} color={colorFromCategory(assignment.category)} />
+          <AssignmentGradeItem name={assignment.assignment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.score} color={colorFromCategory(assignment.category)} />
         </ListItem>
       )
     });
@@ -143,19 +144,19 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <div className="assignment-info last-info grid grid-cols-2 grid-gap margin-top">
             <div>
               <p className="info-category-title">Weight</p>
-              <p className="info-category-data">{category.CategoryWeight}</p>
+              <p className="info-category-data">{category.categoryWeight}</p>
             </div>
             <div>
               <p className="info-category-title">Percentage</p>
-              <p className="info-category-data">{`${parseFloat(category.Percent.slice(0, -1)).toPrecision(3)}%`}</p>
+              <p className="info-category-data">{`${parseFloat(category.percent.slice(0, -1)).toPrecision(3)}%`}</p>
             </div>
             <div>
               <p className="info-category-title">Weighted Points</p>
-              <p className="info-category-data">{parseFloat(category.CategoryPoints).toPrecision(4)}</p>
+              <p className="info-category-data">{parseFloat(category.categoryPoints).toPrecision(4)}</p>
             </div>
             <div>
               <p className="info-category-title">Points</p>
-              <p className="info-category-data">{`${parseFloat(category.StudentsPoints).toPrecision(4)} / ${parseFloat(category.MaximumPoints).toPrecision(4)}`}</p>
+              <p className="info-category-data">{`${parseFloat(category.studentsPoints).toPrecision(4)} / ${parseFloat(category.maximumPoints).toPrecision(4)}`}</p>
             </div>
           </div>
         </>
@@ -163,7 +164,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
       setTimeout(() => {
         f7.dialog.create({
-          title: category["Category"],
+          title: category.name,
           closeByBackdropClick: true,
           cssClass: 'assignment-info-dialog',
           content: container.innerHTML,
@@ -180,7 +181,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       categoryCards.push(
         <div
           style={{ display: "contents", cursor: "pointer" }}
-          onClick={categoryDialog(categories[category])}
+          onClick={categoryDialog({name: category, ...categories[category]})}
         >
           <Card className="no-margin grade-category-item">
             <h4 className="no-margin">{category}</h4>
