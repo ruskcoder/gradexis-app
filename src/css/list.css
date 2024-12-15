@@ -26,11 +26,11 @@
     display: none;
 }
 
-.sortable.sortable-enabled .sortable-handler {
+.sortable.sortable-enabled:not(.no-handle) .sortable-handler {
     display: flex;
 }
 
-.md .sortable .sortable-handler {
+.md .sortable:not(.no-handle) .sortable-handler {
     width: 15px;
     right: 27px;
 }
@@ -40,7 +40,7 @@
     opacity: 0.2;
 }
 
-.chevron {
+.list .chevron {
     font-family: "framework7-core-icons";
     color: var(--f7-text-color);
     opacity: 0.2;
@@ -53,7 +53,9 @@
 .md .chevron::before {
     margin-right: 4px;
 }
-
+.list.no-handle .chevron {
+    display: none;
+}
 .sortable .chevron::before {
     content: "chevron_right";
 }

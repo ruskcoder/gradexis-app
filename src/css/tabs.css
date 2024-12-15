@@ -20,3 +20,28 @@
     display: block !important;
     opacity: 1;
 }
+
+.md .tabbar .ripple-wave {
+    z-index: 1;
+    position: absolute;
+    bottom: 0;
+}
+.md .tabbar i.icon {
+    z-index: 2;
+}
+.md .tabbar i.icon::after {
+    content: '';
+    width: 64px;
+    height: 32px;
+    border-radius: 32px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%) scaleX(1);
+    opacity: 1;
+    z-index: 2;
+    outline: 500px solid var(--f7-toolbar-bg-color, var(--f7-bars-bg-color));
+}
+.md .tabbar .tab-link .tabbar-label {
+    z-index: 3;
+}

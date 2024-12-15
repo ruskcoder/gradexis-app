@@ -1,5 +1,5 @@
 // Import React and ReactDOM
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { terminal } from 'virtual:terminal'
@@ -36,4 +36,3 @@ import App from '../components/app.jsx';
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));
-

@@ -10,11 +10,11 @@ import {
   useStore
 } from "framework7-react";
 import store from "../../js/store.js";
-import { primaryFromColor } from "../../components/app.jsx";
+import { primaryFromColor, updateRouter } from "../../components/app.jsx";
 
 const AccountsPage = ({ f7router }) => {
   var users = useStore('users');
-  
+  updateRouter(f7router);
   const logout = (username) => {
     return () => {
       f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {

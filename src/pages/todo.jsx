@@ -1,10 +1,12 @@
 import React from 'react';
-import { Page, Navbar, List, ListItem, Block, Button, useStore } from 'framework7-react';
+import { Page, Navbar, List, ListItem, Block, Button, useStore, f7 } from 'framework7-react';
 import store from '../js/store';
+import { initEmits, updateRouter } from '../components/app';
 
-const TodoPage = () => {
+const TodoPage = ({ f7router }) => {
   const users = useStore('users');
-
+  // initEmits(f7, f7router);
+  updateRouter(f7router);
   return (
     <Page name="todo">
       <Navbar title="Todo" />

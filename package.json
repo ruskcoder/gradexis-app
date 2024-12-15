@@ -23,6 +23,7 @@
     "@capacitor/cli": "^6.1.2",
     "@capacitor/core": "^6.1.2",
     "@capacitor/status-bar": "^6.0.1",
+    "@hugotomazi/capacitor-navigation-bar": "^4.0.1",
     "@material/material-color-utilities": "^0.3.0",
     "axios": "^1.7.7",
     "color-convert": "^2.0.1",

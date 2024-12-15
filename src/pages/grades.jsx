@@ -2,16 +2,16 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
-import { errorDialog } from '../components/app.jsx';
+import { errorDialog, initEmits } from '../components/app.jsx';
 import { getClasses } from '../js/grades-api.js';
 
 import store from '../js/store.js';
 const GradesPage = ({ f7router }) => {
+  // initEmits(f7, f7router);
   const user = useStore('currentUser');
   const classes = useStore('classes');
   const term = useStore('term');
   const termList = useStore('termList');
-
   useEffect(() => {
     if (term == -1) {
       setTermsLoading(true);
@@ -70,26 +70,10 @@ const GradesPage = ({ f7router }) => {
           </Segmented>
         </Subnavbar>
       }
-      {/*       
-      {
-        termList.map((_, index) => (
-          (
-            <div key={index} style={{ display: (!loading && activeButtonIndex === index) ? "block" : "none" }}>
-              <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
-                sortable
-                sortableEnabled
-                sortableTapHold
-              >
-                
-              </List>
-            </div>
-          )
-        ))
-      } */}
 
       {!loading &&
         <>
-          <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix"
+        <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix no-handle"
             sortable
             sortableEnabled
             sortableTapHold

@@ -50,7 +50,7 @@ const LoginPage = ({ f7router }) => {
 
         <ListInput
           outline
-          floatingLabel
+          // floatingLabel
           label="Link"
           type="text"
           name="link"
