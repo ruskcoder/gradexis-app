@@ -22,19 +22,20 @@ const HomePage = ({ f7router }) => {
   updateRouter(f7router);
   const users = useStore('users')
   const user = useStore('currentUser')
-    useEffect(() => {
-      if (user.username) {
-        getClasses().then((data) => {
-          if (!('success' in data)) {
-            store.dispatch('setClasses', data.classes);
-            store.dispatch('setTerm', data.term);
-          }
-          else {
-            errorDialog(data.message)
-          }
-        }).catch(() => {errorDialog()})
-      }
-    }, [user.username])
+  useEffect(() => {
+    if (user.username) {
+      getClasses().then((data) => {
+        if (!('success' in data)) {
+          store.state.termList = data.termList;
+          store.dispatch('setClasses', data.classes);
+          store.dispatch('setTerm', data.term);
+        }
+        else {
+          errorDialog(data.message)
+        }
+      }).catch(() => { errorDialog() })
+    }
+  }, [user.username])
   const switchAccount = () => {
     return () => {
       var chooseList = []
@@ -140,7 +141,7 @@ const HomePage = ({ f7router }) => {
       >
         <ListItem
           // onClick={() => { navigate(f7router, '/info/attendance/') }}
-        link="/info/attendance/">
+          link="/info/attendance/">
           <OverviewIcon
             slot="media"
             iconIos="f7:calendar"

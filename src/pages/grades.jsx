@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Page, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { Page, BlockFooter, Navbar, Subnavbar, Segmented, Button, List, ListItem, f7, Preloader, CardHeader, Block, useStore } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { containerColor } from '../js/constants.jsx';
 import { errorDialog, initEmits } from '../components/app.jsx';
@@ -26,6 +26,7 @@ const GradesPage = ({ f7router }) => {
 
   const [loading, setLoading] = useState(true);
   const [termsLoading, setTermsLoading] = useState(true);
+
   const switchTerm = (index) => {
     setLoading(true);
     setActiveButtonIndex(index);
@@ -34,7 +35,10 @@ const GradesPage = ({ f7router }) => {
         store.dispatch('setClasses', data.classes);
         store.dispatch('setTerm', data.term);
       }
-    }).catch(() => {errorDialog()})
+      else {
+        errorDialog(data.message)
+      }
+    }).catch(() => { errorDialog() })
   }
   const createAverages = () => {
     return classes.map(({ average, course, name }, index) => (
@@ -43,8 +47,23 @@ const GradesPage = ({ f7router }) => {
       </ListItem>
     ));
   }
+
+  const ptr = (done) => {
+    getClasses(termList[activeButtonIndex]).then((data) => {
+      if (!('success' in data)) {
+        done();
+        store.dispatch('setClasses', data.classes);
+        store.dispatch('setTerm', data.term);
+      }
+      else {
+        done();
+        errorDialog(data.message)
+      }
+    }).catch(() => { errorDialog() })
+  };
+
   return (
-    <Page name="grades">
+    <Page name="grades" ptr ptrMousewheel={true} onPtrRefresh={ptr}>
       <Navbar title="Grades">
 
       </Navbar>
@@ -73,7 +92,7 @@ const GradesPage = ({ f7router }) => {
 
       {!loading &&
         <>
-        <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix no-handle"
+          <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix no-handle"
             sortable
             sortableEnabled
             sortableTapHold
@@ -88,4 +107,4 @@ const GradesPage = ({ f7router }) => {
   );
 };
 
-export default GradesPage; 
+export default GradesPage;

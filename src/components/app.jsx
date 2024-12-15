@@ -119,7 +119,6 @@ const Gradexis = ({ f7router }) => {
 
     const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
     f7.on("routeChange", (route) => {
-      console.log(route.route.path);
       setShowTabbar(!hideTabsRoutes.includes(route.route.path));
       let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
       if (!invalid.includes(route.url)) {
