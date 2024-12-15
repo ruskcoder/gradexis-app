@@ -30,9 +30,9 @@ import $ from 'dom7';
 import App from '../components/app.jsx';
 
 // Init F7 React Plugin with configuration
-// window.onerror = function(error, url, line) {
-//     alert(error + ' (' + url + ':' + line + ')');
-// };  
+window.onerror = function (error, url, line) {
+    alert(error + ' (' + url + ':' + line + ')');
+};
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));

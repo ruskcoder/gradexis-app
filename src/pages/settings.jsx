@@ -22,9 +22,10 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { terminal } from 'virtual:terminal'
 import { initEmits } from '../components/app.jsx';
+import { Dom7 } from 'framework7';
 
 export const updateStatusBars = async () => {
-  await StatusBar.setStyle({ style: store.state.currentUser.scheme === "light" ? Style.Dark : Style.Light });
+  await StatusBar.setStyle({ style: store.state.currentUser.scheme == "dark" ? Style.Dark : Style.Light });
   await StatusBar.setBackgroundColor({ color: getComputedStyle(document.body).getPropertyValue('--f7-bars-bg-color') });
   await NavigationBar.setColor({ color: getComputedStyle(document.body).getPropertyValue('--f7-bars-bg-color'), darkButtons: store.state.currentUser.scheme == "light" });
 }
@@ -40,23 +41,23 @@ const SettingsPage = ({ f7router }) => {
   const setScheme = (newScheme) => {
     changeScheme(newScheme);
     f7.setDarkMode(newScheme === "dark");
-    updateStatusBars();
     store.dispatch("changeUserData", {
       userNumber: store.state.currentUserNumber,
       item: "scheme",
       value: newScheme,
     });
+    updateStatusBars();
   };
 
   const setTheme = (newColor) => {
     changeTheme(newColor);
     f7.setColorTheme(newColor);
-    updateStatusBars();
     store.dispatch("changeUserData", {
       userNumber: store.state.currentUserNumber,
       item: "theme",
       value: newColor,
     });
+    updateStatusBars();
   };
 
   const setLayout = (newLayout) => {

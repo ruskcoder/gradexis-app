@@ -19,9 +19,9 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   }
   const colorFromCategory = (category) => {
     category = category.toLowerCase();
-    if (category == "major") {return "#9338db"}
-    if (category == "minor") {return "#00de63"}
-    if (category == "other") {return "#fa9917"}
+    if (category == "major") { return "#9338db" }
+    if (category == "minor") { return "#00de63" }
+    if (category == "other") { return "#fa9917" }
     else {
       return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
     }
@@ -40,14 +40,14 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         else {
           errorDialog(data.message);
         }
-      }).catch(() => {errorDialog()})
+      }).catch(() => { errorDialog() })
     }
   });
 
   const [grades, setGrades] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
-  
+
   const [loading, setLoading] = useState(true);
 
   const infoDialog = (assignment) => {
@@ -65,26 +65,26 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <p className="info-category-title">Category</p>
               <p className="info-category-data">{assignment.category}</p>
             </div>
-            {assignment.Date && 
+            {assignment.date &&
               <div>
-              <p className="info-category-title">Date</p>
-              <p className="info-category-data">{assignment.Date}</p>
-            </div>
+                <p className="info-category-title">Date</p>
+                <p className="info-category-data">{assignment.date}</p>
+              </div>
             }
           </div>
 
           <div className="assignment-info last-info grid grid-cols-2 grid-gap">
             {assignment["dateAssigned"] &&
-            <div>
-              <p className="info-category-title">Date Assigned</p>
-              <p className="info-category-data">{assignment["dateAssigned"]}</p>
-            </div>
+              <div>
+                <p className="info-category-title">Date Assigned</p>
+                <p className="info-category-data">{assignment["dateAssigned"]}</p>
+              </div>
             }
             {assignment["dateDue"] &&
-            <div>
-              <p className="info-category-title">Date Due</p>
-              <p className="info-category-data">{assignment["dateDue"]}</p>
-            </div>
+              <div>
+                <p className="info-category-title">Date Due</p>
+                <p className="info-category-data">{assignment["dateDue"]}</p>
+              </div>
             }
             <div>
               <p className="info-category-title">Score</p>
@@ -92,36 +92,37 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             </div>
             <div>
               <p className="info-category-title">Weighted Points</p>
-              <p className="info-category-data">{`${(parseFloat(assignment.weight)*100).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
+              <p className="info-category-data">{`${(parseFloat(assignment.weight) * 100).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
             </div>
             <div>
               <p className="info-category-title">Weight</p>
               <p className="info-category-data">{assignment.weight}</p>
             </div>
-            <div> 
-      
+            <div>
+
               <p className="info-category-title">Percentage</p>
               <p className="info-category-data">{assignment.percentage}</p>
             </div>
           </div>
           <div className="assignment-info grid grid-cols-1 margin-top-half">
-            {assignment['Average Score'] && 
-            <div>
-              <p className="info-category-title">Average Score</p>
-              <p className="info-category-data">{assignment['Average Score']}</p>
-            </div>
+            {assignment['Average Score'] &&
+              <div>
+                <p className="info-category-title">Average Score</p>
+                <p className="info-category-data">{assignment['Average Score']}</p>
+              </div>
             }
           </div>
         </>
       );
 
       setTimeout(() => {
-        f7.dialog.create({
-          title: assignment.Assignment,
+        window.f7alert = f7.dialog.create({
+          title: assignment.assignment,
           closeByBackdropClick: true,
           cssClass: 'assignment-info-dialog',
           content: container.innerHTML,
-        }).open();
+        })
+        window.f7alert.open();
       }, 0);
     }
   }
@@ -177,13 +178,13 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   const createCategories = () => {
     let categoryCards = []
-    
+
 
     for (let category of Object.keys(categories)) {
       categoryCards.push(
         <div
           style={{ display: "contents", cursor: "pointer" }}
-          onClick={categoryDialog({name: category, ...categories[category]})}
+          onClick={categoryDialog({ name: category, ...categories[category] })}
         >
           <Card className="no-margin grade-category-item">
             <h4 className="no-margin">{category}</h4>
@@ -261,9 +262,9 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       </Block>
 
       {!loading &&
-      <List dividersIos mediaList strongIos strong inset className="grades-list no-chevron mod-list margin-top">
-        {createGrades()}
-      </List>
+        <List dividersIos mediaList strongIos strong inset className="grades-list no-chevron mod-list margin-top">
+          {createGrades()}
+        </List>
       }
     </Page>
   )

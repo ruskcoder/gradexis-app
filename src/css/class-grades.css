@@ -66,3 +66,25 @@
     font-size: var(--f7-list-item-subtitle-font-size);
     line-height: var(--f7-list-item-subtitle-font-size);
 }
+
+.grades-list  .item-title{
+    text-overflow: clip;
+
+}
+.grades-list .ripple-wave {
+    z-index: 100;
+}
+.assignments-item {
+    position: relative;
+}
+
+.grades-list  .assignments-item:before{
+    content: '';
+    position: absolute;
+    background: linear-gradient(90deg, transparent 80%, var(--f7-list-strong-bg-color) 95%);
+    width: calc(100% + 1px);
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+}

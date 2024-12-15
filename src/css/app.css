@@ -1,8 +1,8 @@
 :root {
     --f7-navbar-subtitle-font-size: 14px !important;
     --f7-subnavbar-height: 48px !important;
+    --f7-dialog-width: 300px !important;
 } 
-
 
 .login {
     display: block;

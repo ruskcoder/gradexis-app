@@ -47,7 +47,7 @@ export const primaryFromColor = (theme) => {
 export const mdThemeFromColor = (theme) => {
   return themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme]
 }
-export const initEmits = (f7, f7router) => { 
+export const initEmits = (f7, f7router) => {
   f7.on('/grades/', () => {
     f7router.navigate('/grades/')
   })
@@ -79,8 +79,13 @@ export const errorDialog = (err = "") => {
 export const updateRouter = (f7router) => {
   window.router = f7router;
   window.onpopstate = function (event) {
-        f7router.back();
-        history.pushState(null, null, f7router.url);
+    if (window.f7alert.opened == true) {
+      window.f7alert.close()
+    }
+    else {
+      f7router.back();
+      history.pushState(null, null, f7router.url);
+    }
   };
 }
 
@@ -130,11 +135,11 @@ const Gradexis = ({ f7router }) => {
     })
     updateStatusBars();
     await StatusBar.show();
-  
-   });
-   
+
+  });
+
   const [showTabbar, setShowTabbar] = useState(true);
-  
+
   return (
     <App {...f7params} store={store}>
       {!showTabbar &&
@@ -146,7 +151,7 @@ const Gradexis = ({ f7router }) => {
       `}
         </style>
       }
-      
+
       <View url="/login/" className={`login ${showLogin ? "" : "login-hidden"}`}></View>
       <Views className="safe-areas" tabs>
 

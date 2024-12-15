@@ -44,12 +44,12 @@ var routes = [
   {
     path: '/info/schedule/',
     component: SchedulePage,
-    hideTabbar: false
+    hideTabbar: true
   },
   {
     path: '/info/attendance/',
     component: AttendancePage,
-    hideTabbar: false
+    hideTabbar: true
   },
   {
     path: '(.*)',
