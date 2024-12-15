@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { terminal } from 'virtual:terminal';
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { App as CapacitorApp } from '@capacitor/app';
 import {
   f7,
   f7ready,
@@ -33,6 +34,13 @@ import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
 import { show } from "dom7";
 
+CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+  if (!canGoBack) {
+    CapacitorApp.exitApp();
+  } else {
+    window.history.back();
+  }
+});
 export const primaryFromColor = (theme) => {
   return (store.state.currentUser.layout == "md" ? hexFromArgb(themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme].primary) : theme)
 }
@@ -111,6 +119,7 @@ const Gradexis = ({ f7router }) => {
 
     const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
     f7.on("routeChange", (route) => {
+      console.log(route.route.path);
       setShowTabbar(!hideTabsRoutes.includes(route.route.path));
       let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
       if (!invalid.includes(route.url)) {

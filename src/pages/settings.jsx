@@ -30,7 +30,6 @@ export const updateStatusBars = async () => {
 }
 
 const SettingsPage = ({ f7router }) => {
-  // initEmits(f7, f7router);
   const user = useStore('currentUser');
   const [theme, changeTheme] = useState(user.theme);
   const [scheme, changeScheme] = useState(user.scheme);

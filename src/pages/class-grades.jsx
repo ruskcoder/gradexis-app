@@ -3,7 +3,7 @@ import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, us
 import terminal from 'virtual:terminal';
 import { AssignmentGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { errorDialog, primaryFromColor } from '../components/app.jsx';
+import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import store from '../js/store.js';
 import { EffectCoverflow } from 'swiper/modules';
@@ -26,6 +26,8 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
     }
   }
+  updateRouter(f7router);
+
   useEffect(() => {
     if (user.username) {
       getGrades(props.course).then((data) => {
