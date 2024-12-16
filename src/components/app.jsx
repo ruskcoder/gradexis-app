@@ -72,7 +72,7 @@ export const errorDialog = (err = "") => {
           f7.dialog.close()
         }
       },
-      { text: 'Restart', onClick: () => { window.location.reload() } },
+      { text: 'Restart', onClick: () => { location.href = "/" } },
     ]
   }).open()
 }

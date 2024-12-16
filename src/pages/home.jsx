@@ -100,7 +100,7 @@ const HomePage = ({ f7router }) => {
           accountPicker.close()
           f7router.refreshPage()
           if (store.state.currentUser.layout !== f7.theme) {
-            location.reload()
+            location.href = "/"
           }
         }
       }, 0)

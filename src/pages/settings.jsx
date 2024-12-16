@@ -69,7 +69,7 @@ const SettingsPage = ({ f7router }) => {
       item: "layout",
       value: newLayout,
     });
-    location.reload();
+    location.href = "/";
   }
 
   const changeName = () => {
@@ -114,7 +114,7 @@ const SettingsPage = ({ f7router }) => {
     return () => {
       store.dispatch("removeUser", store.state.currentUser.username);
       f7.dialog.confirm("Are you sure you want to logout?", "Logout", () => {
-        location.reload()
+        location.href = "/"
       });
     };
   }
