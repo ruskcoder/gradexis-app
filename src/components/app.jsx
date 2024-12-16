@@ -79,7 +79,7 @@ export const errorDialog = (err = "") => {
 export const updateRouter = (f7router) => {
   window.router = f7router;
   window.onpopstate = function (event) {
-    if (window.f7alert.opened == true) {
+    if (window.f7alert && window.f7alert.opened == true) {
       window.f7alert.close()
     }
     else {
