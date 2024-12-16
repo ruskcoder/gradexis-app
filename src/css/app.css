@@ -4,6 +4,10 @@
     --f7-dialog-width: 300px !important;
 } 
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 .login {
     display: block;
     position: absolute;
