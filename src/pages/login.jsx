@@ -23,25 +23,27 @@ const LoginPage = ({ f7router }) => {
   const signIn = () => {
     setLoginLoading(true);
     setLink(link.replace(/^(https?:\/\/)?([^/]+).*/, '$2'));
-    store.dispatch("addUser", { username: username, password: password, link: "https://" + link, platform: platform }).then((result) => {
-      setLoginLoading(false)
-      if (result) {
-        f7.emit('login')
-        f7router.back()
-      }
-    })
+    setTimeout(() => {
+      store.dispatch("addUser", { username: username, password: password, link: "https://" + link.replace(/^(https?:\/\/)?([^/]+).*/, '$2'), platform: platform }).then((result) => {
+        setLoginLoading(false)
+        if (result) {
+          f7.emit('login')
+          f7router.back()
+        }
+      })
+    }, 0);
   };
 
   return (
     <Page loginScreen>
-      <div style={{height: "40px"}}></div>
+      <div style={{ height: "40px" }}></div>
       <LoginScreenTitle>Login</LoginScreenTitle>
       <List form>
-        <ListInput label="Platform" name="platform" 
+        <ListInput label="Platform" name="platform"
           type="select"
           outline
           value={platform}
-          onChange={(e) => {setPlatform(e.target.value); setLink("")}}
+          onChange={(e) => { setPlatform(e.target.value); setLink("") }}
           tabindex={-1}
         >
           <option value="hac">HAC</option>

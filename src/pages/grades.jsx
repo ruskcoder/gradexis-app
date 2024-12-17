@@ -42,7 +42,7 @@ const GradesPage = ({ f7router }) => {
   }
   const createAverages = () => {
     return classes.map(({ average, course, name }, index) => (
-      <ListItem key={index} link={average !== "" ? `/grades/${name}/` : "#"}>
+      <ListItem key={index} link={average !== "" ? `/grades/${encodeURIComponent(name)}/` : "#"}>
         <ClassGradeItem title={name} subtitle={course} grade={average} />
       </ListItem>
     ));
