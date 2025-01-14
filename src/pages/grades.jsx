@@ -63,8 +63,9 @@ const GradesPage = ({ f7router }) => {
   };
 
   return (
-    <Page name="grades" ptr ptrMousewheel={true} onPtrRefresh={ptr}>
-      <Navbar title="Grades">
+    // ptr onPtrRefresh={ptr}
+    <Page name="grades" >
+      <Navbar title="Grades" large>
 
       </Navbar>
       {loading &&
@@ -92,7 +93,10 @@ const GradesPage = ({ f7router }) => {
 
       {!loading &&
         <>
-          <List dividersIos mediaList outlineIos strongIos className="gradesList no-chevron list-padding mod-list mt-fix no-handle"
+          <List 
+            // dividersIos outlineIos strongIos
+            mediaList  
+            className="gradesList no-chevron list-padding mod-list mt-fix no-handle iosRound"
             sortable
             sortableEnabled
             sortableTapHold

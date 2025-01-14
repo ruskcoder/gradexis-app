@@ -90,3 +90,15 @@
     content: "https://";
     color: var(--f7-text-editor-placeholder-colorx);
 }
+
+.ios .iosRound ul {
+    background: none;
+}
+.ios .iosRound .item-link {
+    background: var(--f7-block-strong-bg-color);
+    border-radius: 16px;
+    margin: calc(var(--f7-typography-margin) * 2/4)
+}
+.ios .iosRound .item-inner {
+    padding: 6px 12px 8px 0px !important;
+}

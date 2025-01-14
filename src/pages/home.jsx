@@ -131,13 +131,11 @@ const HomePage = ({ f7router }) => {
         </NavRight>
       </Navbar>
       <List
-        dividersIos
         mediaList
-        outlineIos
-        strongIos
+        // dividersIos outlineIos strongIos
         sortable
         // sortableEnabled
-        className="overviewList mod-list mt-fix"
+        className="overviewList mod-list mt-fix iosRound"
       >
         <ListItem
           // onClick={() => { navigate(f7router, '/info/attendance/') }}
@@ -152,7 +150,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View your absences"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="">
+        <ListItem link="#">
           <OverviewIcon
             slot="media"
             iconIos="f7:bell_fill"

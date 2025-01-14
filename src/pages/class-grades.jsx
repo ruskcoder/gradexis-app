@@ -226,11 +226,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             <Button small active={activeStrongButton === 0} onClick={() => setActiveStrongButton(0)}>
               Grades
             </Button>
-            <Button small active={activeStrongButton === 1} onClick={() => setActiveStrongButton(1)}>
+            <Button disabled small active={activeStrongButton === 1} onClick={() => setActiveStrongButton(1)}>
               Analysis
             </Button>
           </Segmented>
-          <Button small className="margin-left" tonal active={activeStrongButton === 2} onClick={() => setActiveStrongButton(2)} style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}>
+          <Button disabled small className="margin-left" tonal active={activeStrongButton === 2} onClick={() => setActiveStrongButton(2)} style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}>
             What If
           </Button>
         </div>

@@ -108,6 +108,10 @@ const Gradexis = ({ f7router }) => {
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
 
   f7ready(async () => {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+      f7.dialog.alert("To use this as an app, press the share icon and press Add to \"Home Screen\"")
+    }
+    
     if (store.state.currentUser.layout === "ios") {
       document.documentElement.style.setProperty(
         "--f7-navbar-large-title-padding-vertical",
