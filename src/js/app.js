@@ -29,9 +29,6 @@ import $ from 'dom7';
 // Import App Component
 import App from '../components/app.jsx';
 
-window.onerror = function (error, url, line) {
-    alert(error + ' (' + url + ':' + line + ')');
-};
 document.addEventListener("contextmenu", function (e){
     e.preventDefault();
 }, false);

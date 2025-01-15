@@ -146,8 +146,8 @@ const HomePage = ({ f7router }) => {
             iconMd="material:calendar_month"
           />
           <OverviewItem
-            title="Attendance"
-            subtitle="View your absences"
+            title="Calendar & Attendance"
+            subtitle="View your absences and calendar"
           ></OverviewItem>
         </ListItem>
         <ListItem link="#">

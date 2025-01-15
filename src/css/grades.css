@@ -27,3 +27,7 @@
     font-size: var(--f7-list-item-subtitle-font-size);
     line-height: var(--f7-list-item-subtitle-font-size);
 }
+
+.subnavbar {
+    margin-top: -1px !important;
+}

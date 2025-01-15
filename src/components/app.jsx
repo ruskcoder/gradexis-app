@@ -106,40 +106,43 @@ const Gradexis = ({ f7router }) => {
     routes: routes,
   };
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
-
   f7ready(async () => {
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-      f7.dialog.alert("To use this as an app, press the share icon and press Add to \"Home Screen\"")
+    if (!window.init) {
+      window.init = true;
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
+        f7.dialog.alert("To use this as an app, press the share icon and press Add to \"Home Screen\"")
+      }
+      
+      if (store.state.currentUser.layout === "ios") {
+        document.documentElement.style.setProperty(
+          "--f7-navbar-large-title-padding-vertical",
+          "10px"
+        );
+        document.documentElement.style.setProperty(
+          "--f7-navbar-large-title-height",
+          "64px"
+        );
+      }
+
+      f7.setColorTheme(store.state.currentUser.theme);
+      f7.setDarkMode(store.state.currentUser.scheme === "dark");
+
+      const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
+      f7.on("routeChange", (route) => {
+        setShowTabbar(!hideTabsRoutes.includes(route.route.path));
+        let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
+        if (!invalid.includes(route.url)) {
+          history.pushState(null, null, route.url);
+        }
+      });
+      f7.on('login', () => {
+        setShowLogin(false)
+      })
+      updateStatusBars();
+      await StatusBar.show();
+
     }
     
-    if (store.state.currentUser.layout === "ios") {
-      document.documentElement.style.setProperty(
-        "--f7-navbar-large-title-padding-vertical",
-        "10px"
-      );
-      document.documentElement.style.setProperty(
-        "--f7-navbar-large-title-height",
-        "64px"
-      );
-    }
-
-    f7.setColorTheme(store.state.currentUser.theme);
-    f7.setDarkMode(store.state.currentUser.scheme === "dark");
-
-    const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
-    f7.on("routeChange", (route) => {
-      setShowTabbar(!hideTabsRoutes.includes(route.route.path));
-      let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
-      if (!invalid.includes(route.url)) {
-        history.pushState(null, null, route.url);
-      }
-    });
-    f7.on('login', () => {
-      setShowLogin(false)
-    })
-    updateStatusBars();
-    await StatusBar.show();
-
   });
 
   const [showTabbar, setShowTabbar] = useState(true);

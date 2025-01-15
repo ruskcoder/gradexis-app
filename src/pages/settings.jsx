@@ -225,6 +225,7 @@ const SettingsPage = ({ f7router }) => {
                     item: "biometrics", value: !biometrics,
                   });
               }}
+              disabled
             >
               <Icon
                 slot="media"
@@ -233,6 +234,7 @@ const SettingsPage = ({ f7router }) => {
               ></Icon>
               <span>Require Biometrics</span>
               <Toggle
+                disabled
                 checked={biometrics}
                 onToggleChange={() => {
                   changeBiometrics(!biometrics);

@@ -1,9 +1,9 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-// const apiUrl = 'https://api.gradexis.com';
+const apiUrl = 'https://api.gradexis.com';
 // const apiUrl = 'http://localhost:3000'
-const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
+// const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
 // 192.12.146.182   school wifi
 
 const platformList = ['hac']
@@ -72,3 +72,23 @@ export async function getGrades(className, term = null) {
     }
 }
 
+export async function getAttendance(mo = "") {
+    const user = store.state.currentUser;
+    const session = store.state.session;
+    try {
+        if (platformList.includes(user.platform)) {
+            const response = await fetch(
+                `${apiUrl}/${user.platform}/attendance?link=${user.link}&username=${user.username}&password=${user.password}${mo ? `&month=${mo}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            );
+            const data = await response.json();
+            updateSession(data);
+            return data
+        }
+        else {
+            return false
+        }
+
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}

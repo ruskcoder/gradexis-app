@@ -30,6 +30,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   useEffect(() => {
     if (user.username) {
+      console.log("doing")
       getGrades(props.course).then((data) => {
         if (!('success' in data)) {
           setGrades(data.assignments);
@@ -42,7 +43,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         }
       }).catch(() => { errorDialog() })
     }
-  });
+  }, [user.username, props.course]);
 
   const [grades, setGrades] = useState([]);
   const [categories, setCategories] = useState({});

@@ -10,11 +10,15 @@ const TodoPage = ({ f7router }) => {
   f7ready(() => {
     if (window.calendarInline) {return; }
     window.calendarInline = f7.calendar.create({
-      containerEl: '#calendar-container',
+      containerEl: '#calendar-todo',
       value: [new Date()],
       renderToolbar: function () {
         return `
-          <div class="toolbar calendar-custom-toolbar no-shadow margin-bottom-half" >
+          <div class="toolbar calendar-custom-toolbar no-shadow margin-bottom-half" 
+            style="border-top-right-radius: var(--f7-block-inset-border-radius);
+                  border-top-left-radius: var(--f7-block-inset-border-radius)
+            ">
+            
             <div class="toolbar-inner">
               <div class="left">
           <a class="link icon-only"><i class="icon icon-back"></i></a>
@@ -47,11 +51,10 @@ const TodoPage = ({ f7router }) => {
   return (
     <Page name="todo">
       <Navbar title="Todo (coming soon)" subtitle='Coming Soon' large/>
-      <Block strong inset style={{padding: '0px'}} className="margin-top">
-        <div className="calendar-top" id='calendar-container'>
-
-        </div>
-      </Block>
+      <Block id="calendar-todo" strong 
+        className="no-padding margin" 
+        style={{borderRadius: "var(--f7-block-inset-border-radius)"}}
+      />
       <Block>
         
       <Button outline disabled style={{ marginBottom: '1em' }}>

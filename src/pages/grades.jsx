@@ -65,7 +65,7 @@ const GradesPage = ({ f7router }) => {
   return (
     // ptr onPtrRefresh={ptr}
     <Page name="grades" >
-      <Navbar title="Grades" large>
+      <Navbar title="Grades" >
 
       </Navbar>
       {loading &&
@@ -75,7 +75,7 @@ const GradesPage = ({ f7router }) => {
       }
 
       {!termsLoading &&
-        <Subnavbar sliding={true} >
+        <Subnavbar sliding={true} style={{marginTop: "-1px !important"}}>
           <Segmented strong>
             {termList.map((_, index) => (
               <Button
