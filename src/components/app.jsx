@@ -109,9 +109,35 @@ const Gradexis = ({ f7router }) => {
   f7ready(async () => {
     if (!window.init) {
       window.init = true;
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
-        f7.dialog.alert("To use this as an app, press the share icon and press Add to \"Home Screen\"")
-      }
+      // eslint-disable-next-line no-constant-condition
+      // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
+        // f7.dialog.alert("To use this as an app, press the share icon and press Add to \"Home Screen\"")
+        f7.dialog.create({
+          title: 'Add to Home Screen',
+          text: `To use this as an app 
+                <br> <b>For iOS: </b>
+                <br> 1. Press the share icon
+                <br> 2. Press Add to Home Screen
+                <br>
+                <br> <b>For Android (and PC): </b>
+                <br> Wait for the following popup
+          `,
+          buttons: [
+            {
+              text: 'OK',
+              onClick: async () => {
+                if (window.deferredPrompt !== null) {
+                  window.deferredPrompt.prompt();
+                  const { outcome } = await window.deferredPrompt.userChoice;
+                  if (outcome === 'accepted') {
+                    window.deferredPrompt = null;
+                  }
+                }
+                f7.dialog.close()
+              }
+            },
+          ]
+        }).open()
       
       if (store.state.currentUser.layout === "ios") {
         document.documentElement.style.setProperty(
