@@ -23,7 +23,7 @@ import '../css/list.css';
 import '../css/settings.css';
 import '../css/class-grades.css';
 import '../css/account-switcher.css'
-
+import * as serviceWorker from './sw.js';
 import $ from 'dom7';
 
 // Import App Component
@@ -35,3 +35,4 @@ document.addEventListener("contextmenu", function (e){
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));
+serviceWorker.register();

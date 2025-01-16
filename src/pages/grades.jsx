@@ -94,9 +94,11 @@ const GradesPage = ({ f7router }) => {
       {!loading &&
         <>
           <List 
-            // dividersIos outlineIos strongIos
+            dividersIos={user.groupLists == true} 
+            outlineIos = {user.groupLists == true}
+            strongIos = {user.groupLists == true}
             mediaList  
-            className="gradesList no-chevron list-padding mod-list mt-fix no-handle iosRound"
+            className={`gradesList no-chevron list-padding mod-list mt-fix no-handle ${user.groupLists == true ? "" : "iosRound"}`}
             sortable
             sortableEnabled
             sortableTapHold

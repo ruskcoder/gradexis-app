@@ -132,10 +132,12 @@ const HomePage = ({ f7router }) => {
       </Navbar>
       <List
         mediaList
-        // dividersIos outlineIos strongIos
+        dividersIos={user.groupLists == true} 
+        outlineIos = {user.groupLists == true}
+        strongIos = {user.groupLists == true}
         sortable
         // sortableEnabled
-        className="overviewList mod-list mt-fix iosRound"
+        className={`overviewList mod-list mt-fix ${user.groupLists == true ? "" : "iosRound"}`}
       >
         <ListItem
           // onClick={() => { navigate(f7router, '/info/attendance/') }}

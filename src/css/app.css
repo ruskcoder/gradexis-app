@@ -7,7 +7,9 @@
 ::-webkit-scrollbar {
     display: none;
 }
-
+.dialog-inner {
+    
+}
 .login {
     display: block;
     position: absolute;
@@ -101,4 +103,8 @@
 }
 .ios .iosRound .item-inner {
     padding: 6px 12px 8px 0px !important;
+}
+
+.calendar-day-event {
+    display: none;
 }
