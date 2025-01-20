@@ -1,0 +1,40 @@
+PODS:
+  - Capacitor (6.2.0):
+    - CapacitorCordova
+  - CapacitorApp (6.0.2):
+    - Capacitor
+  - CapacitorCordova (6.2.0)
+  - CapacitorStatusBar (6.0.1):
+    - Capacitor
+  - HugotomaziCapacitorNavigationBar (4.0.1):
+    - Capacitor
+
+DEPENDENCIES:
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - "HugotomaziCapacitorNavigationBar (from `../../node_modules/@hugotomazi/capacitor-navigation-bar`)"
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorApp:
+    :path: "../../node_modules/@capacitor/app"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorStatusBar:
+    :path: "../../node_modules/@capacitor/status-bar"
+  HugotomaziCapacitorNavigationBar:
+    :path: "../../node_modules/@hugotomazi/capacitor-navigation-bar"
+
+SPEC CHECKSUMS:
+  Capacitor: 05d35014f4425b0740fc8776481f6a369ad071bf
+  CapacitorApp: e1e6b7d05e444d593ca16fd6d76f2b7c48b5aea7
+  CapacitorCordova: b33e7f4aa4ed105dd43283acdd940964374a87d9
+  CapacitorStatusBar: 9ed7f06318fd436917072a9bf60fda56d12c8bdb
+  HugotomaziCapacitorNavigationBar: d56bded81461cc38cd071727126e7298002ff2b5
+
+PODFILE CHECKSUM: b252a43f69b2324cb7f849f3defbe5ec18ac5ee4
+
+COCOAPODS: 1.16.2
