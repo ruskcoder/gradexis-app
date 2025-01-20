@@ -92,3 +92,24 @@ export async function getAttendance(mo = "") {
         return { success: false, message: error.message };
     }
 }
+
+export async function getSchedule() {
+    const user = store.state.currentUser;
+    const session = store.state.session;
+    try {
+        if (platformList.includes(user.platform)) {
+            const response = await fetch(
+                `${apiUrl}/${user.platform}/schedule?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            );
+            const data = await response.json();
+            updateSession(data);
+            return data
+        }
+        else {
+            return false
+        }
+
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
