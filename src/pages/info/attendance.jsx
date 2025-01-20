@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Page, Navbar, Block, List, ListItem, f7, Preloader } from 'framework7-react';
-import { errorDialog, updateRouter } from '../../components/app';
-import { getAttendance } from '../../js/grades-api';
+import { errorDialog, updateRouter } from '@/components/app';
+import { getAttendance } from '@/js/grades-api';
 
 const AttendancePage = ({ f7router }) => {
   updateRouter(f7router);
