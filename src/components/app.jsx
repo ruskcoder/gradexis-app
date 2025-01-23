@@ -62,9 +62,12 @@ export const initEmits = (f7, f7router) => {
   })
 }
 export const errorDialog = (err = "") => {
+  if (err.includes("not valid JSON") || err.includes("Failed to fetch")) {
+    err = "Unable to fetch server. Perhaps it is blocked?"
+  }
   f7.dialog.create({
     title: 'Error',
-    text: 'There was an error while fetching your data. Please restart the app and try again. <br> Error: ' + err,
+    text: 'An error occurred. Please restart the app and try again. <br> Error: ' + err,
     buttons: [
       {
         text: 'OK',
@@ -145,7 +148,7 @@ const Gradexis = ({ f7router }) => {
           if (Notification.permission == "denied") {
             f7.dialog.alert("Please enable notifications to get the best experience", "Notifications")
           }
-          else if (Notification.permission != "granted") {
+          else if (Notification.permission != "granted" && localStorage.getItem('notifications') != "dontshow") {
             f7.dialog.confirm("This app uses notifications to notify you of new grades and assignments. ", 
               "Notifications",
               () => {
@@ -155,7 +158,10 @@ const Gradexis = ({ f7router }) => {
                   }
                 })
               },
-              () => {}
+              () => {
+                localStorage.setItem('notifications', "dontshow");
+                f7.dialog.alert("You can enable notifications in settings later on.", "Notifications")
+              }
             )
           }
         }

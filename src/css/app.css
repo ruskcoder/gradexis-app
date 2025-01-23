@@ -57,27 +57,32 @@
 .assignments-number {
     width: 54px;
 }
-.assignment-info-dialog .dialog-title {text-align: center;}
-.assignment-info {gap: calc(var(--f7-grid-gap) / 2) !important; margin-bottom: calc(var(--f7-grid-gap) / 2);}
-.assignment-info.last-info {margin-bottom: 0;}
-.assignment-info div{
+.extra-info-dialog .dialog-title {text-align: center;}
+.extra-info {gap: calc(var(--f7-grid-gap) / 2) !important; margin-bottom: calc(var(--f7-grid-gap) / 2);}
+.extra-info.last-info {margin-bottom: 0;}
+.extra-info div{
     border: 2px solid var(--f7-theme-color);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: calc(var(--f7-typography-margin) / 2)
+    padding: calc(var(--f7-typography-margin) / 2);
+    text-align: center;
 }
-.assignment-info div .info-category-title {
+.extra-info div .info-category-title {
     margin: 0;
     font-weight: 600;
     font-size: 12px;
 }
-.assignment-info div .info-category-data {
+.extra-info div .info-category-data {
     margin: 0;
     font-weight: 600;
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 

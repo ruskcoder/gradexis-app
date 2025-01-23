@@ -20,8 +20,9 @@ import { createRoot } from 'react-dom/client';
 import { getClasses } from '../js/grades-api.js';
 const HomePage = ({ f7router }) => {
   updateRouter(f7router);
-  const users = useStore('users')
-  const user = useStore('currentUser')
+  const users = useStore('users');
+  const user = useStore('currentUser');
+
   useEffect(() => {
     if (user.username) {
       getClasses().then((data) => {
@@ -31,11 +32,13 @@ const HomePage = ({ f7router }) => {
           store.dispatch('setTerm', data.term);
         }
         else {
+          console.log(data.message)
           errorDialog(data.message)
         }
       }).catch(() => { errorDialog() })
     }
   }, [user.username])
+
   const switchAccount = () => {
     return () => {
       var chooseList = []

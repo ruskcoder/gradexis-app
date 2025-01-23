@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, useStore, f7, Preloader } from 'framework7-react';
-import terminal from 'virtual:terminal';
 import { AssignmentGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
-import store from '../js/store.js';
-import { EffectCoverflow } from 'swiper/modules';
 import { getGrades } from '../js/grades-api.js';
 
 const ClassGradesPage = ({ f7router, ...props }) => {
@@ -30,7 +27,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   useEffect(() => {
     if (user.username) {
-      console.log("doing")
       getGrades(props.course).then((data) => {
         if (!('success' in data)) {
           setGrades(data.assignments);
@@ -61,7 +57,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       });
       createRoot(container).render(
         <>
-          <div className="assignment-info grid grid-cols-1 margin-top">
+          <div className="extra-info grid grid-cols-1 margin-top">
             <div>
               <p className="info-category-title">Category</p>
               <p className="info-category-data">{assignment.category}</p>
@@ -74,7 +70,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             }
           </div>
 
-          <div className="assignment-info last-info grid grid-cols-2 grid-gap">
+          <div className="extra-info last-info grid grid-cols-2 grid-gap">
             {assignment["dateAssigned"] &&
               <div>
                 <p className="info-category-title">Date Assigned</p>
@@ -105,7 +101,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <p className="info-category-data">{assignment.percentage}</p>
             </div>
           </div>
-          <div className="assignment-info grid grid-cols-1 margin-top-half">
+          <div className="extra-info grid grid-cols-1 margin-top-half">
             {assignment['Average Score'] &&
               <div>
                 <p className="info-category-title">Average Score</p>
@@ -120,13 +116,13 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         window.f7alert = f7.dialog.create({
           title: assignment.assignment,
           closeByBackdropClick: true,
-          cssClass: 'assignment-info-dialog',
+          cssClass: 'extra-info-dialog',
           content: container.innerHTML,
         })
         window.f7alert.open();
       }, 0);
     }
-  }
+  };
 
   const createGrades = () => {
     var assignmentList = [];
@@ -145,7 +141,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       const container = document.createElement('div');
       createRoot(container).render(
         <>
-          <div className="assignment-info last-info grid grid-cols-2 grid-gap margin-top">
+          <div className="extra-info last-info grid grid-cols-2 grid-gap margin-top">
             <div>
               <p className="info-category-title">Weight</p>
               <p className="info-category-data">{category.categoryWeight}</p>
@@ -170,7 +166,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         f7.dialog.create({
           title: category.name,
           closeByBackdropClick: true,
-          cssClass: 'assignment-info-dialog',
+          cssClass: 'extra-info-dialog',
           content: container.innerHTML,
         }).open();
       }, 0);

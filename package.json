@@ -9,6 +9,7 @@
     "api": "cd gradexis-api && node index.js",
     "start": "npm run dev",
     "dev": "cross-env NODE_ENV=development vite",
+    "all": "concurrently \"npm run dev\" \"npm run api\"",
     "build": "cross-env NODE_ENV=production vite build && npx cap sync",
     "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
   },
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
     "cpy-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
