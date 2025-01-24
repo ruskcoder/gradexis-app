@@ -16,23 +16,43 @@ import 'framework7/css/bundle';
 import '../css/icons.css';
 import '../css/app.css';
 import '../css/quick-styles.css';
-
 import '../css/tabs.css';
 import '../css/grades.css';
 import '../css/list.css';
 import '../css/settings.css';
 import '../css/class-grades.css';
 import '../css/account-switcher.css'
-import * as serviceWorker from './sw.js';
-import $ from 'dom7';
 
 // Import App Component
 import App from '../components/app.jsx';
 
-document.addEventListener("contextmenu", function (e){
-    e.preventDefault();
-}, false);
+
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));
-serviceWorker.register();
+
+document.addEventListener("contextmenu", function (e){
+    e.preventDefault();
+}, false);
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    window.deferredPrompt = e;
+});
+window.addEventListener("load", function() {
+    setTimeout(function() {
+        window.scrollTo(0, 1);
+    }, 0);
+}); 
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+                console.log('Service Worker registration failed:', error);
+            });
+    });
+}
+
