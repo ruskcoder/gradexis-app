@@ -1,10 +1,14 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-// const apiUrl = 'https://api.gradexis.com';
-// const apiUrl = 'http://localhost:3000'
-const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
-// 192.12.146.182   school wifi
+var apiUrl;
+if (location.host == "mobile.gradexis.com") {
+    apiUrl = 'https://api.gradexis.com';
+}
+else {
+    apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
+    // apiUrl = 'http://localhost:3000';
+}
 
 const platformList = ['hac']
 function updateSession(data) {
