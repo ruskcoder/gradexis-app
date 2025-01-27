@@ -177,7 +177,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View classes and course requests"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        <ListItem link="/info/teachers/">
           <OverviewIcon
             slot="media"
             iconIos="f7:at"

@@ -8,6 +8,7 @@ import LoginPage from '../pages/login.jsx';
 import ClassGradesPage from '../pages/class-grades.jsx';
 import SchedulePage from '../pages/info/schedule.jsx';
 import AttendancePage from '../pages/info/attendance.jsx';
+import TeachersPage from "@/pages/info/teachers";
 
 var routes = [
   {
@@ -49,6 +50,11 @@ var routes = [
   {
     path: '/info/attendance/',
     component: AttendancePage,
+    hideTabbar: true
+  },
+  {
+    path: '/info/teachers/',
+    component: TeachersPage,
     hideTabbar: true
   },
   {
