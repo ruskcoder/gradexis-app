@@ -19,6 +19,7 @@ import '../css/quick-styles.css';
 import '../css/tabs.css';
 import '../css/grades.css';
 import '../css/list.css';
+import '../css/reports.css';
 import '../css/settings.css';
 import '../css/class-grades.css';
 import '../css/account-switcher.css'

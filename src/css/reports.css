@@ -1,0 +1,19 @@
+.table-header {
+    padding: 10px;
+}
+
+.table-cell {
+    padding: 10px;
+}
+
+.report-card-block {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    max-width: 100%;
+    overflow: auto;
+}
+
+.string-padding {
+    padding: 5px;
+}

@@ -17,24 +17,24 @@ const SchedulePage = ({ f7router }) => {
 
     const infoDialog = (schedule) => {
         return () => {
-          var scheduleItems = Object.keys(schedule);
-          var description = schedule['Description'];
-          scheduleItems = scheduleItems.filter(item => item !== 'Description');
-          const container = document.createElement('div');
-          createRoot(container).render(
-            <>
-              <div className="extra-info last-info grid grid-cols-2 grid-gap margin-top">
-                {
-                    scheduleItems.map((item, index) => (
-                        <div key={index}>
-                            <p className="info-category-title">{item}</p>
-                            <p className="info-category-data">{schedule[item]}</p>
-                        </div>
-                    ))
-                }
-              </div>
-            </>
-          );   
+            var scheduleItems = Object.keys(schedule);
+            var description = schedule['Description'];
+            scheduleItems = scheduleItems.filter(item => item !== 'Description');
+            const container = document.createElement('div');
+            createRoot(container).render(
+                <>
+                    <div className="extra-info last-info grid grid-cols-2 grid-gap margin-top">
+                        {
+                            scheduleItems.map((item, index) => (
+                                <div key={index}>
+                                    <p className="info-category-title" style={{ whiteSpace: 'normal' }}>{item}</p>
+                                    <p className="info-category-data" style={{ whiteSpace: 'normal' }}>{schedule[item]}</p>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </>
+            );
     
           setTimeout(() => {
             window.f7alert = f7.dialog.create({

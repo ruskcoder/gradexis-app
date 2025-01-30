@@ -4,7 +4,7 @@ PODS:
   - CapacitorApp (6.0.2):
     - Capacitor
   - CapacitorCordova (6.2.0)
-  - CapacitorStatusBar (6.0.1):
+  - CapacitorStatusBar (6.0.2):
     - Capacitor
   - HugotomaziCapacitorNavigationBar (4.0.1):
     - Capacitor
@@ -32,7 +32,7 @@ SPEC CHECKSUMS:
   Capacitor: 05d35014f4425b0740fc8776481f6a369ad071bf
   CapacitorApp: e1e6b7d05e444d593ca16fd6d76f2b7c48b5aea7
   CapacitorCordova: b33e7f4aa4ed105dd43283acdd940964374a87d9
-  CapacitorStatusBar: 9ed7f06318fd436917072a9bf60fda56d12c8bdb
+  CapacitorStatusBar: b16799a26320ffa52f6c8b01737d5a95bbb8f3eb
   HugotomaziCapacitorNavigationBar: d56bded81461cc38cd071727126e7298002ff2b5
 
 PODFILE CHECKSUM: b252a43f69b2324cb7f849f3defbe5ec18ac5ee4
