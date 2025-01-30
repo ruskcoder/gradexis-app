@@ -1,7 +1,7 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-var apiUrl = 'https://api.gradexis.com';
+const apiUrl = 'https://api.gradexis.com';
 
 const platformList = ['hac']
 function updateSession(data) {
@@ -118,6 +118,48 @@ export async function getTeachers() {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
                 `${apiUrl}/${user.platform}/teachers?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            );
+            const data = await response.json();
+            updateSession(data);
+            return data
+        }
+        else {
+            return false
+        }
+
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getProgressReport() {
+    const user = store.state.currentUser;
+    const session = store.state.session;
+    try {
+        if (platformList.includes(user.platform)) {
+            const response = await fetch(
+                `${apiUrl}/${user.platform}/ipr?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            );
+            const data = await response.json();
+            updateSession(data);
+            return data
+        }
+        else {
+            return false
+        }
+
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getReportCard() {
+    const user = store.state.currentUser;
+    const session = store.state.session;
+    try {
+        if (platformList.includes(user.platform)) {
+            const response = await fetch(
+                `${apiUrl}/${user.platform}/reportCard?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);

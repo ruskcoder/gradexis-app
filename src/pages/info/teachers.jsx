@@ -14,7 +14,6 @@ const TeachersPage = ({f7router}) => {
             .then((data) => {
                 console.log('Fetched teachers data:', data);
                 setTeachers(data);
-                console.log(teachers);
                 setLoading(false);
             })
             .catch((error) => {
@@ -76,7 +75,7 @@ const TeachersPage = ({f7router}) => {
                             </ListItem>
                         ))
                     ) : (
-                        <Block strong>No teachers data available</Block>
+                        <Block strong>No teacher data available</Block>
                     )}
                 </List>
             )}

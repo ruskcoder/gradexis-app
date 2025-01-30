@@ -185,10 +185,10 @@ const HomePage = ({ f7router }) => {
           />
           <OverviewItem
             title="Contact Teachers"
-            subtitle="View email your teachers"
+            subtitle="Email your teachers"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        <ListItem link="/info/ipr/">
           <OverviewIcon
             slot="media"
             iconIos="f7:gauge"
@@ -199,7 +199,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View interim scores"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        <ListItem link="/info/reportCard/">
           <OverviewIcon
             slot="media"
             iconIos="f7:doc_chart"
