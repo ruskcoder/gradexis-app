@@ -32,7 +32,10 @@
 
 .md .sortable:not(.no-handle) .sortable-handler {
     width: 15px;
-    right: 27px;
+    right: 27px !important;
+}
+.iosRound.sortable:not(.no-handle) .sortable-handler {
+    right: 8px;
 }
 
 .sortable .sortable-handler:after {
@@ -40,7 +43,7 @@
     opacity: 0.2;
 }
 
-.list .chevron {
+/* .list .chevron {
     font-family: "framework7-core-icons";
     color: var(--f7-text-color);
     opacity: 0.2;
@@ -71,4 +74,4 @@
 .no-chevron.sortable.sortable-enabled .chevron::before {
     display: flex;
     content: ""
-}
+} */

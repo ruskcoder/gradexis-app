@@ -99,7 +99,7 @@ const SettingsPage = ({ f7router }) => {
       item: "layout",
       value: newLayout,
     });
-    location.href = "/";
+    restartApp();
   }
 
   const changeName = () => {

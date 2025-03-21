@@ -31,3 +31,14 @@
 .subnavbar {
     margin-top: -1px !important;
 }
+
+.sortable.sortable-enabled:not(.no-handle) .grades-number {
+    margin-right: 24px;
+}
+
+.options-dialog .dialog-button{
+    width: 100%
+}
+.options-dialog .dialog-buttons .dialog-button:nth-child(2){
+    width: 70%
+}

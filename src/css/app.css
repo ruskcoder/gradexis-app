@@ -2,14 +2,13 @@
     --f7-navbar-subtitle-font-size: 14px !important;
     --f7-subnavbar-height: 48px !important;
     --f7-dialog-width: 300px !important;
+    --f7-grid-gap: calc(var(--f7-typography-margin) * 3/4);
 } 
 
 ::-webkit-scrollbar {
     display: none;
 }
-.dialog-inner {
-    
-}
+
 .login {
     display: block;
     position: absolute;
@@ -112,4 +111,8 @@
 
 .calendar-day-event {
     display: none;
+}
+
+.options-dialog .dialog-inner {
+    text-align: center;
 }

@@ -42,8 +42,8 @@ const SchedulePage = ({ f7router }) => {
                 closeByBackdropClick: true,
                 cssClass: 'extra-info-dialog',
                 content: container.innerHTML,
-                })
-                window.f7alert.open();
+            })
+            window.f7alert.open();
           }, 0);
         }
       }
@@ -55,15 +55,15 @@ const SchedulePage = ({ f7router }) => {
                     <Preloader />
                 </div>
             ) : (
-                <List mediaList inset strong className="margin-top">
+                <List mediaList inset strong className="margin-top" noChevron>
                     {schedule.schedule.map((item, index) => (
                         <ListItem
                             key={index}
                             title={item.Description}
                             link="#"
                             onClick={infoDialog(item)}
-                            subtitle={`${item.Teacher}, Room: ${item.Room}`}
-                            // text={`${item.Days}, Marking Periods: ${item['Marking Periods']}, Building: ${item.Building}, Status: ${item.Status}`}
+                            subtitle={item.Teacher}
+                            after={item.Room}
                         >
                             <div
                                 slot="media"

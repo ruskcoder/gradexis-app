@@ -129,7 +129,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     grades.forEach((assignment, i) => {
       assignmentList.push(
         <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
-          <AssignmentGradeItem name={assignment.assignment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.score} color={colorFromCategory(assignment.category)} />
+          <AssignmentGradeItem name={assignment.assignment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.percentage.slice(0, -1)} color={colorFromCategory(assignment.category)} />
         </ListItem>
       )
     });

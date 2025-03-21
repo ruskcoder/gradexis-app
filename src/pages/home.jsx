@@ -30,11 +30,44 @@ const HomePage = ({ f7router }) => {
           store.state.termList = data.termList;
           store.dispatch('setClasses', data.classes);
           store.dispatch('setTerm', data.term);
+          if (store.state.currentUser.gradelist) {
+            for (const item of data.classes) {
+              if (store.state.currentUser.gradelist[item.name]) {
+                store.state.currentUser.gradelist[item.name]['grade'] = item.average;
+              } 
+              else {
+                let found = false;
+                for (const [className, opts] of Object.entries(store.state.currentUser.gradelist)) {
+                  if (opts.course == item.course) {
+                    delete store.state.currentUser.gradelist[className];
+                    store.state.currentUser.gradelist[item.name] = opts;
+                    store.state.currentUser.gradelist[item.name]['rename'] = item.name;
+                    found = true;
+                    break;
+                  }
+                }
+                if (!found) {
+                  store.state.currentUser.gradelist[item.name] = { hide: false, rename: item.name, grade: item.average, course: item.course };
+                }
+              }
+            }
+            for (const item of Object.keys(store.state.currentUser.gradelist)) {
+              if (!data.classes.find((classItem) => classItem.name == item)) {
+                delete store.state.currentUser.gradelist[item];
+              }
+            }
+            store.dispatch('changeUserData',
+              {
+                userNumber: store.state.currentUserNumber,
+                item: 'gradelist',
+                value: store.state.currentUser.gradelist
+              }
+            )
+          }
         }
-        else {
-          console.log(data.message)
-          errorDialog(data.message)
-        }
+        // else {
+        //   errorDialog(data.message)
+        // }
       }).catch(() => { errorDialog() })
     }
   }, [user.username])
@@ -135,15 +168,15 @@ const HomePage = ({ f7router }) => {
       </Navbar>
       <List
         mediaList
-        dividersIos={user.groupLists == true} 
-        outlineIos = {user.groupLists == true}
-        strongIos = {user.groupLists == true}
-        sortable
+        dividersIos={user.groupLists == true}
+        outlineIos={user.groupLists == true}
+        strongIos={user.groupLists == true}
+        chevronCenter
+        // sortable
         // sortableEnabled
         className={`overviewList mod-list mt-fix ${user.groupLists == true ? "" : "iosRound"}`}
       >
         <ListItem
-          // onClick={() => { navigate(f7router, '/info/attendance/') }}
           link="/info/attendance/">
           <OverviewIcon
             slot="media"
