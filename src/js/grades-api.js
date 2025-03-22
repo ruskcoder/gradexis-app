@@ -1,8 +1,8 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-// const apiUrl = 'https://api.gradexis.com';
-const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
+ const apiUrl = 'https://api.gradexis.com';
+//const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
 
 const platformList = ['hac']
 function updateSession(data) {
