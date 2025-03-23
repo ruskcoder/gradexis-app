@@ -1,9 +1,9 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-const apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
+var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
 if (location.host == "mobile.gradexis.com") { 
-    const apiUrl = 'https://api.gradexis.com'; 
+    apiUrl = 'https://api.gradexis.com'; 
 }
 
 const platformList = ['hac']
