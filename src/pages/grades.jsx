@@ -144,6 +144,20 @@ const GradesPage = ({ f7router }) => {
     }).open();
   };
 
+  const toastWithCustomButton = useRef(null);
+  const showToastWithCustomButton = () => {
+    // Create toast
+    if (!toastWithCustomButton.current) {
+      toastWithCustomButton.current = f7.toast.create({
+        text: 'No internet; using cached grades',
+        closeButton: true,
+        closeButtonText: 'OK',
+        closeButtonColor: 'red',
+      });
+    }
+    toastWithCustomButton.current.open();
+  };
+ 
   useEffect(() => {
     $('.grades-list-item').each(function () {
       const course = $(this).find('.item-subtitle').text().trim();

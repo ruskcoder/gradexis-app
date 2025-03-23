@@ -44,8 +44,30 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [grades, setGrades] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
-
+  const [animatedValue, setAnimatedValue] = useState(0); // State for animated gauge value
   const [loading, setLoading] = useState(true);
+
+  // Animate the gauge value if user.anim is true
+  useEffect(() => {
+    if (user.anim) {
+      const targetValue = typeof average === 'string'
+        ? parseFloat(average.slice(0, -1)) / 100
+        : average / 100;
+      let currentValue = 0;
+      const step = targetValue / 20;
+      const interval = setInterval(() => {
+        currentValue += step;
+        if (currentValue >= targetValue) {
+          currentValue = targetValue;
+          clearInterval(interval);
+        }
+        setAnimatedValue(currentValue);
+      }, 1);
+      return () => clearInterval(interval);
+    } else {
+      setAnimatedValue(parseFloat(average.slice(0, -1)) / 100);
+    }
+  }, [average, user.anim]);
 
   const infoDialog = (assignment) => {
     return () => {
@@ -227,7 +249,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               Analysis
             </Button>
           </Segmented>
-          <Button disabled small className="margin-left" tonal active={activeStrongButton === 2} onClick={() => setActiveStrongButton(2)} style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}>
+          <Button small className="margin-left" tonal active={activeStrongButton === 2} onClick={() => setActiveStrongButton(2)} style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}>
             What If
           </Button>
         </div>
@@ -242,11 +264,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <Gauge
                 className="margin-half"
                 type="circle"
-                value={parseFloat(average.slice(0, -1)) / 100}
+                value={animatedValue} // Use animated value here
                 borderColor={primaryFromColor(user.theme)}
                 borderBgColor={gaugeBackgroundColor(user.theme)}
                 borderWidth={20}
-                valueText={`${parseFloat(average.slice(0, -1)).toPrecision(4)}`}
+                valueText={`${(animatedValue * 100).toPrecision(4)}`}
                 valueFontSize={50}
                 valueTextColor={primaryFromColor(user.theme)}
                 labelText="Overall"
