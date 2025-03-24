@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { getGrades } from '../js/grades-api.js';
+import { StatusBarAnimation } from '@capacitor/status-bar';
 
 const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeStrongButton, setActiveStrongButton] = useState(0);
@@ -31,7 +32,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         if (!('success' in data)) {
           setGrades(data.assignments);
           setCategories(data.categories);
-          setAverage(data.average);
+          setAverage(data.average.slice(0, -1));
           setLoading(false);
         }
         else {
@@ -44,28 +45,23 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [grades, setGrades] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
-  const [animatedValue, setAnimatedValue] = useState(0); // State for animated gauge value
+  const [animatedValue, setAnimatedValue] = useState(0); 
   const [loading, setLoading] = useState(true);
 
-  // Animate the gauge value if user.anim is true
   useEffect(() => {
     if (user.anim) {
-      const targetValue = typeof average === 'string'
-        ? parseFloat(average.slice(0, -1)) / 100
-        : average / 100;
+      const targetValue = average;
       let currentValue = 0;
       const step = targetValue / 20;
       const interval = setInterval(() => {
         currentValue += step;
         if (currentValue >= targetValue) {
-          currentValue = targetValue;
+          currentValue = parseFloat(targetValue);
           clearInterval(interval);
         }
         setAnimatedValue(currentValue);
       }, 1);
       return () => clearInterval(interval);
-    } else {
-      setAnimatedValue(parseFloat(average.slice(0, -1)) / 100);
     }
   }, [average, user.anim]);
 
@@ -264,11 +260,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <Gauge
                 className="margin-half"
                 type="circle"
-                value={animatedValue} // Use animated value here
+                value={user.anim ? animatedValue : average / 100} // Use animated value here
                 borderColor={primaryFromColor(user.theme)}
                 borderBgColor={gaugeBackgroundColor(user.theme)}
                 borderWidth={20}
-                valueText={`${(animatedValue * 100).toPrecision(4)}`}
+                valueText={`${(user.anim ? animatedValue : parseFloat(average)).toPrecision(4)}`}
                 valueFontSize={50}
                 valueTextColor={primaryFromColor(user.theme)}
                 labelText="Overall"
