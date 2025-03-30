@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { getGrades } from '../js/grades-api.js';
-import { StatusBarAnimation } from '@capacitor/status-bar';
+import store from '../js/store.js';
 
 const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeStrongButton, setActiveStrongButton] = useState(0);
@@ -28,28 +28,37 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   useEffect(() => {
     if (user.username) {
-      getGrades(props.course).then((data) => {
-        if (!('success' in data)) {
-          setGrades(data.assignments);
-          setCategories(data.categories);
-          setAverage(data.average.slice(0, -1));
-          setLoading(false);
-        }
-        else {
-          errorDialog(data.message);
-        }
-      }).catch(() => { errorDialog() })
+      if (!store.state.scoresIncluded) {
+        getGrades(props.course).then((data) => {
+          if (!('success' in data)) {
+            setScores(data.assignments);
+            setCategories(data.categories);
+            setAverage(data.average.slice(0, -1));
+            setLoading(false);
+          }
+          else {
+            errorDialog(data.message);
+          }
+        }).catch(() => { errorDialog() })
+      }
+      else {
+        setLoading(false);
+        setScores(user.gradelist[user.term][props.course].scores);
+        setCategories(user.gradelist[user.term][props.course].categories);
+        console.log(user.gradelist[user.term][props.course])
+        setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
+      }
     }
-  }, [user.username, props.course]);
+  }, [user.username, user.gradelist, user.term, props.course]);
 
-  const [grades, setGrades] = useState([]);
+  const [scores, setScores] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
-  const [animatedValue, setAnimatedValue] = useState(0); 
+  const [animatedValue, setAnimatedValue] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user.anim) {
+    if (user.anim != false) {
       const targetValue = average;
       let currentValue = 0;
       const step = targetValue / 20;
@@ -144,7 +153,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   const createGrades = () => {
     var assignmentList = [];
-    grades.forEach((assignment, i) => {
+    scores.forEach((assignment, i) => {
       assignmentList.push(
         <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
           <AssignmentGradeItem name={assignment.assignment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.percentage.slice(0, -1)} color={colorFromCategory(assignment.category)} />
@@ -260,11 +269,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <Gauge
                 className="margin-half"
                 type="circle"
-                value={user.anim ? animatedValue : average / 100} // Use animated value here
+                value={user.anim != false ? animatedValue / 100 : average / 100} // Use animated value here
                 borderColor={primaryFromColor(user.theme)}
                 borderBgColor={gaugeBackgroundColor(user.theme)}
                 borderWidth={20}
-                valueText={`${(user.anim ? animatedValue : parseFloat(average)).toPrecision(4)}`}
+                valueText={`${(user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4)}`}
                 valueFontSize={50}
                 valueTextColor={primaryFromColor(user.theme)}
                 labelText="Overall"
@@ -277,7 +286,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       </Block>
 
       {!loading &&
-        <List dividersIos mediaList strongIos strong inset className="grades-list no-chevron mod-list margin-top">
+        <List dividersIos mediaList strongIos strong inset className="scores-list no-chevron mod-list margin-top">
           {createGrades()}
         </List>
       }

@@ -67,18 +67,18 @@
     line-height: var(--f7-list-item-subtitle-font-size);
 }
 
-.grades-list  .item-title{
+.scores-list  .item-title{
     text-overflow: clip;
 
 }
-.grades-list .ripple-wave {
+.scores-list .ripple-wave {
     z-index: 100;
 }
 .assignments-item {
     position: relative;
 }
 
-.grades-list  .assignments-item:before{
+.scores-list  .assignments-item:before{
     content: '';
     position: absolute;
     background: linear-gradient(90deg, transparent 80%, var(--f7-list-strong-bg-color) 95%);

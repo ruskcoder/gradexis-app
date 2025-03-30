@@ -5,7 +5,9 @@ var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
 if (location.host == "mobile.gradexis.com") { 
     apiUrl = 'https://api.gradexis.com'; 
 }
-
+else if (location.hostname == "localhost") {
+    apiUrl = 'http://localhost:3000';
+}
 const platformList = ['hac']
 function updateSession(data) {
     store.dispatch('setSession', data.session);

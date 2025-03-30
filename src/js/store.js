@@ -21,11 +21,10 @@ if (currentUserNumber >= users.length) {
 const store = createStore({
   state: {
     users: users,
-    currentUser: users.length != 0 ? users[currentUserNumber] : {scheme: 'light', theme: '#007aff', layout: 'md'},
+    currentUser: users.length != 0 ? users[currentUserNumber] : {scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}},
     currentUserNumber: currentUserNumber,
-    classes: [],
-    term: -1,
-    termList: ["1", "2", "3", "4", "5", "6"],
+    scoresIncluded: false,
+    useCache: false,
     session: {}
   },
   getters: {
@@ -34,12 +33,6 @@ const store = createStore({
     },
     currentUser({ state }) {
       return state.currentUser;
-    },
-    term({ state }) {
-      return state.term;
-    },
-    termList({ state }) {
-      return state.termList;
     },
     classes({ state }) {
       return state.classes;
@@ -105,10 +98,7 @@ const store = createStore({
       state.classes = classes;
     },
     setTerm({ state }, term) {
-      state.term = term;
-    },
-    setTermList({ state }, termList) {
-      state.termList = termList;
+      state.currentUser.term = term;
     },
     setSession({ state }, session) {
       state.session = session;  

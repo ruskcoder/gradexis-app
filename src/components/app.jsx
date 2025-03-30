@@ -67,7 +67,7 @@ export const errorDialog = (err = "") => {
   }
   f7.dialog.create({
     title: 'Error',
-    text: 'An error occurred. Please restart the app and try again. <br> Error: ' + err,
+    text: `An error occurred. Please restart the app and try again. ${err ? "<br> Error:" + err : ""}`,
     buttons: [
       {
         text: 'OK',
