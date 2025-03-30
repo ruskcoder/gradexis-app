@@ -51,12 +51,36 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     }
   }, [user.username, user.gradelist, user.term, props.course]);
 
+  
   const [scores, setScores] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
   const [animatedValue, setAnimatedValue] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  if (user.username) {
+    if (!store.state.scoresIncluded) {
+      getGrades(props.course).then((data) => {
+        if (!('success' in data)) {
+          setScores(data.assignments);
+          setCategories(data.categories);
+          setAverage(data.average.slice(0, -1));
+          setLoading(false);
+        }
+        else {
+          errorDialog(data.message);
+        }
+      }).catch(() => { errorDialog() })
+    }
+    else {
+      setLoading(false);
+      setScores(user.gradelist[user.term][props.course].scores);
+      setCategories(user.gradelist[user.term][props.course].categories);
+      console.log(user.gradelist[user.term][props.course])
+      setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
+    }
+  }
+  
   useEffect(() => {
     if (user.anim != false) {
       const targetValue = average;
