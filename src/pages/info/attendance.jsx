@@ -10,7 +10,7 @@ const AttendancePage = ({ f7router }) => {
 
   useEffect(() => {
     getAttendance().then((data) => {
-      if (!('success' in data)) {
+      if (data.success != false) {
         setLoading(false);
         const monthNames = [
           'January', 'February', 'March', 'April', 'May', 'June',

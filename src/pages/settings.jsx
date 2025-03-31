@@ -151,8 +151,8 @@ const SettingsPage = ({ f7router }) => {
 
   const logout = () => {
     return () => {
-      store.dispatch("removeUser", store.state.currentUser.username);
       f7.dialog.confirm("Are you sure you want to logout?", "Logout", () => {
+        store.dispatch("removeUser", store.state.currentUser.username);
         location.href = "/"
       });
     };

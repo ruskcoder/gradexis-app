@@ -28,9 +28,9 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   useEffect(() => {
     if (user.username) {
-      if (!store.state.scoresIncluded) {
+      if (!store.state.scoresIncluded && !store.state.useCache) {
         getGrades(props.course).then((data) => {
-          if (!('success' in data)) {
+          if (data.success != false) {
             setScores(data.assignments);
             setCategories(data.categories);
             setAverage(data.average.slice(0, -1));
@@ -45,7 +45,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         setLoading(false);
         setScores(user.gradelist[user.term][props.course].scores);
         setCategories(user.gradelist[user.term][props.course].categories);
-        console.log(user.gradelist[user.term][props.course])
         setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
       }
     }
@@ -57,29 +56,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [average, setAverage] = useState(0);
   const [animatedValue, setAnimatedValue] = useState(0);
   const [loading, setLoading] = useState(true);
-
-  if (user.username) {
-    if (!store.state.scoresIncluded) {
-      getGrades(props.course).then((data) => {
-        if (!('success' in data)) {
-          setScores(data.assignments);
-          setCategories(data.categories);
-          setAverage(data.average.slice(0, -1));
-          setLoading(false);
-        }
-        else {
-          errorDialog(data.message);
-        }
-      }).catch(() => { errorDialog() })
-    }
-    else {
-      setLoading(false);
-      setScores(user.gradelist[user.term][props.course].scores);
-      setCategories(user.gradelist[user.term][props.course].categories);
-      console.log(user.gradelist[user.term][props.course])
-      setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
-    }
-  }
   
   useEffect(() => {
     if (user.anim != false) {

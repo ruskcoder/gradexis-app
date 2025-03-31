@@ -137,3 +137,6 @@
 .options-dialog .dialog-inner {
     text-align: center;
 }
+.toast-bottom {
+    bottom: calc(88px + var(--f7-safe-area-bottom)) !important;
+}

@@ -102,6 +102,9 @@ const store = createStore({
     },
     setSession({ state }, session) {
       state.session = session;  
+    },
+    setUseCache({ state }, useCache) {
+      state.useCache = useCache;
     }
   }
 });

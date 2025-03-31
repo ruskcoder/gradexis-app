@@ -13,128 +13,167 @@ const GradesPage = ({ f7router }) => {
   const user = useStore('currentUser');
   const [sortMode, setSortMode] = useState(false);
   const [globalgradelist, setGradelist] = useState(store.state.currentUser.gradelist);
+  const useCacheToast = useRef(null);
+
   useEffect(() => {
     setTermsLoading(true);
-
     if (user.username) {
-      getClasses().then((data) => {
-        if (!('success' in data)) {
-          store.dispatch('changeUserData',
-            {
-              userNumber: store.state.currentUserNumber,
-              item: 'termList',
-              value: data.termList
-            }
-          )
-          store.dispatch('changeUserData',
-            {
-              userNumber: store.state.currentUserNumber,
-              item: 'term',
-              value: data.term
-            }
-          )
-          setActiveButtonIndex(user.termList.indexOf(data.term));
-          setTermsLoading(false);
-          setLoading(false);
-          if (store.state.currentUser.gradelist && store.state.currentUser.gradelist[data.term]) {
-            for (const item of data.classes) {
-              if (store.state.currentUser.gradelist[data.term][item.name]) {
-                store.state.currentUser.gradelist[data.term][item.name]['average'] = item.average;
-                if (data.scoresIncluded) {
-                  store.state.scoresIncluded = true;
-                  store.state.currentUser.gradelist[data.term][item.name]['scores'] = item.scores;
-                  store.state.currentUser.gradelist[data.term][item.name]['categories'] = item.categories;
-                }
+      const timeout = setTimeout(() => {
+        if (!useCacheToast.current) {
+          useCacheToast.current = f7.toast.create({
+            text: "Taking a while to load. Use cached data?",
+            closeButton: true,
+            closeButtonText: 'Yes',
+            closeButtonColor: 'red',
+            closeTimeout: 10000,
+            on: {
+              close: () => {
+                useCacheToast.current = null;
+              },
+              closeButtonClick: () => {
+                useCacheToast.current.close();
+                setLoading(false);
+                setTermsLoading(false);
+                store.dispatch('setUseCache', true);
+                setActiveButtonIndex(user.termList.indexOf(user.term));
               }
-              else {
-                let found = false;
-                for (const [className, opts] of Object.entries(store.state.currentUser.gradelist[data.term])) {
-                  if (opts.course == item.course) {
-                    delete store.state.currentUser.gradelist[data.term][className];
-                    store.state.currentUser.gradelist[data.term][item.name] = opts;
-                    store.state.currentUser.gradelist[data.term][item.name]['rename'] = item.name;
-                    found = true;
-                    break;
+            }
+          });
+        }
+        useCacheToast.current.open();
+      }, 7500);
+
+      getClasses()
+        .then((data) => {
+          clearTimeout(timeout);
+          if (data.success != false && !store.state.useCache) {
+            store.dispatch('changeUserData',
+              {
+                userNumber: store.state.currentUserNumber,
+                item: 'termList',
+                value: data.termList
+              }
+            );
+            store.dispatch('changeUserData',
+              {
+                userNumber: store.state.currentUserNumber,
+                item: 'term',
+                value: data.term
+              }
+            );
+            if (data.scoresIncluded) {
+              store.state.scoresIncluded = true;
+            }
+            setActiveButtonIndex(user.termList.indexOf(data.term));
+            setTermsLoading(false);
+            setLoading(false);
+            if (store.state.currentUser.gradelist && store.state.currentUser.gradelist[data.term]) {
+              for (const item of data.classes) {
+                if (store.state.currentUser.gradelist[data.term][item.name]) {
+                  store.state.currentUser.gradelist[data.term][item.name]['average'] = item.average;
+                  if (data.scoresIncluded) {
+                    store.state.currentUser.gradelist[data.term][item.name]['scores'] = item.scores;
+                    store.state.currentUser.gradelist[data.term][item.name]['categories'] = item.categories;
+                  }
+                } else {
+                  let found = false;
+                  for (const [className, opts] of Object.entries(store.state.currentUser.gradelist[data.term])) {
+                    if (opts.course == item.course) {
+                      delete store.state.currentUser.gradelist[data.term][className];
+                      store.state.currentUser.gradelist[data.term][item.name] = opts;
+                      store.state.currentUser.gradelist[data.term][item.name]['rename'] = item.name;
+                      found = true;
+                      break;
+                    }
+                  }
+                  if (!found) {
+                    store.state.currentUser.gradelist[data.term][item.name] = { hide: false, rename: item.name, average: item.average, course: item.course, scores: {}, categories: {} };
                   }
                 }
-                if (!found) {
-                  store.state.currentUser.gradelist[data.term][item.name] = { hide: false, rename: item.name, average: item.average, course: item.course, scores: {}, categories: {} };
+              }
+              for (const item of Object.keys(store.state.currentUser.gradelist[data.term])) {
+                if (!data.classes.find((classItem) => classItem.name == item)) {
+                  delete store.state.currentUser.gradelist[data.term][item];
                 }
               }
-            }
-            for (const item of Object.keys(store.state.currentUser.gradelist[data.term])) {
-              if (!data.classes.find((classItem) => classItem.name == item)) {
-                delete store.state.currentUser.gradelist[data.term][item];
+              store.dispatch('changeUserData',
+                {
+                  userNumber: store.state.currentUserNumber,
+                  item: 'gradelist',
+                  value: store.state.currentUser.gradelist
+                }
+              );
+            } else if (store.state.currentUser.gradelist && !store.state.currentUser.gradelist[data.term]) {
+              const gradelist = { [data.term]: {} };
+
+              // Get the previous term's gradelist if it exists
+              const previousTerm = Object.keys(store.state.currentUser.gradelist).pop();
+              const previousTermGradelist = store.state.currentUser.gradelist[previousTerm] || {};
+
+              // Create the new term gradelist based on the previous term
+              for (const item of data.classes) {
+                if (previousTermGradelist[item.name]) {
+                  // Match hide, rename, and other properties from the previous term
+                  gradelist[data.term][item.name] = {
+                    ...previousTermGradelist[item.name],
+                    average: item.average, // Update the grade for the new term
+                    course: item.course, // Ensure the course is updated
+                    scores: item.scores || [], // Add scores as a list
+                    categories: item.categories || {}, // Add categories
+                  };
+                } else {
+                  // Add new classes to the end
+                  gradelist[data.term][item.name] = {
+                    hide: false,
+                    rename: item.name,
+                    average: item.average,
+                    course: item.course,
+                    scores: item.scores || [], // Add scores as a list
+                    categories: item.categories || {}, // Add categories
+                  };
+                }
               }
-            }
-            store.dispatch('changeUserData',
-              {
+
+              // Dispatch the updated gradelist to the store
+              store.dispatch('changeUserData', {
                 userNumber: store.state.currentUserNumber,
                 item: 'gradelist',
-                value: store.state.currentUser.gradelist
-              }
-            )
-          }
-          else if (store.state.currentUser.gradelist && !store.state.currentUser.gradelist[data.term]) {
-            const gradelist = { [data.term]: {} };
+                value: { ...store.state.currentUser.gradelist, ...gradelist },
+              });
 
-            // Get the previous term's gradelist if it exists
-            const previousTerm = Object.keys(store.state.currentUser.gradelist).pop();
-            const previousTermGradelist = store.state.currentUser.gradelist[previousTerm] || {};
+              // Update the local state
+              setGradelist({ ...store.state.currentUser.gradelist, ...gradelist });
+            } else {
+              const gradelist = {
+                [data.term]: data.classes.reduce((acc, item) => {
+                  acc[item.name] = {
+                    hide: false,
+                    rename: item.name,
+                    average: item.average,
+                    course: item.course,
+                    scores: item.scores || [], // Add scores as a list
+                    categories: item.categories || {}, // Add categories
+                  };
+                  return acc;
+                }, {})
+              };
 
-            // Create the new term gradelist based on the previous term
-            for (const item of data.classes) {
-              if (previousTermGradelist[item.name]) {
-                // Match hide, rename, and other properties from the previous term
-                gradelist[data.term][item.name] = {
-                  ...previousTermGradelist[item.name],
-                  average: item.average, // Update the grade for the new term
-                  course: item.course, // Ensure the course is updated
-                };
-              } else {
-                // Add new classes to the end
-                gradelist[data.term][item.name] = {
-                  hide: false,
-                  rename: item.name,
-                  average: item.average,
-                  course: item.course,
-                  scores: {},
-                  categories: {},
-                };
-              }
-            }
-
-            // Dispatch the updated gradelist to the store
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'gradelist',
-              value: { ...store.state.currentUser.gradelist, ...gradelist },
-            });
-
-            // Update the local state
-            setGradelist({ ...store.state.currentUser.gradelist, ...gradelist });
-          }
-          else {
-            const gradelist = {
-              [data.term]: data.classes.reduce((acc, item) => {
-                acc[item.name] = { hide: false, rename: item.name, average: item.average, course: item.course, scores: {}, categories: {} };
-                return acc;
-              }, {})
-            };
-            store.dispatch('changeUserData',
-              {
+              store.dispatch('changeUserData', {
                 userNumber: store.state.currentUserNumber,
                 item: 'gradelist',
-                value: gradelist
-              }
-            )
-            setGradelist({ ...gradelist });
+                value: gradelist,
+              });
+
+              setGradelist({ ...gradelist });
+            }
           }
-        }
-      })
-      // .catch(() => { errorDialog() })
+        })
+        .catch((err) => {
+          clearTimeout(timeout); // Clear the timeout if an error occurs
+          errorDialog(err.message);
+        });
     }
-  }, [user.username])
+  }, [user.username]);
 
   const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
 
@@ -142,11 +181,39 @@ const GradesPage = ({ f7router }) => {
   const [termsLoading, setTermsLoading] = useState(true);
 
   const switchTerm = (index) => {
+    const selectedTerm = user.termList[index];
+
+    if (store.state.useCache) {
+      // Check if the selected term exists in the cache
+      if (store.state.currentUser.gradelist[selectedTerm]) {
+        // Use cached data
+        setActiveButtonIndex(index);
+        setGradelist(store.state.currentUser.gradelist);
+        store.dispatch('setTerm', selectedTerm);
+        setLoading(false);
+        f7.toast.show({
+          text: `Switched to ${selectedTerm} using cached data.`,
+          closeTimeout: 3000,
+        });
+      } else {
+        // Notify the user and revert to the previous term
+        f7.dialog.alert(
+          `The term "${selectedTerm}" does not exist in the cache. Reverting to the previous term.`,
+          'Cache Error',
+          () => {
+            setActiveButtonIndex(user.termList.indexOf(store.state.currentUser.term));
+          }
+        );
+      }
+      return;
+    }
+
+    // Proceed with loading data from the server if useCache is false
     setLoading(true);
     setActiveButtonIndex(index);
 
-    getClasses(user.termList[index]).then((data) => {
-      if (!('success' in data)) {
+    getClasses(selectedTerm).then((data) => {
+      if (data.success != false) {
         const term = data.term;
         const classes = data.classes;
 
@@ -160,18 +227,18 @@ const GradesPage = ({ f7router }) => {
             // Update existing class data for the term
             acc[item.name] = {
               ...store.state.currentUser.gradelist[term][item.name],
-              average: item.average, // Update the grade for the term
-              course: item.course, // Ensure the course is updated
-              scores: item.scores || [], // Add scores as a list
-              categories: item.categories || {}, // Update categories
+              average: item.average,
+              course: item.course,
+              scores: item.scores || [],
+              categories: item.categories || {},
             };
           } else if (previousTermGradelist[item.name]) {
             // Match hide, rename, and other properties from the previous term
             acc[item.name] = {
               ...previousTermGradelist[item.name],
-              average: item.average, // Update the grade for the new term
-              course: item.course, // Ensure the course is updated
-              scores: item.scores || [], // Add scores as a list
+              average: item.average,
+              course: item.course,
+              scores: item.scores || [],
             };
           } else {
             // Add new classes to the end
@@ -180,7 +247,7 @@ const GradesPage = ({ f7router }) => {
               rename: item.name,
               average: item.average,
               course: item.course,
-              scores: item.scores || [], // Add scores as a list
+              scores: item.scores || [],
               categories: item.categories || {},
             };
           }
@@ -221,7 +288,7 @@ const GradesPage = ({ f7router }) => {
 
   const ptr = (done) => {
     getClasses(user.termList[activeButtonIndex]).then((data) => {
-      if (!('success' in data)) {
+      if (data.success != false) {
         done();
         store.dispatch('setClasses', data.classes);
         store.dispatch('setTerm', data.term);
@@ -230,7 +297,7 @@ const GradesPage = ({ f7router }) => {
         done();
         errorDialog(data.message)
       }
-    }).catch(() => { errorDialog() })
+    }).catch((e) => { errorDialog(e.message) })
   };
 
   // Update updateGradelist to handle term-based gradelist
@@ -336,12 +403,17 @@ const GradesPage = ({ f7router }) => {
           key => store.state.currentUser.gradelist[user.term][key].course === course
         );
         const opts = store.state.currentUser.gradelist[user.term][cls];
-        if (opts.hide) {
-          createDialog(course, true);
-        } else {
-          if (opts.grade !== "" && sortMode === false) {
-            f7router.navigate(`/grades/${cls}/`);
+        try {
+          if (opts.hide) {
+            createDialog(course, true);
+          } else {
+            if (opts.average !== "" && sortMode === false) {
+              f7router.navigate(`/grades/${cls}/`);
+            }
           }
+        }
+        catch {
+          //pass
         }
       });
 
