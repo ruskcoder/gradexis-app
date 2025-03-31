@@ -10,7 +10,6 @@ import {
   useStore
 } from "framework7-react";
 import React, { useState, useEffect } from "react";
-import { terminal } from 'virtual:terminal'
 import store from "../js/store";
 
 const LoginPage = ({ f7router }) => {

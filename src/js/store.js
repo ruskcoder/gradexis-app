@@ -17,11 +17,11 @@ if (!currentUserNumber) {
 if (currentUserNumber >= users.length) {
   currentUserNumber = users.length - 1;
 }
-
+const defaultUser = {pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}}
 const store = createStore({
   state: {
     users: users,
-    currentUser: users.length != 0 ? users[currentUserNumber] : {scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}},
+    currentUser: users.length != 0 ? users[currentUserNumber] : defaultUser,
     currentUserNumber: currentUserNumber,
     scoresIncluded: false,
     useCache: false,
@@ -45,7 +45,7 @@ const store = createStore({
     async addUser({ state }, loginData) {
       const userData = await login(loginData)
       if (userData.success !== false) {
-        state.users = [...state.users, {...userData, pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md' }];
+        state.users = [...state.users, {...userData, ...defaultUser}];
         localStorage.setItem("users", JSON.stringify(state.users));
         
         if (state.currentUserNumber == -1) {

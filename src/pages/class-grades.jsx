@@ -263,7 +263,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             <Preloader />
           </Block>
         }
-        {!loading &&
+        {(!loading || store.state.useCache)  &&
           <div className="assignment-grade-container margin-top">
             <Card className="no-margin assignment-grade-item">
               <Gauge
