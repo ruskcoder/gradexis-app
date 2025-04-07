@@ -11,6 +11,7 @@ import AttendancePage from '../pages/info/attendance.jsx';
 import TeachersPage from "@/pages/info/teachers";
 import ProgressReportPage from "@/pages/info/ipr";
 import ReportCardPage from "@/pages/info/reportCard";
+import store from './store.js';
 
 var routes = [
   {
@@ -74,5 +75,13 @@ var routes = [
     component: NotFoundPage,
   },
 ];
+
+if (store.state.currentUser.pageTransition != "default") {
+  routes.forEach(route => {
+    route.options = {
+      transition: store.state.currentUser.pageTransition,
+    };
+  });
+}
 
 export default routes;

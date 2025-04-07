@@ -138,5 +138,14 @@
     text-align: center;
 }
 .toast-bottom {
-    bottom: calc(88px + var(--f7-safe-area-bottom)) !important;
+    bottom: calc(var(--f7-tabbar-icons-height) + 8px) !important;
+}
+.toast {
+    z-index: 9999 !important;
+}
+.dialog-backdrop {
+    z-index: 100000 !important;
+}
+.dialog {
+    z-index: 100001 !important;
 }

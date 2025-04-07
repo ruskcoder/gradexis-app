@@ -65,7 +65,7 @@ const store = createStore({
       localStorage.setItem("users", JSON.stringify(state.users));
       if (state.currentUser.username === username) {
         if (state.users.length === 0) {
-          state.currentUser = {};
+          // state.currentUser = {};
           state.currentUserNumber = -1;
           localStorage.setItem('currentUserNumber', -1);
         } else {

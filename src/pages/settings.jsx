@@ -41,7 +41,7 @@ export const updateStatusBars = async () => {
     await StatusBar.setBackgroundColor({ color: newColor });
     await NavigationBar.setColor({ color: newColor, darkButtons: store.state.currentUser.scheme == "light" });
     await StatusBar.show();
-  } catch (error) { 
+  } catch (error) {
     console.log("Web UI detected, skipping status bar and navigation bar color changes.")
   }
 }
@@ -53,6 +53,7 @@ const SettingsPage = ({ f7router }) => {
   const [biometrics, changeBiometrics] = useState(user.biometrics ? user.biometrics : false);
   const [groupLists, changeGroupLists] = useState(user.groupLists ? user.groupLists : false);
   const [anim, changeAnim] = useState(user.anim != false ? true : false);
+  const [pageTransition, changePageTransition] = useState(user.pageTransition || "f7-circle");
 
   function fixHexColor(hex) { let r = 0, g = 0, b = 0; if (hex.length === 4) { r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16); } else if (hex.length === 7) { r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16); } r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max !== min) { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } else { h = s = 0; } s = 1; l = 0.5; let q = l < 0.5 ? l * (1 + s) : l + s - l * s; let p = 2 * l - q; r = hueToRgb(p, q, h + 1 / 3); g = hueToRgb(p, q, h); b = hueToRgb(p, q, h - 1 / 3); r = Math.round(r * 255); g = Math.round(g * 255); b = Math.round(b * 255); return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`; } function hueToRgb(p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 1 / 2) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; }
   const restartApp = () => {
@@ -69,6 +70,16 @@ const SettingsPage = ({ f7router }) => {
       ]
     }).open();
   }
+  const setPageTransition = (newTransition) => {
+    changePageTransition(newTransition);
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "pageTransition",
+      value: newTransition,
+    });
+    restartApp();
+  };
+
   const setScheme = (newScheme) => {
     changeScheme(newScheme);
     f7.setDarkMode(newScheme === "dark");
@@ -247,19 +258,7 @@ const SettingsPage = ({ f7router }) => {
                 </option>
               </select>
             </ListItem>
-            <ListItem
-              link="#"
-              className="no-chevron"
-              onClick={() => setAnim(!anim)}
-            >
-              <span>Display Animations</span>
-              <Toggle
-                checked={anim}
-                onToggleChange={() =>
-                  setAnim(!anim)
-                }
-              />
-            </ListItem>
+
             {f7.theme == 'ios' && (
               <ListItem link="#" className="no-chevron"
                 onClick={() => {
@@ -295,6 +294,40 @@ const SettingsPage = ({ f7router }) => {
                 />
               </ListItem>
             )}
+            <ListItem
+              link="#"
+              className="no-chevron"
+              onClick={() => setAnim(!anim)}
+            >
+              <span>Display Animations</span>
+              <Toggle
+                checked={anim}
+                onToggleChange={() =>
+                  setAnim(!anim)
+                }
+              />
+            </ListItem>
+            <ListItem
+              title="Page Transition"
+              smartSelect
+              smartSelectParams={{ openIn: "popover" }}
+            >
+              <select
+                name="page-transition"
+                onChange={(selection) => setPageTransition(selection.target.value)}
+                value={pageTransition}
+              >
+                <option value="default">Default</option>
+                <option value="f7-circle">Circle</option>
+                <option value="f7-cover">Cover</option>
+                <option value="f7-cover-v">Cover Vertical</option>
+                <option value="f7-dive">Dive</option>
+                <option value="f7-fade">Fade</option>
+                <option value="f7-flip">Flip</option>
+                <option value="f7-parallax">Parallax</option>
+                <option value="f7-push">Push</option>
+              </select>
+            </ListItem>
           </List>
         </CardContent>
       </Card>

@@ -81,39 +81,40 @@ const GradesPage = ({ f7router }) => {
 
   // Refactored switchTerm function
   const switchTerm = (index) => {
+    store.state.useCache = false;
     const selectedTerm = user.termList[index];
 
-    if (store.state.useCache) {
-      // Check if the selected term exists in the cache
-      if (store.state.currentUser.gradelist[selectedTerm]) {
+    // if (store.state.useCache) {
+    //   // Check if the selected term exists in the cache
+    //   if (store.state.currentUser.gradelist[selectedTerm]) {
         
-        // Use cached data
-        setActiveButtonIndex(index);
-        setGradelist(store.state.currentUser.gradelist);
-        store.dispatch('setTerm', selectedTerm);
-        setLoading(false);
-        f7.toast.show({
-          text: `Switched to ${selectedTerm} using cached data.`,
-          closeTimeout: 3000,
-        });
-      } else {
-        // Notify the user and revert to the previous term
-        f7.dialog.alert(
-          `The term "${selectedTerm}" does not exist in the cache. Reverting to the previous term.`,
-          'Cache Error',
-          () => {
-            setActiveButtonIndex(user.termList.indexOf(store.state.currentUser.term));
-          }
-        );
-      }
-      return;
-    }
+    //     // Use cached data
+    //     setActiveButtonIndex(index);
+    //     setGradelist(store.state.currentUser.gradelist);
+    //     store.dispatch('setTerm', selectedTerm);
+    //     setLoading(false);
+    //     f7.toast.show({
+    //       text: `Switched to ${selectedTerm} using cached data.`
+    //     });
+    //   } else {
+    //     // Notify the user and revert to the previous term
+    //     f7.dialog.alert(
+    //       `The term "${selectedTerm}" does not exist in the cache. Reverting to the previous term.`,
+    //       'Cache Error',
+    //       () => {
+    //         setActiveButtonIndex(user.termList.indexOf(store.state.currentUser.term));
+    //       }
+    //     );
+    //   }
+    //   return;
+    // }
 
     // Proceed with loading data from the server if useCache is false
     setLoading(true);
     setActiveButtonIndex(index);
-
+    const timeout = cacheToastTimeout(user.termList[index]);
     getClasses(selectedTerm).then((data) => {
+      closeCacheToast(timeout);
       if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
         store.dispatch('setClasses', data.classes);
@@ -125,41 +126,67 @@ const GradesPage = ({ f7router }) => {
         errorDialog(data.message);
       }
     }).catch((err) => {
+      closeCacheToast();
       errorDialog(err.message);
     });
   };
-
+  const cacheToastTimeout = (newterm) => {
+    console.log('newtuem', newterm)
+    console.log(user.gradelist)
+    console.log()
+    return setTimeout(() => {
+      if (!useCacheToast.current 
+        && Object.keys(user.gradelist).length > 0 
+        && user.gradelist[newterm] != undefined) {
+        useCacheToast.current = f7.toast.create({
+          text: "Taking a while to load. Use cached data?",
+          closeButton: true,
+          closeButtonText: 'Yes',
+          closeButtonColor: 'red',
+          closeTimeout: 100000,
+          on: {
+            close: () => {
+              useCacheToast.current = null;
+            },
+            closeButtonClick: () => {
+              useCacheToast.current.close();
+              if (activeButtonIndex == -1) { 
+                setActiveButtonIndex(user.termList.indexOf(newterm));
+              }
+              else {
+                store.dispatch('changeUserData', {
+                  userNumber: store.state.currentUserNumber,
+                  item: 'term',
+                  value: newterm,
+                });
+              }
+              setLoading(false);
+              setTermsLoading(false);
+              store.dispatch('setUseCache', true);
+            }
+          }
+        });
+        useCacheToast.current.open();
+      }
+    }, 4000);
+  }
+  const closeCacheToast = (timeout) => {
+    clearTimeout(timeout); 
+    if (useCacheToast.current) {
+      useCacheToast.current.close();
+      useCacheToast.current = null;
+    }
+  }
   useEffect(() => {
     setTermsLoading(true);
     if (user.username) {
-      const timeout = setTimeout(() => {
-        if (!useCacheToast.current) {
-          useCacheToast.current = f7.toast.create({
-            text: "Taking a while to load. Use cached data?",
-            closeButton: true,
-            closeButtonText: 'Yes',
-            closeButtonColor: 'red',
-            closeTimeout: 10000,
-            on: {
-              close: () => {
-                useCacheToast.current = null;
-              },
-              closeButtonClick: () => {
-                useCacheToast.current.close();
-                setLoading(false);
-                setTermsLoading(false);
-                store.dispatch('setUseCache', true);
-                setActiveButtonIndex(user.termList.indexOf(user.term));
-              }
-            }
-          });
-        }
-        useCacheToast.current.open();
-      }, 4000);
+      const timeout = cacheToastTimeout(user.term);
 
       getClasses()
         .then((data) => {
-          clearTimeout(timeout);
+          if (user.termList[activeButtonIndex] == data.term) {
+            closeCacheToast(timeout);
+          }
           if (data.success !== false && !store.state.useCache) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
