@@ -87,7 +87,7 @@ const GradesPage = ({ f7router }) => {
     // if (store.state.useCache) {
     //   // Check if the selected term exists in the cache
     //   if (store.state.currentUser.gradelist[selectedTerm]) {
-        
+
     //     // Use cached data
     //     setActiveButtonIndex(index);
     //     setGradelist(store.state.currentUser.gradelist);
@@ -118,7 +118,7 @@ const GradesPage = ({ f7router }) => {
       closeCacheToast(window.timeout);
       if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
-      
+
         if (user.termList[window.activeButtonIndex] == data.term) {
           if (data.scoresIncluded) {
             store.state.scoresIncluded = true;
@@ -145,8 +145,8 @@ const GradesPage = ({ f7router }) => {
   }, [activeButtonIndex]);
   const cacheToastTimeout = (newterm) => {
     return setTimeout(() => {
-      if (!useCacheToast.current 
-        && Object.keys(user.gradelist).length > 0 
+      if (!useCacheToast.current
+        && Object.keys(user.gradelist).length > 0
         && user.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
           text: `Taking a while to load. Use cached data for term ${newterm}?`,
@@ -160,7 +160,7 @@ const GradesPage = ({ f7router }) => {
             },
             closeButtonClick: () => {
               useCacheToast.current.close();
-              if (activeButtonIndex == -1) { 
+              if (activeButtonIndex == -1) {
                 setActiveButtonIndex(user.termList.indexOf(newterm));
               }
               else {
@@ -181,7 +181,7 @@ const GradesPage = ({ f7router }) => {
     }, 4000);
   }
   const closeCacheToast = (timeout) => {
-    clearTimeout(timeout); 
+    clearTimeout(timeout);
     if (useCacheToast.current) {
       useCacheToast.current.close();
       useCacheToast.current = null;
@@ -206,14 +206,13 @@ const GradesPage = ({ f7router }) => {
               item: 'term',
               value: data.term,
             });
-            if ((activeButtonIndex == -1 ? user.term : user.termList[activeButtonIndex] ) == data.term) {
-              if (data.scoresIncluded) {
-                store.state.scoresIncluded = true;
-              }
-              setActiveButtonIndex(user.termList.indexOf(data.term));
-              setTermsLoading(false);
-              setLoading(false);
+            if (data.scoresIncluded) {
+              store.state.scoresIncluded = true;
             }
+            setActiveButtonIndex(user.termList.indexOf(data.term));
+            setTermsLoading(false);
+            setLoading(false);
+
             updateTermGradelist(data.term, data.classes);
           }
         })
