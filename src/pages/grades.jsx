@@ -112,16 +112,26 @@ const GradesPage = ({ f7router }) => {
     // Proceed with loading data from the server if useCache is false
     setLoading(true);
     setActiveButtonIndex(index);
-    const timeout = cacheToastTimeout(user.termList[index]);
+    closeCacheToast(window.timeout);
+    window.timeout = cacheToastTimeout(user.termList[index]);
     getClasses(selectedTerm).then((data) => {
-      closeCacheToast(timeout);
+      closeCacheToast(window.timeout);
       if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
-        store.dispatch('setClasses', data.classes);
-        store.dispatch('setTerm', data.term);
-        setActiveButtonIndex(user.termList.indexOf(data.term));
-        setTermsLoading(false);
-        setLoading(false);
+      
+        if (user.termList[window.activeButtonIndex] == data.term) {
+          if (data.scoresIncluded) {
+            store.state.scoresIncluded = true;
+          }
+          store.dispatch('changeUserData', {
+            userNumber: store.state.currentUserNumber,
+            item: 'term',
+            value: data.term,
+          });
+          setActiveButtonIndex(user.termList.indexOf(data.term));
+          setTermsLoading(false);
+          setLoading(false);
+        }
       } else {
         errorDialog(data.message);
       }
@@ -130,16 +140,16 @@ const GradesPage = ({ f7router }) => {
       errorDialog(err.message);
     });
   };
+  useEffect(() => {
+    window.activeButtonIndex = activeButtonIndex;
+  }, [activeButtonIndex]);
   const cacheToastTimeout = (newterm) => {
-    console.log('newtuem', newterm)
-    console.log(user.gradelist)
-    console.log()
     return setTimeout(() => {
       if (!useCacheToast.current 
         && Object.keys(user.gradelist).length > 0 
         && user.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
-          text: "Taking a while to load. Use cached data?",
+          text: `Taking a while to load. Use cached data for term ${newterm}?`,
           closeButton: true,
           closeButtonText: 'Yes',
           closeButtonColor: 'red',
@@ -180,13 +190,11 @@ const GradesPage = ({ f7router }) => {
   useEffect(() => {
     setTermsLoading(true);
     if (user.username) {
-      const timeout = cacheToastTimeout(user.term);
+      window.timeout = cacheToastTimeout(user.term);
 
       getClasses()
         .then((data) => {
-          if (user.termList[activeButtonIndex] == data.term) {
-            closeCacheToast(timeout);
-          }
+          closeCacheToast(window.timeout)
           if (data.success !== false && !store.state.useCache) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
@@ -198,17 +206,19 @@ const GradesPage = ({ f7router }) => {
               item: 'term',
               value: data.term,
             });
-            if (data.scoresIncluded) {
-              store.state.scoresIncluded = true;
+            if ((activeButtonIndex == -1 ? user.term : user.termList[activeButtonIndex] ) == data.term) {
+              if (data.scoresIncluded) {
+                store.state.scoresIncluded = true;
+              }
+              setActiveButtonIndex(user.termList.indexOf(data.term));
+              setTermsLoading(false);
+              setLoading(false);
             }
-            setActiveButtonIndex(user.termList.indexOf(data.term));
-            setTermsLoading(false);
-            setLoading(false);
             updateTermGradelist(data.term, data.classes);
           }
         })
         .catch((err) => {
-          clearTimeout(timeout); // Clear the timeout if an error occurs
+          clearTimeout(window.timeout); // Clear the timeout if an error occurs
           errorDialog(err.message);
         });
     }
