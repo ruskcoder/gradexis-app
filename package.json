@@ -6,7 +6,7 @@
   "repository": "",
   "license": "UNLICENSED",
   "scripts": {
-    "api": "cd gradexis-api && node index.js",
+    "api": "cd gradexis-api && nodemon index.js",
     "start": "npm run dev",
     "dev": "cross-env NODE_ENV=development vite",
     "all": "concurrently \"npm run dev\" \"npm run api\"",

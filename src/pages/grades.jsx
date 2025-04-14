@@ -84,32 +84,6 @@ const GradesPage = ({ f7router }) => {
     store.state.useCache = false;
     const selectedTerm = user.termList[index];
 
-    // if (store.state.useCache) {
-    //   // Check if the selected term exists in the cache
-    //   if (store.state.currentUser.gradelist[selectedTerm]) {
-
-    //     // Use cached data
-    //     setActiveButtonIndex(index);
-    //     setGradelist(store.state.currentUser.gradelist);
-    //     store.dispatch('setTerm', selectedTerm);
-    //     setLoading(false);
-    //     f7.toast.show({
-    //       text: `Switched to ${selectedTerm} using cached data.`
-    //     });
-    //   } else {
-    //     // Notify the user and revert to the previous term
-    //     f7.dialog.alert(
-    //       `The term "${selectedTerm}" does not exist in the cache. Reverting to the previous term.`,
-    //       'Cache Error',
-    //       () => {
-    //         setActiveButtonIndex(user.termList.indexOf(store.state.currentUser.term));
-    //       }
-    //     );
-    //   }
-    //   return;
-    // }
-
-    // Proceed with loading data from the server if useCache is false
     setLoading(true);
     setActiveButtonIndex(index);
     closeCacheToast(window.timeout);
@@ -176,7 +150,17 @@ const GradesPage = ({ f7router }) => {
             }
           }
         });
-        useCacheToast.current.open();
+        const checkTabActive = async () => {
+          while (!$('#view-grades').attr('class').includes('tab-active')) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); 
+          }
+          useCacheToast.current.open();
+          while ($('#view-grades').attr('class').includes('tab-active') && useCacheToast.current) {
+            await new Promise(resolve => setTimeout(resolve, 1000)); 
+          }
+          useCacheToast.current.close();
+        };
+        checkTabActive();
       }
     }, 4000);
   }
@@ -373,15 +357,14 @@ const GradesPage = ({ f7router }) => {
 
   const lastUpdated = () => {
     const lastUpdated = new Date(user.gradelist[user.term].lastUpdated);
-    const formattedDate = lastUpdated.toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
+    return lastUpdated.toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
     });
-    return formattedDate;
   }
   return (
     <Page name="grades" >

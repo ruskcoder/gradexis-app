@@ -2,45 +2,73 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Page, Navbar, Block, List, ListItem, f7, Preloader } from 'framework7-react';
 import { errorDialog, updateRouter } from '@/components/app';
 import { getAttendance } from '@/js/grades-api';
+import { argbFromHex } from '@material/material-color-utilities';
 
 const AttendancePage = ({ f7router }) => {
   updateRouter(f7router);
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    getAttendance().then((data) => {
+  const [currentEvents, setCurrentEvents] = useState([]);
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  function updateAttendance(date = "") {
+    setLoading(true);
+    getAttendance(date).then((data) => {
       if (data.success != false) {
         setLoading(false);
-        const monthNames = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'
-        ];
+
         const monthIndex = monthNames.indexOf(data.month);
         const year = parseInt(data.year, 10);
-        calendarRef.current.setYearMonth(year, monthIndex);
+        if (calendarRef.current.currentMonth !== monthIndex || calendarRef.current.currentYear !== year) {
+          calendarRef.current.setYearMonth(year, monthIndex);
+        }
 
         const newEvents = Object.keys(data.events).map(event => {
           const [month, day, year] = event.split('/');
+            const argb = argbFromHex(data.events[event].color);
+            const r = (argb >> 16) & 0xFF;
+            const g = (argb >> 8) & 0xFF;
+            const b = argb & 0xFF;
           return {
             date: new Date("20" + year, month - 1, day),
             color: data.events[event].color,
             title: data.events[event].event,
+            textColor: (r + g + b) / 3 < 128 ? 'white' : 'black',
           };
         });
 
-        setEvents(newEvents);
-        calendarRef.current.params.events = newEvents;
+        setEvents(prevEvents => [...prevEvents, ...newEvents]);
+        setCurrentEvents(newEvents); // Store only the newest updated events
+        calendarRef.current.params.events = [...calendarRef.current.params.events, ...newEvents];
         calendarRef.current.update();
-        document.querySelectorAll('.calendar-day-event').forEach(function (e) { e.parentElement.parentElement.style.backgroundColor = e.style.backgroundColor })
-        console.log(newEvents);
+        document.querySelectorAll('.calendar-day-event').forEach(
+          function (e) { 
+            let monthDayClass = Array.from(e.parentElement.parentElement.parentElement.classList)
+            if (monthDayClass.includes('calendar-day-next') || monthDayClass.includes('calendar-day-prev')) {
+                const bgColor = e.style.backgroundColor;
+                e.parentElement.parentElement.style.backgroundColor = bgColor.replace('rgb', 'rgba').replace(')', ', 0.4)');
+            }
+            else {
+                const bgColor = e.style.backgroundColor;
+                const rgb = bgColor.match(/\d+/g).map(Number);
+                const avg = (rgb[0] + rgb[1] + rgb[2]) / 3;
+                e.parentElement.parentElement.style.backgroundColor = bgColor;
+                e.parentElement.parentElement.style.color = avg < 128 ? 'white' : 'black';
+            }
+          }
+        )
       }
       else {
         errorDialog(data.message)
       }
     });
+  }
+  useEffect(() => {
+    updateAttendance();
   }, []);
- 
+
   const calendarRef = useRef(null);
 
   const onPageInit = (page) => {
@@ -70,24 +98,22 @@ const AttendancePage = ({ f7router }) => {
         return `
               <div class="toolbar calendar-custom-toolbar no-shadow margin-bottom-half" 
                 style="border-top-right-radius: var(--f7-block-inset-border-radius);
-                      border-top-left-radius: var(--f7-block-inset-border-radius)
-                ">
-                
+                border-top-left-radius: var(--f7-block-inset-border-radius)
+              ">
                 <div class="toolbar-inner">
-                  <div class="left">
-              <a class="link icon-only"><i class="icon icon-back"></i></a>
-                  </div>
-                  <div class="center"></div>
-                  <div class="right">
-              <a class="link icon-only"><i class="icon icon-forward"></i></a>
-                  </div>
+                    <div class="left">
+                      <a class="link icon-only"><i class="icon icon-back"></i></a>
+                    </div>
+                    <div class="center"></div>
+                    <div class="right">
+                      <a class="link icon-only"><i class="icon icon-forward"></i></a>
+                    </div>
                 </div>
               </div>
             `;
       },
       on: {
         init: function (c) {
-          console.log('Calendar initialized');
           document.querySelector('#calendar .calendar-custom-toolbar .center').textContent = monthNames[c.currentMonth] + ', ' + c.currentYear;
           document.querySelector('#calendar .calendar-custom-toolbar .left .link').addEventListener('click', function () {
             calendarRef.current.prevMonth();
@@ -98,9 +124,9 @@ const AttendancePage = ({ f7router }) => {
         },
         monthYearChangeStart: function (c) {
           document.querySelector('#calendar .calendar-custom-toolbar .center').textContent = monthNames[c.currentMonth] + ', ' + c.currentYear;
-          document.querySelectorAll('.calendar-day-event').forEach(function (e) { e.parentElement.parentElement.style.backgroundColor = e.style.backgroundColor })
+          updateAttendance(monthNames[c.currentMonth] + '-' + c.currentYear);
         }
-      }
+      },
     })
   }
   const onPageBeforeRemove = () => {
@@ -127,13 +153,14 @@ const AttendancePage = ({ f7router }) => {
             <Preloader />
           </div>
         )}
-        {events.map((event, index) => (
+        {!loading && currentEvents.map((event, index) => (
           <ListItem key={index} title={event.title} subtitle={`${event.date.getMonth() + 1}/${event.date.getDate()}/${event.date.getFullYear()}`}>
             <div
               slot="media"
               style={{
                 borderRadius: '8px',
                 backgroundColor: event.color,
+                color: event.textColor,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

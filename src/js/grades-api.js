@@ -2,6 +2,7 @@ import store from "./store.js";
 import terminal from 'virtual:terminal';
 
 var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
+// var apiUrl = 'https://api.gradexis.com';
 if (location.host == "mobile.gradexis.com") { 
     apiUrl = 'https://api.gradexis.com'; 
 }
@@ -33,7 +34,7 @@ export async function login(loginData) {
 export async function getClasses(term = null) {
     const user = store.state.currentUser;
     const session = store.state.session;
-
+    await new Promise(resolve => setTimeout(resolve, 5000));
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
@@ -74,13 +75,13 @@ export async function getGrades(className, term = null) {
     }
 }
 
-export async function getAttendance(mo = "") {
+export async function getAttendance(date = "") {
     const user = store.state.currentUser;
     const session = store.state.session;
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/attendance?link=${user.link}&username=${user.username}&password=${user.password}${mo ? `&month=${mo}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/attendance?link=${user.link}&username=${user.username}&password=${user.password}${date ? `&date=${date}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
