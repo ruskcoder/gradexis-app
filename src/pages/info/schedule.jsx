@@ -75,7 +75,7 @@ const SchedulePage = ({ f7router }) => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     fontSize: '20px',
-                                    fontWeight: 'bolder',
+                                    fontWeight: '600er',
                                     width: '44px',
                                     height: '44px',
                                 }}

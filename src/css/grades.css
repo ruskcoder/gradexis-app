@@ -19,7 +19,7 @@
 
 .grades-item { flex: 1 }
 .grades-item .item-title {
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     font-size: var(--f7-list-item-title-font-size);
     line-height: var(--f7-list-item-title-font-size);
 }
@@ -41,4 +41,7 @@
 }
 .options-dialog .dialog-buttons .dialog-button:nth-child(2){
     width: 70%
+}
+.options-dialog .dialog-inner {
+    text-align: center;
 }

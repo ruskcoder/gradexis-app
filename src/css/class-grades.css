@@ -30,6 +30,7 @@
     justify-content: center;
     max-height: calc(50% - calc(var(--f7-typography-margin) * 1.5));
 }
+
 .category-number {
     display: flex;
     justify-content: space-between;
@@ -48,7 +49,8 @@
 
 .assignments-icon {
     width: 16px;
-    height: 34px;
+    height: 90%;
+    margin-top: 4px;
     border-radius: 6px;
 }
 
@@ -67,18 +69,35 @@
     line-height: var(--f7-list-item-subtitle-font-size);
 }
 
-.scores-list  .item-title{
+.scores-list .item-title {
     text-overflow: clip;
 
 }
+
 .scores-list .ripple-wave {
     z-index: 100;
 }
+
 .assignments-item {
     position: relative;
 }
 
-.scores-list  .assignments-item:before{
+/* .ios a.item-link.active-state {
+    background-color: transparent;
+} */
+/* .ios a.item-link:before {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    content: '';
+    z-index: 2;
+    background-color: transparent;
+    transition: 0.1s all;
+}
+.ios a.item-link.active-state:before{
+    background-color: var(--f7-list-link-pressed-bg-color);
+} */
+.md .scores-list .assignments-item:before {
     content: '';
     position: absolute;
     background: linear-gradient(90deg, transparent 80%, var(--f7-list-strong-bg-color) 95%);
@@ -87,4 +106,46 @@
     padding: 0;
     margin: 0;
     z-index: 1;
+}
+
+/* Extra info Dialog */
+
+.extra-info-dialog .dialog-title {
+    text-align: center;
+}
+
+.extra-info {
+    gap: calc(var(--f7-grid-gap) / 2) !important;
+    margin-bottom: calc(var(--f7-grid-gap) / 2);
+}
+
+.extra-info.last-info {
+    margin-bottom: 0;
+}
+
+.extra-info div {
+    border: 2px solid var(--f7-theme-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: calc(var(--f7-typography-margin) / 2);
+    text-align: center;
+}
+
+.extra-info div .info-category-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.extra-info div .info-category-data {
+    margin: 0;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }

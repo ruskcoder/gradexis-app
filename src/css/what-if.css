@@ -1,0 +1,32 @@
+.whatif-grades {
+    display: flex;
+    flex-direction: column;
+}
+.whatif-grades span {
+    padding: none;
+    color: #333;
+}
+.whatif-grade {
+    font-weight: 600 !important;
+    font-size: var(--f7-list-item-title-font-size);
+    line-height: var(--f7-list-item-title-font-size);
+}
+.whatif-total {
+    font-size: var(--f7-list-item-subtitle-font-size);
+    line-height: var(--f7-list-item-subtitle-font-size);
+}
+.ios .whatif-edit-dialog .item-inner {
+    text-align: start;
+}
+.md .whatif-edit-dialog .dialog-inner {
+    text-align: center;
+}
+.grade-input .item-content {
+    margin: 0 !important;
+}
+.grade-input .item-label {
+    background-color: var(--f7-dialog-bg-color) !important;
+}
+.ios .grade-input .item-label {
+    background-color: transparent !important;
+}

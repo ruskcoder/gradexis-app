@@ -2,9 +2,12 @@ import { Card, ListItem, f7 } from 'framework7-react';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-function colorFromGrade(grade) { 
+function colorFromGrade(grade) {
   if (grade == "0.00" || grade == "···") {
     return "#a9a9a9";
+  }
+  if (grade == "X") {
+    return "#3dadfd";
   }
   if (grade >= 90) {
     return "#00cf63";
@@ -52,8 +55,14 @@ ClassGradeItem.propTypes = {
   grade: PropTypes.string.isRequired,
 };
 
-const AssignmentGradeItem = ({ name, date, color, grade }) => {
+const AssignmentGradeItem = ({ name, date, color, grade, badges }) => {
   grade = grade == "" ? "···" : parseFloat(grade).toPrecision(4);
+  if (badges.includes("missing")) {
+    grade = "M"
+  }
+  if (badges.includes("exempt")) {
+    grade = "X"
+  }
   return (
     <>
       <i
@@ -97,6 +106,56 @@ AssignmentGradeItem.propTypes = {
   date: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   grade: PropTypes.any.isRequired,
+  badges: PropTypes.array.isRequired,
 };
 
-export { AssignmentGradeItem, ClassGradeItem };
+const WhatIfGradeItem = ({ name, date, color, grade, badges, total }) => {
+  grade = grade == "" ? "‎" : parseFloat(grade).toPrecision(4);
+  if (badges.includes("missing")) {
+    grade = "M"
+  }
+  if (badges.includes("exempt")) {
+    grade = "--"
+  }
+  return (
+    <>
+      <i
+        slot="media"
+        style={{
+          backgroundColor: `${color}`,
+        }}
+        className="margin-right-half assignments-icon"
+      />
+      <div className="assignments-item">
+        <div className="item-title-row">
+          <div className="item-title">
+            {name}
+          </div>
+        </div>
+        <div className="item-subtitle">
+          {date}
+        </div>
+      </div>
+      <div className="whatif-grades">
+        <span className="whatif-grade">
+          {grade}
+        </span>
+        <span className="whatif-total">
+          /{total}
+        </span>
+      </div>
+      <div className="chevron"></div>
+    </>
+  );
+};
+
+WhatIfGradeItem.propTypes = {
+  name: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  grade: PropTypes.any.isRequired,
+  badges: PropTypes.array.isRequired,
+  total: PropTypes.string.isRequired,
+};
+
+export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem };

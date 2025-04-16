@@ -1,0 +1,13 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "portsAttributes": {
+        "5173": {
+            "label": "Vite Port",
+            "privacy": "public"
+        },
+        "3000": {
+            "label": "Web Server",
+            "privacy": "public"
+        }
+    }
+}

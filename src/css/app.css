@@ -33,7 +33,7 @@
 
 .subnavbar .button {
     font-size: 10px;
-    font-weight: bold;
+    font-weight: 600;
     height: 24px;
 }
 
@@ -52,7 +52,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold !important;
+    font-weight: 600 !important;
     font-size: 18px;
     width: 64px;
     padding: 4px 0px;
@@ -61,47 +61,6 @@
 .assignments-number {
     width: 54px;
 }
-
-.extra-info-dialog .dialog-title {
-    text-align: center;
-}
-
-.extra-info {
-    gap: calc(var(--f7-grid-gap) / 2) !important;
-    margin-bottom: calc(var(--f7-grid-gap) / 2);
-}
-
-.extra-info.last-info {
-    margin-bottom: 0;
-}
-
-.extra-info div {
-    border: 2px solid var(--f7-theme-color);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: calc(var(--f7-typography-margin) / 2);
-    text-align: center;
-}
-
-.extra-info div .info-category-title {
-    margin: 0;
-    font-weight: 600;
-    font-size: 12px;
-}
-
-.extra-info div .info-category-data {
-    margin: 0;
-    font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-}
-
 
 .login-screen-content .item-label {
     background-color: var(--f7-login-screen-content-bg-color) !important;
@@ -134,11 +93,11 @@
     display: none;
 }
 
-.options-dialog .dialog-inner {
-    text-align: center;
-}
 .toast-bottom {
     bottom: calc(var(--f7-tabbar-icons-height) + 8px) !important;
+}
+.ios .toast-bottom {
+    bottom: var(--f7-tabbar-icons-height) !important;
 }
 .toast {
     z-index: 9999 !important;

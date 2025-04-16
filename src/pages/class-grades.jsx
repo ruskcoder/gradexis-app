@@ -7,23 +7,25 @@ import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/materi
 import { getGrades } from '../js/grades-api.js';
 import store from '../js/store.js';
 
+export const colorFromCategory = (category) => {
+  category = category.toLowerCase();
+  if (category == "major") { return "#9338db" }
+  if (category == "minor") { return "#00de63" }
+  if (category == "other") { return "#fa9917" }
+  else {
+    return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
+  }
+}
+export const gaugeBackgroundColor = (user) => {
+  return (
+    hexFromArgb(themeFromSourceColor(argbFromHex(user.theme), []).schemes[user.scheme].secondaryContainer)
+  )
+}
 const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeStrongButton, setActiveStrongButton] = useState(0);
   const user = useStore('currentUser');
-  const gaugeBackgroundColor = (theme) => {
-    return (
-      hexFromArgb(themeFromSourceColor(argbFromHex(user.theme), []).schemes[user.scheme].secondaryContainer)
-    )
-  }
-  const colorFromCategory = (category) => {
-    category = category.toLowerCase();
-    if (category == "major") { return "#9338db" }
-    if (category == "minor") { return "#00de63" }
-    if (category == "other") { return "#fa9917" }
-    else {
-      return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
-    }
-  }
+
+
   updateRouter(f7router);
 
   useEffect(() => {
@@ -50,13 +52,13 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     }
   }, [user.username, user.gradelist, user.term, props.course]);
 
-  
+
   const [scores, setScores] = useState([]);
   const [categories, setCategories] = useState({});
   const [average, setAverage] = useState(0);
   const [animatedValue, setAnimatedValue] = useState(0);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     if (user.anim != false) {
       const targetValue = average;
@@ -76,6 +78,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   const infoDialog = (assignment) => {
     return () => {
+      assignment = { ...assignment };
       const container = document.createElement('div');
       Object.keys(assignment).forEach(key => {
         if (assignment[key] === "") {
@@ -141,7 +144,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
       setTimeout(() => {
         window.f7alert = f7.dialog.create({
-          title: assignment.assignment,
+          title: assignment.name,
           closeByBackdropClick: true,
           cssClass: 'extra-info-dialog',
           content: container.innerHTML,
@@ -156,7 +159,13 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     scores.forEach((assignment, i) => {
       assignmentList.push(
         <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
-          <AssignmentGradeItem name={assignment.assignment} date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")} grade={assignment.percentage.slice(0, -1)} color={colorFromCategory(assignment.category)} />
+          <AssignmentGradeItem
+            name={assignment.name}
+            date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")}
+            grade={assignment.percentage.slice(0, -1)}
+            color={colorFromCategory(assignment.category)}
+            badges={assignment.badges}
+          />
         </ListItem>
       )
     });
@@ -254,7 +263,10 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               Analysis
             </Button>
           </Segmented>
-          <Button small className="margin-left" tonal active={activeStrongButton === 2} onClick={() => setActiveStrongButton(2)} style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}>
+          <Button small className="margin-left" tonal
+            onClick={() => f7router.navigate(`/whatif/${props.course}/`)}
+            style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}
+          >
             What If
           </Button>
         </div>
@@ -263,7 +275,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             <Preloader />
           </Block>
         }
-        {(!loading || store.state.useCache)  &&
+        {(!loading || store.state.useCache) &&
           <div className="assignment-grade-container margin-top">
             <Card className="no-margin assignment-grade-item">
               <Gauge
@@ -271,7 +283,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                 type="circle"
                 value={user.anim != false ? animatedValue / 100 : average / 100} // Use animated value here
                 borderColor={primaryFromColor(user.theme)}
-                borderBgColor={gaugeBackgroundColor(user.theme)}
+                borderBgColor={gaugeBackgroundColor(user)}
                 borderWidth={20}
                 valueText={`${(user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4)}`}
                 valueFontSize={50}

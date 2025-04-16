@@ -154,15 +154,17 @@ const GradesPage = ({ f7router }) => {
           while (!$('#view-grades').attr('class').includes('tab-active')) {
             await new Promise(resolve => setTimeout(resolve, 1000)); 
           }
-          useCacheToast.current.open();
+          if (useCacheToast.current) {
+            useCacheToast.current.open();
+          }
           while ($('#view-grades').attr('class').includes('tab-active') && useCacheToast.current) {
             await new Promise(resolve => setTimeout(resolve, 1000)); 
           }
-          useCacheToast.current.close();
+          if (useCacheToast.current){ useCacheToast.current.close() }
         };
         checkTabActive();
       }
-    }, 4000);
+    }, 1);
   }
   const closeCacheToast = (timeout) => {
     clearTimeout(timeout);
@@ -172,10 +174,10 @@ const GradesPage = ({ f7router }) => {
     }
   }
   useEffect(() => {
+    console.log('restarting, reason: ')
     setTermsLoading(true);
     if (user.username) {
       window.timeout = cacheToastTimeout(user.term);
-
       getClasses()
         .then((data) => {
           closeCacheToast(window.timeout)
@@ -205,7 +207,7 @@ const GradesPage = ({ f7router }) => {
           errorDialog(err.message);
         });
     }
-  }, [user.username]);
+  }, [user]);
 
   // ...existing code...
 

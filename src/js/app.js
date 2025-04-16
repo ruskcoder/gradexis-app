@@ -23,6 +23,7 @@ import '../css/reports.css';
 import '../css/settings.css';
 import '../css/class-grades.css';
 import '../css/account-switcher.css'
+import '../css/what-if.css';
 
 // Import App Component
 import App from '../components/app.jsx';
@@ -32,18 +33,22 @@ Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));
 
-document.addEventListener("contextmenu", function (e){
+document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
 }, false);
 
 window.addEventListener('beforeinstallprompt', (e) => {
     window.deferredPrompt = e;
 });
-window.addEventListener("load", function() {
-    setTimeout(function() {
+window.addEventListener("load", function () {
+    setTimeout(function () {
         window.scrollTo(0, 1);
     }, 0);
-}); 
+});
+
+window.onerror = function (message, source, lineno, colno, error) {
+    alert(`Error: ${message}\nSource: ${source}\nLine: ${lineno}, Column: ${colno}\nError Object: ${error}`);
+}
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

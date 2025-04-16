@@ -153,6 +153,11 @@ const AttendancePage = ({ f7router }) => {
             <Preloader />
           </div>
         )}
+        {!loading && currentEvents.length === 0 && (
+          <Block className="text-align-center" strong style={{ borderRadius: "var(--f7-block-inset-border-radius)" , marginTop: '0px'}}>
+            No events
+          </Block>
+        )}
         {!loading && currentEvents.map((event, index) => (
           <ListItem key={index} title={event.title} subtitle={`${event.date.getMonth() + 1}/${event.date.getDate()}/${event.date.getFullYear()}`}>
             <div
@@ -165,7 +170,7 @@ const AttendancePage = ({ f7router }) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '20px',
-                fontWeight: 'bold',
+                fontWeight: '600',
                 width: '44px',
                 height: '44px',
               }}

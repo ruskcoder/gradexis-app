@@ -12,6 +12,7 @@ import TeachersPage from "@/pages/info/teachers";
 import ProgressReportPage from "@/pages/info/ipr";
 import ReportCardPage from "@/pages/info/reportCard";
 import store from './store.js';
+import WhatIfPage from '../pages/what-if.jsx';
 
 var routes = [
   {
@@ -26,6 +27,11 @@ var routes = [
     path: '/grades/:course/',
     component: ClassGradesPage,
     hideTabbar: true
+  },
+  {
+    path: '/whatif/:course/',
+    component: WhatIfPage,
+    hideTabbar: true,
   },
   {
     path: '/todo/',
