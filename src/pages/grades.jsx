@@ -164,7 +164,7 @@ const GradesPage = ({ f7router }) => {
         };
         checkTabActive();
       }
-    }, 1);
+    }, 3000);
   }
   const closeCacheToast = (timeout) => {
     clearTimeout(timeout);
@@ -173,8 +173,8 @@ const GradesPage = ({ f7router }) => {
       useCacheToast.current = null;
     }
   }
+  // TODO: Fix this function calling multiple times for some reason (on route change)
   useEffect(() => {
-    console.log('restarting, reason: ')
     setTermsLoading(true);
     if (user.username) {
       window.timeout = cacheToastTimeout(user.term);
@@ -207,15 +207,7 @@ const GradesPage = ({ f7router }) => {
           errorDialog(err.message);
         });
     }
-  }, [user]);
-
-  // ...existing code...
-
-  // ...existing code...
-
-  const createAverages = () => {
-    return;
-  }
+  }, []);
 
   const ptr = (done) => {
     getClasses(user.termList[activeButtonIndex]).then((data) => {

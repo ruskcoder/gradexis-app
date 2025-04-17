@@ -63,7 +63,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     if (user.anim != false) {
       const targetValue = average;
       let currentValue = 0;
-      const step = targetValue / 20;
+      const step = targetValue / 17;
       const interval = setInterval(() => {
         currentValue += step;
         if (currentValue >= targetValue) {
@@ -71,7 +71,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           clearInterval(interval);
         }
         setAnimatedValue(currentValue);
-      }, 1);
+      }, 5);
       return () => clearInterval(interval);
     }
   }, [average, user.anim]);

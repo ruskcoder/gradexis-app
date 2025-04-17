@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Checkbox, List, ListInput, Button } from "framework7-react";
 
-const WhatIfEditDialog = ({ layout, startingGrade, badges }) => {
+const WhatIfEditDialog = ({ layout, startingGrade, badges, callback }) => {
   const [checked, setIsChecked] = useState(false);
   const [grade, setGrade] = useState(startingGrade);
 
@@ -15,7 +15,12 @@ const WhatIfEditDialog = ({ layout, startingGrade, badges }) => {
       setGrade("");
     }
   }, [badges]);
-
+  useEffect(() => {
+    window.currentWhatIfEdit = {
+      checked: checked,
+      grade: grade,
+    };
+  }, [checked, grade]);
   return (
     <>
       <div className="margin-top-half">
@@ -45,7 +50,7 @@ const WhatIfEditDialog = ({ layout, startingGrade, badges }) => {
         ></ListInput>
       </List>
       {layout == "md" && (
-        <Button fill onClick={() => window.f7alert.close()}>
+        <Button fill onClick={() => {window.f7alert.close(); callback(checked, grade)}}>
           Done
         </Button>
       )}
