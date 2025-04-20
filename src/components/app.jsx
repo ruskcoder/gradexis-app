@@ -34,13 +34,6 @@ import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
 import { show } from "dom7";
 
-CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-  if (!canGoBack) {
-    CapacitorApp.exitApp();
-  } else {
-    window.history.back();
-  }
-});
 export const primaryFromColor = (theme) => {
   return (store.state.currentUser.layout == "md" ? hexFromArgb(themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme].primary) : theme)
 }
@@ -86,8 +79,9 @@ export const updateRouter = (f7router) => {
       window.f7alert.close()
     }
     else {
+      window.backing= true;
       f7router.back();
-      history.pushState(null, null, f7router.url);
+      // history.pushState({url: f7router.url}, null, f7router.url);
     }
   };
 }
@@ -108,6 +102,13 @@ const Gradexis = ({ f7router }) => {
     store: store,
     routes: routes,
   };
+  CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+    if (!canGoBack) {
+      CapacitorApp.exitApp();
+    } else {
+      f7router.back();
+    }
+  });
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
   f7ready(async () => {
     if (!window.init) {
@@ -185,8 +186,11 @@ const Gradexis = ({ f7router }) => {
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
         let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
-        if (!invalid.includes(route.url)) {
-          history.pushState(null, null, route.url);
+        if (!invalid.includes(route.url) && !window.backing) {
+          history.pushState({url: route.url}, null, route.url);
+        }
+        else if (window.backing) {
+          window.backing = false;
         }
       });
       f7.on('login', () => {

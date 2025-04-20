@@ -133,7 +133,9 @@ const GradesPage = ({ f7router }) => {
               useCacheToast.current = null;
             },
             closeButtonClick: () => {
-              useCacheToast.current.close();
+              if (useCacheToast.current) {
+                useCacheToast.current.close();
+              }
               if (activeButtonIndex == -1) {
                 setActiveButtonIndex(user.termList.indexOf(newterm));
               }
