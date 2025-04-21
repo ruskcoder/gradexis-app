@@ -15,14 +15,16 @@ const GradesPage = ({ f7router }) => {
   const [globalgradelist, setGradelist] = useState(store.state.currentUser.gradelist);
   const useCacheToast = useRef(null);
 
-  const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(store.state.activeButtonIndex);
 
-  const [loading, setLoading] = useState(true);
-  const [termsLoading, setTermsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [termsLoading, setTermsLoading] = useState(false);
+  const [usingCache, setUsingCache] = useState(false);
 
-  // ...existing code...
+  useEffect(() => {
+    store.state.activeButtonIndex = activeButtonIndex;
+  }, [activeButtonIndex])
 
-  // Common function to update the gradelist and lastUpdated field
   const updateTermGradelist = (term, classes) => {
     const previousTerm = Object.keys(store.state.currentUser.gradelist).pop();
     const previousTermGradelist = store.state.currentUser.gradelist[previousTerm] || {};
@@ -79,23 +81,24 @@ const GradesPage = ({ f7router }) => {
     return updatedGradelist;
   };
 
-  // Refactored switchTerm function
   const switchTerm = (index) => {
-    store.state.useCache = false;
     const selectedTerm = user.termList[index];
 
     setLoading(true);
-    setActiveButtonIndex(index);
-    closeCacheToast(window.timeout);
-    window.timeout = cacheToastTimeout(user.termList[index]);
+    setActiveButtonIndex(index);  
+    closeCacheToast(window.cacheToastTimeout);
+    window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
     getClasses(selectedTerm).then((data) => {
-      closeCacheToast(window.timeout);
       if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
-
         if (user.termList[window.activeButtonIndex] == data.term) {
+          closeCacheToast(window.cacheToastTimeout);
           if (data.scoresIncluded) {
-            store.state.scoresIncluded = true;
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'scoresIncluded',
+              value: true,
+            });
           }
           store.dispatch('changeUserData', {
             userNumber: store.state.currentUserNumber,
@@ -107,6 +110,7 @@ const GradesPage = ({ f7router }) => {
           setLoading(false);
         }
       } else {
+        closeCacheToast(window.cacheToastTimeout);
         errorDialog(data.message);
       }
     }).catch((err) => {
@@ -146,23 +150,24 @@ const GradesPage = ({ f7router }) => {
                   value: newterm,
                 });
               }
+              store.state.loaded = true;
               setLoading(false);
               setTermsLoading(false);
-              store.dispatch('setUseCache', true);
+              setUsingCache(true);
             }
           }
         });
         const checkTabActive = async () => {
           while (!$('#view-grades').attr('class').includes('tab-active')) {
-            await new Promise(resolve => setTimeout(resolve, 1000)); 
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
           if (useCacheToast.current) {
             useCacheToast.current.open();
           }
           while ($('#view-grades').attr('class').includes('tab-active') && useCacheToast.current) {
-            await new Promise(resolve => setTimeout(resolve, 1000)); 
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
-          if (useCacheToast.current){ useCacheToast.current.close() }
+          if (useCacheToast.current) { useCacheToast.current.close() }
         };
         checkTabActive();
       }
@@ -176,14 +181,17 @@ const GradesPage = ({ f7router }) => {
     }
   }
   // TODO: Fix this function calling multiple times for some reason (on route change)
+
   useEffect(() => {
-    setTermsLoading(true);
-    if (user.username) {
-      window.timeout = cacheToastTimeout(user.term);
+    if (user.username && !store.state.loaded) {
+      setTermsLoading(true);
+      setLoading(true);
+      window.cacheToastTimeout = cacheToastTimeout(user.term);
       getClasses()
         .then((data) => {
-          closeCacheToast(window.timeout)
-          if (data.success !== false && !store.state.useCache) {
+          store.state.loaded = true;
+          closeCacheToast(window.cacheToastTimeout);
+          if (data.success !== false && !usingCache) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
               item: 'termList',
@@ -195,7 +203,11 @@ const GradesPage = ({ f7router }) => {
               value: data.term,
             });
             if (data.scoresIncluded) {
-              store.state.scoresIncluded = true;
+              store.dispatch('changeUserData', {
+                userNumber: store.state.currentUserNumber,
+                item: 'scoresIncluded',
+                value: true,
+              });
             }
             setActiveButtonIndex(user.termList.indexOf(data.term));
             setTermsLoading(false);
@@ -205,9 +217,10 @@ const GradesPage = ({ f7router }) => {
           }
         })
         .catch((err) => {
-          clearTimeout(window.timeout); // Clear the timeout if an error occurs
+          clearTimeout(window.cacheToastTimeout); // Clear the timeout if an error occurs
           errorDialog(err.message);
         });
+
     }
   }, []);
 
@@ -364,7 +377,7 @@ const GradesPage = ({ f7router }) => {
   }
   return (
     <Page name="grades" >
-      <Navbar title="Grades" subtitle={store.state.useCache ? `Last Updated: ${lastUpdated()}` : ""} sliding={true} className='navbar-grades'>
+      <Navbar title="Grades" subtitle={usingCache ? `Last Updated: ${lastUpdated()}` : ""} sliding={true} className='navbar-grades'>
 
       </Navbar>
       {loading &&

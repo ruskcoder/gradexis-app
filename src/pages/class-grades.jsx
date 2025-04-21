@@ -25,12 +25,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeStrongButton, setActiveStrongButton] = useState(0);
   const user = useStore('currentUser');
 
-
   updateRouter(f7router);
 
   useEffect(() => {
-    if (user.username) {
-      if (!store.state.scoresIncluded && !store.state.useCache) {
+   if (user.username) {
+      if (!user.scoresIncluded) {
         getGrades(props.course).then((data) => {
           if (data.success != false) {
             setScores(data.assignments);

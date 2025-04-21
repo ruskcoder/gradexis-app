@@ -22,8 +22,8 @@ const WhatIfPage = ({ f7router, ...props }) => {
       setScores(user.gradelist[user.term][props.course].scores);
       setCategories(user.gradelist[user.term][props.course].categories);
       setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
-      setEditAverage(average)
-      setEditScores(scores);
+      setEditAverage(average);
+      setEditScores(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].scores))); // Deep copy
     }
   }, [average, props.course, user.gradelist, user.term, user.username]);
 

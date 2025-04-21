@@ -17,7 +17,7 @@ if (!currentUserNumber) {
 if (currentUserNumber >= users.length) {
   currentUserNumber = users.length - 1;
 }
-const defaultUser = {pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}}
+const defaultUser = {pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}, scoresIncluded: false}
 const store = createStore({
   state: {
     users: users,
@@ -25,6 +25,8 @@ const store = createStore({
     currentUserNumber: currentUserNumber,
     scoresIncluded: false,
     useCache: false,
+    loaded: false,
+    activeButtonIndex: -1,
     session: {}
   },
   getters: {
@@ -103,9 +105,6 @@ const store = createStore({
     setSession({ state }, session) {
       state.session = session;  
     },
-    setUseCache({ state }, useCache) {
-      state.useCache = useCache;
-    }
   }
 });
 export default store;
