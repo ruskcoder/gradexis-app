@@ -18,11 +18,14 @@ export async function login(loginData) {
     try {
         if (platformList.includes(loginData.platform)) {
             const response = await fetch(
-                `${apiUrl}/${loginData.platform}/info?link=${loginData.link}&username=${loginData.username}&password=${loginData.password}`,
+                `${apiUrl}/${loginData.platform}/info?${loginData.link ? "link=" + loginData.link : ""}${loginData.useClasslink ? "&classlink=" + loginData.classlink : ""}&username=${loginData.username}&password=${loginData.password}`,
             );
             const data = await response.json();
             updateSession(data);
             if (data.success == false) return data;
+            if (!loginData.link) {
+                loginData.link = data.link;
+            }
             return { name: data.name, ...loginData };
         } else { return { success: false, message: "Invalid Platform" }; }
 
@@ -34,11 +37,10 @@ export async function login(loginData) {
 export async function getClasses(term = null) {
     const user = store.state.currentUser;
     const session = store.state.session;
-    await new Promise(resolve => setTimeout(resolve, 5000));
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/classes?link=${user.link}&username=${user.username}&password=${user.password}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/classes?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -60,7 +62,7 @@ export async function getGrades(className, term = null) {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/grades?link=${user.link}&username=${user.username}&password=${user.password}&class=${className}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/grades?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}&class=${className}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -81,7 +83,7 @@ export async function getAttendance(date = "") {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/attendance?link=${user.link}&username=${user.username}&password=${user.password}${date ? `&date=${date}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/attendance?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${date ? `&date=${date}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -102,7 +104,7 @@ export async function getSchedule() {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/schedule?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/schedule?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -123,7 +125,7 @@ export async function getTeachers() {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/teachers?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/teachers?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -144,7 +146,7 @@ export async function getProgressReport() {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/ipr?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/ipr?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);
@@ -165,7 +167,7 @@ export async function getReportCard() {
     try {
         if (platformList.includes(user.platform)) {
             const response = await fetch(
-                `${apiUrl}/${user.platform}/reportCard?link=${user.link}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+                `${apiUrl}/${user.platform}/reportCard?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
             );
             const data = await response.json();
             updateSession(data);

@@ -81,43 +81,6 @@ const GradesPage = ({ f7router }) => {
     return updatedGradelist;
   };
 
-  const switchTerm = (index) => {
-    const selectedTerm = user.termList[index];
-
-    setLoading(true);
-    setActiveButtonIndex(index);  
-    closeCacheToast(window.cacheToastTimeout);
-    window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
-    getClasses(selectedTerm).then((data) => {
-      if (data.success !== false) {
-        updateTermGradelist(data.term, data.classes);
-        if (user.termList[window.activeButtonIndex] == data.term) {
-          closeCacheToast(window.cacheToastTimeout);
-          if (data.scoresIncluded) {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'scoresIncluded',
-              value: true,
-            });
-          }
-          store.dispatch('changeUserData', {
-            userNumber: store.state.currentUserNumber,
-            item: 'term',
-            value: data.term,
-          });
-          setActiveButtonIndex(user.termList.indexOf(data.term));
-          setTermsLoading(false);
-          setLoading(false);
-        }
-      } else {
-        closeCacheToast(window.cacheToastTimeout);
-        errorDialog(data.message);
-      }
-    }).catch((err) => {
-      closeCacheToast();
-      errorDialog(err.message);
-    });
-  };
   useEffect(() => {
     window.activeButtonIndex = activeButtonIndex;
   }, [activeButtonIndex]);
@@ -180,7 +143,6 @@ const GradesPage = ({ f7router }) => {
       useCacheToast.current = null;
     }
   }
-  // TODO: Fix this function calling multiple times for some reason (on route change)
 
   useEffect(() => {
     if (user.username && !store.state.loaded) {
@@ -209,7 +171,7 @@ const GradesPage = ({ f7router }) => {
                 value: true,
               });
             }
-            setActiveButtonIndex(user.termList.indexOf(data.term));
+            setActiveButtonIndex(data.termList.indexOf(data.term));
             setTermsLoading(false);
             setLoading(false);
 
@@ -222,8 +184,46 @@ const GradesPage = ({ f7router }) => {
         });
 
     }
-  }, []);
+  }, [user.username]);
 
+  const switchTerm = (index) => {
+    const selectedTerm = user.termList[index];
+
+    setLoading(true);
+    setActiveButtonIndex(index);  
+    closeCacheToast(window.cacheToastTimeout);
+    window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
+    getClasses(selectedTerm).then((data) => {
+      if (data.success !== false) {
+        updateTermGradelist(data.term, data.classes);
+        if (user.termList[window.activeButtonIndex] == data.term) {
+          closeCacheToast(window.cacheToastTimeout);
+          if (data.scoresIncluded) {
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'scoresIncluded',
+              value: true,
+            });
+          }
+          store.dispatch('changeUserData', {
+            userNumber: store.state.currentUserNumber,
+            item: 'term',
+            value: data.term,
+          });
+          setActiveButtonIndex(user.termList.indexOf(data.term));
+          setTermsLoading(false);
+          setLoading(false);
+        }
+      } else {
+        closeCacheToast(window.cacheToastTimeout);
+        errorDialog(data.message);
+      }
+    }).catch((err) => {
+      closeCacheToast();
+      errorDialog(err.message);
+    });
+  };
+  
   const ptr = (done) => {
     getClasses(user.termList[activeButtonIndex]).then((data) => {
       if (data.success != false) {

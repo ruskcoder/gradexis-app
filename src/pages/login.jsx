@@ -7,6 +7,8 @@ import {
   Button,
   ListInput,
   BlockFooter,
+  ListItem,
+  Checkbox,
   useStore
 } from "framework7-react";
 import React, { useState, useEffect } from "react";
@@ -16,14 +18,41 @@ const LoginPage = ({ f7router }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [platform, setPlatform] = useState("hac");
-  const [link, setLink] = useState("homeaccess.katyisd.org");
+  const [useClasslink, setUseClasslink] = useState(false);
+  const [classlink, setClasslink] = useState("");
+  const [link, setLink] = useState("");
 
   const [loginLoading, setLoginLoading] = useState(false);
+
   const signIn = () => {
     setLoginLoading(true);
-    setLink(link.replace(/^(https?:\/\/)?([^/]+).*/, '$2'));
+    let data = {
+      username: username,
+      password: password,
+      link: link,
+      platform: platform,
+      useClasslink: useClasslink,
+      classlink: classlink,
+    }
+    if (useClasslink) {
+      data.link = "";
+      if (classlink == "") {
+        data.classlink = "katyisd";
+      }
+    }
+    else {
+      data.classlink = "";
+      if (link === "") {
+        data.link = "homeaccess.katyisd.org";
+      }
+      data.link = 'https://' + data.link.replace(/^(https?:\/\/)?([^/]+).*/, '$2') + "/";
+    }
+
     setTimeout(() => {
-      store.dispatch("addUser", { username: username, password: password, link: "https://" + link.replace(/^(https?:\/\/)?([^/]+).*/, '$2'), platform: platform }).then((result) => {
+      console.log(data)
+      store.dispatch("addUser",
+        data
+      ).then((result) => {
         setLoginLoading(false)
         if (result) {
           f7.emit('login')
@@ -35,7 +64,6 @@ const LoginPage = ({ f7router }) => {
 
   return (
     <Page loginScreen>
-      <div style={{ height: "40px" }}></div>
       <LoginScreenTitle>Login</LoginScreenTitle>
       <List form>
         <ListInput label="Platform" name="platform"
@@ -49,19 +77,39 @@ const LoginPage = ({ f7router }) => {
           <option value="powerschool">PowerSchool SIS</option>
         </ListInput>
 
-        <ListInput
-          outline
-          // floatingLabel
-          label="Link"
-          type="text"
-          name="link"
-          placeholder=""
-          value={link}
-          onInput={(e) => setLink(e.target.value)}
-          className="link-input"
-          tabindex={-1}
-        >
-        </ListInput>
+        <ListItem checkbox className="classlink-sso"
+          checked={useClasslink}
+          onChange={(e) => { setUseClasslink(e.target.checked); setLink("") }}>
+          Use ClassLink SSO Login
+        </ListItem>
+        {useClasslink &&
+          <ListInput
+            outline
+            label="ClassLink Link"
+            type="text"
+            name="classlink"
+            placeholder="katyisd"
+            value={classlink}
+            onInput={(e) => setClasslink(e.target.value)}
+            className="classlink-input"
+            tabindex={-1}
+          >
+          </ListInput>
+        }
+        {!useClasslink &&
+          <ListInput
+            outline
+            label="Link"
+            type="text"
+            name="link"
+            placeholder="homeaccess.katyisd.org"
+            value={link}
+            onInput={(e) => setLink(e.target.value)}
+            className="link-input"
+            tabindex={-1}
+          >
+          </ListInput>
+        }
 
         <ListInput
           outline

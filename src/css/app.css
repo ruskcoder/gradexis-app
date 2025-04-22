@@ -13,20 +13,6 @@
     display: none;
 }
 
-.login {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    transition: all 0.3s;
-}
-
-.login-hidden {
-    transform: translateY(100%);
-}
-
 .title-large-text {
     display: flex;
 }

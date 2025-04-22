@@ -1,0 +1,38 @@
+.login {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    transition: all 0.3s;
+}
+
+.login-hidden {
+    transform: translateY(100%);
+}
+
+.classlink-sso {
+    z-index: 2;
+}
+.classlink-sso .item-content {
+    padding-left: calc(var(--f7-typography-padding) * 2);
+}
+
+.md .link-input .item-input-wrap {
+    display: flex
+}
+
+.md .link-input .item-input-wrap::before {
+    content: "https://";
+    color: var(--f7-text-editor-placeholder-colorx);
+}
+.md .classlink-input .item-input-wrap {
+    display: flex
+}
+
+.md .classlink-input .item-input-wrap::before {
+    content: "launchpad.classlink.com/";
+    color: var(--f7-text-editor-placeholder-colorx);
+}
+
