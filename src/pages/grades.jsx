@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback, use } from 'react';
-import { Page, BlockFooter, Navbar, Subnavbar, Segmented, Button, List, ListItem, ListButton, f7, Preloader, CardHeader, Block, useStore, f7ready, AccordionContent } from 'framework7-react';
+import { Page, BlockFooter, Navbar, Subnavbar, Segmented, Button, List, ListItem, Progressbar, f7, Preloader, BlockTitle, Block, useStore, f7ready, AccordionContent } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { errorDialog, initEmits } from '../components/app.jsx';
 import { getClasses } from '../js/grades-api.js';
@@ -18,6 +18,8 @@ const GradesPage = ({ f7router }) => {
   const [activeButtonIndex, setActiveButtonIndex] = useState(store.state.activeButtonIndex);
 
   const [loading, setLoading] = useState(false);
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [progressMessage, setProgressMessage] = useState('Logging In...');
   const [termsLoading, setTermsLoading] = useState(false);
   const [usingCache, setUsingCache] = useState(false);
 
@@ -145,59 +147,39 @@ const GradesPage = ({ f7router }) => {
   }
 
   useEffect(() => {
-    if (user.username && !store.state.loaded) {
-      setTermsLoading(true);
-      setLoading(true);
-      window.cacheToastTimeout = cacheToastTimeout(user.term);
-      getClasses()
-        .then((data) => {
-          store.state.loaded = true;
-          closeCacheToast(window.cacheToastTimeout);
-          if (data.success !== false && !usingCache) {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'termList',
-              value: data.termList,
-            });
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'term',
-              value: data.term,
-            });
-            if (data.scoresIncluded) {
-              store.dispatch('changeUserData', {
-                userNumber: store.state.currentUserNumber,
-                item: 'scoresIncluded',
-                value: true,
-              });
-            }
-            setActiveButtonIndex(data.termList.indexOf(data.term));
-            setTermsLoading(false);
-            setLoading(false);
+    const fetchClasses = async () => {
+      try {
+        setTermsLoading(true);
+        setLoading(true);
+        window.cacheToastTimeout = cacheToastTimeout(user.term);
 
-            updateTermGradelist(data.term, data.classes);
+        const classesGen = getClasses();
+        let done = false;
+        let data;
+        while (done == false) {
+          let result = await classesGen.next()
+          done = result.done;
+          if (done) { data = result.value; break; }
+          if (result.value) {
+            setProgressPercent(result.value.percent);
+            setProgressMessage(result.value.message);
           }
-        })
-        .catch((err) => {
-          clearTimeout(window.cacheToastTimeout); // Clear the timeout if an error occurs
-          errorDialog(err.message);
-        });
+        }
 
-    }
-  }, [user.username]);
+        store.state.loaded = true;
+        closeCacheToast(window.cacheToastTimeout);
 
-  const switchTerm = (index) => {
-    const selectedTerm = user.termList[index];
-
-    setLoading(true);
-    setActiveButtonIndex(index);  
-    closeCacheToast(window.cacheToastTimeout);
-    window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
-    getClasses(selectedTerm).then((data) => {
-      if (data.success !== false) {
-        updateTermGradelist(data.term, data.classes);
-        if (user.termList[window.activeButtonIndex] == data.term) {
-          closeCacheToast(window.cacheToastTimeout);
+        if (data.success !== false && !usingCache) {
+          store.dispatch('changeUserData', {
+            userNumber: store.state.currentUserNumber,
+            item: 'termList',
+            value: data.termList,
+          });
+          store.dispatch('changeUserData', {
+            userNumber: store.state.currentUserNumber,
+            item: 'term',
+            value: data.term,
+          });
           if (data.scoresIncluded) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
@@ -205,11 +187,65 @@ const GradesPage = ({ f7router }) => {
               value: true,
             });
           }
+          setActiveButtonIndex(data.termList.indexOf(data.term));
+          setTermsLoading(false);
+          setLoading(false);
+          updateTermGradelist(data.term, data.classes);
+        }
+      } catch (err) {
+        clearTimeout(window.cacheToastTimeout); // Clear the timeout if an error occurs
+        errorDialog(err.message);
+        throw err;
+      }
+    };
+
+    if (user.username && !store.state.loaded) {
+      fetchClasses();
+    }
+  }, [user.username]);
+
+  const switchTerm = async (index) => {
+    const selectedTerm = user.termList[index];
+    setProgressMessage('Logging In...');
+    try {
+      setLoading(true);
+      setActiveButtonIndex(index);
+      closeCacheToast(window.cacheToastTimeout);
+      window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
+
+      const classesGen = getClasses(selectedTerm);
+      let done = false;
+      let data;
+      while (done == false) {
+        let result = await classesGen.next()
+        done = result.done;
+        if (done) { data = result.value; break; }
+        if (result.value) {
+          setProgressPercent(result.value.percent);
+          setProgressMessage(result.value.message);
+        }
+      }
+
+      if (data.success !== false) {
+        updateTermGradelist(data.term, data.classes);
+
+        if (user.termList[window.activeButtonIndex] === data.term) {
+          closeCacheToast(window.cacheToastTimeout);
+
+          if (data.scoresIncluded) {
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'scoresIncluded',
+              value: true,
+            });
+          }
+
           store.dispatch('changeUserData', {
             userNumber: store.state.currentUserNumber,
             item: 'term',
             value: data.term,
           });
+
           setActiveButtonIndex(user.termList.indexOf(data.term));
           setTermsLoading(false);
           setLoading(false);
@@ -218,12 +254,13 @@ const GradesPage = ({ f7router }) => {
         closeCacheToast(window.cacheToastTimeout);
         errorDialog(data.message);
       }
-    }).catch((err) => {
-      closeCacheToast();
+    } catch (err) {
+      closeCacheToast(window.cacheToastTimeout);
       errorDialog(err.message);
-    });
+      throw err;
+    }
   };
-  
+
   const ptr = (done) => {
     getClasses(user.termList[activeButtonIndex]).then((data) => {
       if (data.success != false) {
@@ -381,8 +418,16 @@ const GradesPage = ({ f7router }) => {
 
       </Navbar>
       {loading &&
-        <Block className='display-flex align-items-center justify-content-center'>
-          <Preloader />
+        <Block className='display-flex align-items-center flex-direction-column justify-content-center'>
+          {user.stream &&
+            <>
+              <Progressbar progress={progressPercent} />
+              <BlockTitle style={{ marginTop: 12, }}>{progressMessage}</BlockTitle>
+            </>
+          }
+          {!user.stream &&
+            <Preloader />
+          }
         </Block>
       }
 
@@ -402,6 +447,7 @@ const GradesPage = ({ f7router }) => {
           </Segmented>
         </Subnavbar>
       }
+
       {sortMode &&
         <Button fill className={`margin-left margin-right margin-top-half ${user.groupLists == true ? "margin-bottom-half" : ""}`} onClick={() => completeSorting()}>
           Complete Sorting

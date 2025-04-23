@@ -17,7 +17,7 @@ if (!currentUserNumber) {
 if (currentUserNumber >= users.length) {
   currentUserNumber = users.length - 1;
 }
-const defaultUser = {pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}, scoresIncluded: false}
+const defaultUser = {pfp: defaultpfp, scheme: 'light', theme: '#007aff', layout: 'md', term: -1, termList: [], gradelist: {}, scoresIncluded: false, stream: true}
 const store = createStore({
   state: {
     users: users,
