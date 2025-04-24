@@ -22,7 +22,7 @@ const HomePage = ({ f7router }) => {
   updateRouter(f7router);
   const users = useStore('users');
   const user = useStore('currentUser');
-
+  
   const switchAccount = () => {
     return () => {
       var chooseList = []

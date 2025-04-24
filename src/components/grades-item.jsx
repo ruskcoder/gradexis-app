@@ -2,6 +2,7 @@ import { Card, ListItem, f7, CardContent, CardHeader, Progressbar, useStore } fr
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import store from '../js/store';
+import terminal from 'virtual:terminal';
 
 function colorFromGrade(grade) {
   if (grade == "0.00" || grade == "···") {
@@ -68,11 +69,13 @@ ClassGradeItem.propTypes = {
 function colorFromSubtitle(subtitle, sat, light) {
   const sha = sha256(subtitle);
   const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0)/2, 0);
+  // const hash = sha.replace(/\D/g, '');
   const hue = hash % 360;
+  // const hue = index * 37 % 360;
   return `hsl(${hue}, ${sat}%, ${light}%)`;
 }
 
-const CardClassGradeItem = ({ title, subtitle, grade }) => {
+const CardClassGradeItem = ({ index, title, subtitle, grade }) => {
   grade = !grade ? "--" : parseFloat(grade.slice(0, -1)).toPrecision(3);
   grade = roundGrade(grade);
   return (
@@ -211,7 +214,7 @@ WhatIfGradeItem.propTypes = {
   color: PropTypes.string.isRequired,
   grade: PropTypes.any.isRequired,
   badges: PropTypes.array.isRequired,
-  total: PropTypes.string.isRequired,
+  total: PropTypes.number.isRequired,
 };
 
 export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem, CardClassGradeItem, roundGrade };

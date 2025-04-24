@@ -118,7 +118,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             </div>
             <div>
               <p className="info-category-title">Weighted Points</p>
-              <p className="info-category-data">{`${(parseFloat(assignment.weight) * 100).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
+              <p className="info-category-data">{`${(parseFloat(assignment.weightedScore)).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
             </div>
             <div>
               <p className="info-category-title">Weight</p>
