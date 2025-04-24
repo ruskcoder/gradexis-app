@@ -1,6 +1,26 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback, use } from 'react';
-import { Page, BlockFooter, Navbar, Subnavbar, Segmented, Button, List, ListItem, Progressbar, f7, Preloader, BlockTitle, Block, useStore, f7ready, AccordionContent } from 'framework7-react';
-import { ClassGradeItem } from '../components/grades-item.jsx';
+import {
+  Page,
+  Card,
+  CardContent,
+  CardHeader,
+  Navbar,
+  Subnavbar,
+  Segmented,
+  Button,
+  List,
+  ListItem,
+  Progressbar,
+  f7,
+  Preloader,
+  BlockTitle,
+  Block,
+  useStore,
+  Link,
+  AccordionContent,
+  CardFooter,
+} from 'framework7-react';
+import { ClassGradeItem, CardClassGradeItem } from '../components/grades-item.jsx';
 import { errorDialog, initEmits } from '../components/app.jsx';
 import { getClasses } from '../js/grades-api.js';
 import $ from 'dom7';
@@ -170,11 +190,13 @@ const GradesPage = ({ f7router }) => {
         closeCacheToast(window.cacheToastTimeout);
 
         if (data.success !== false && !usingCache) {
-          store.dispatch('changeUserData', {
-            userNumber: store.state.currentUserNumber,
-            item: 'termList',
-            value: data.termList,
-          });
+          if (user.termList.length == 0) {
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'termList',
+              value: data.termList,
+            });
+          }
           store.dispatch('changeUserData', {
             userNumber: store.state.currentUserNumber,
             item: 'term',
@@ -370,8 +392,8 @@ const GradesPage = ({ f7router }) => {
 
   // Update the click and taphold handlers in the useEffect
   useEffect(() => {
-    $('.grades-list-item').each(function () {
-      const course = $(this).find('.item-subtitle').text().trim();
+    $('.grades-list-item, .grade-card').each(function () {
+      const course = $(this).find('.item-subtitle, .subtitle').text().trim();
 
       $(this).on('click', function () {
         const cls = Object.keys(store.state.currentUser.gradelist[user.term]).find(
@@ -383,7 +405,7 @@ const GradesPage = ({ f7router }) => {
             createDialog(course, true);
           } else {
             if (opts.average !== "" && sortMode === false) {
-              f7router.navigate(`/grades/${cls}/`);
+              f7router.navigate(`/grades/${cls}/`)
             }
           }
         }
@@ -392,14 +414,17 @@ const GradesPage = ({ f7router }) => {
         }
       });
 
-      $(this).on('taphold', function () {
-        const hidden = Object.values(store.state.currentUser.gradelist[user.term]).find(
-          item => item.course === course
-        ).hide;
-        createDialog(course, hidden);
-      });
+      if ($(this).attr('class') && !$(this).attr('class').includes('grade-card')) {
+        $(this).on('taphold', function () {
+          const hidden = Object.values(store.state.currentUser.gradelist[user.term]).find(
+            item => item.course === course
+          ).hide;
+          createDialog(course, hidden);
+        });
+      }
     });
-  }, [sortMode, termsLoading, user.gradelist, createDialog, f7router, user.term]);
+  },
+    [sortMode, termsLoading, user.gradelist, createDialog, f7router, user.term]);
 
   const lastUpdated = () => {
     const lastUpdated = new Date(user.gradelist[user.term].lastUpdated);
@@ -419,13 +444,13 @@ const GradesPage = ({ f7router }) => {
       </Navbar>
       {loading &&
         <Block className='display-flex align-items-center flex-direction-column justify-content-center'>
-          {user.stream &&
+          {user.stream != false &&
             <>
               <Progressbar progress={progressPercent} />
               <BlockTitle style={{ marginTop: 12, }}>{progressMessage}</BlockTitle>
             </>
           }
-          {!user.stream &&
+          {user.stream == false &&
             <Preloader />
           }
         </Block>
@@ -453,8 +478,22 @@ const GradesPage = ({ f7router }) => {
           Complete Sorting
         </Button>
       }
-      {/* {!sortMode && <Button fill onClick={setSortMode(false)}>Complete Sorting</Button>} */}
-      {!loading &&
+      {!loading && user.gradesView == "card" &&
+        <div className='cards-grades'>
+          {Object.keys(globalgradelist[user.term] || {}).map((item, index) => (
+            globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (
+              <CardClassGradeItem
+                key={index}
+                title={globalgradelist[user.term][item].rename}
+                subtitle={globalgradelist[user.term][item].course}
+                grade={globalgradelist[user.term][item].average}
+              />
+            )
+          ))}
+        </div>
+      }
+
+      {!loading && (user.gradesView ? user.gradesView == "list" : true) &&
         <>
           <List
             dividersIos={user.groupLists == true}

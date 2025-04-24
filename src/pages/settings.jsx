@@ -50,11 +50,13 @@ const SettingsPage = ({ f7router }) => {
   const user = useStore('currentUser');
   const [theme, changeTheme] = useState(user.theme);
   const [scheme, changeScheme] = useState(user.scheme);
-  const [biometrics, changeBiometrics] = useState(user.biometrics ? user.biometrics : false);
-  const [groupLists, changeGroupLists] = useState(user.groupLists ? user.groupLists : false);
+  const [biometrics, changeBiometrics] = useState(user.biometrics != undefined ? user.biometrics : false);
+  const [groupLists, changeGroupLists] = useState(user.groupLists != undefined ? user.groupLists : false);
   const [anim, changeAnim] = useState(user.anim != false ? true : false);
   const [pageTransition, changePageTransition] = useState(user.pageTransition || "default");
-  const [stream, changeStream] = useState(user.stream || false);
+  const [view, changeView] = useState(user.gradesView || "list");
+  const [roundGrades, changeRoundGrades] = useState(user.roundGrades != undefined ? user.roundGrades : false);
+  const [stream, changeStream] = useState(user.stream != undefined ? user.stream : true);
 
   function fixHexColor(hex) { let r = 0, g = 0, b = 0; if (hex.length === 4) { r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16); } else if (hex.length === 7) { r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16); } r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max !== min) { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } else { h = s = 0; } s = 1; l = 0.5; let q = l < 0.5 ? l * (1 + s) : l + s - l * s; let p = 2 * l - q; r = hueToRgb(p, q, h + 1 / 3); g = hueToRgb(p, q, h); b = hueToRgb(p, q, h - 1 / 3); r = Math.round(r * 255); g = Math.round(g * 255); b = Math.round(b * 255); return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`; } function hueToRgb(p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 1 / 2) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; }
   const restartApp = () => {
@@ -80,7 +82,26 @@ const SettingsPage = ({ f7router }) => {
     });
     restartApp();
   };
+  const setRoundGrades = (newRound) => {
+    changeRoundGrades(newRound);
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "roundGrades",
+      value: newRound,
+    });
+    restartApp();
+  }
 
+  const setView = (newView) => {
+    changeView(newView);
+    store.dispatch("changeUserData", {
+      userNumber: store.state.currentUserNumber,
+      item: "gradesView",
+      value: newView,
+    });
+    restartApp();
+  }
+  
   const setScheme = (newScheme) => {
     changeScheme(newScheme);
     f7.setDarkMode(newScheme === "dark");
@@ -243,6 +264,11 @@ const SettingsPage = ({ f7router }) => {
               className="no-chevron"
               onClick={() => setScheme(scheme === "dark" ? "light" : "dark")}
             >
+              <Icon
+                slot="media"
+                material={scheme == "light" ? "light_mode" : "dark_mode"}
+                className='material-symbols-outlined'
+              ></Icon>
               <span>Dark Mode</span>
               <Toggle
                 checked={scheme === "dark"}
@@ -256,6 +282,12 @@ const SettingsPage = ({ f7router }) => {
               smartSelect
               smartSelectParams={{ openIn: "popover" }}
             >
+              <Icon
+                slot="media"
+                ios="material:ios"
+                md="material:android"
+                className='material-symbols-outlined'
+              ></Icon>
               <select
                 name="app-theme"
                 onChange={(selection) => setLayout(selection.target.value)}
@@ -310,6 +342,12 @@ const SettingsPage = ({ f7router }) => {
               className="no-chevron"
               onClick={() => setAnim(!anim)}
             >
+              <Icon
+                slot="media"
+                ios="material:animation"
+                md="material:animation"
+                className='material-symbols-outlined'
+              ></Icon>
               <span>Display Animations</span>
               <Toggle
                 checked={anim}
@@ -323,6 +361,11 @@ const SettingsPage = ({ f7router }) => {
               smartSelect
               smartSelectParams={{ openIn: "popover" }}
             >
+              <Icon
+                slot="media"
+                material="switch_access_2"
+                className='material-symbols-outlined'
+              ></Icon>
               <select
                 name="page-transition"
                 onChange={(selection) => setPageTransition(selection.target.value)}
@@ -337,6 +380,25 @@ const SettingsPage = ({ f7router }) => {
                 <option value="f7-flip">Flip</option>
                 <option value="f7-parallax">Parallax</option>
                 <option value="f7-push">Push</option>
+              </select>
+            </ListItem>
+            <ListItem
+              title="Grades View"
+              smartSelect
+              smartSelectParams={{ openIn: "popover" }}
+            >
+              <Icon
+                slot="media"
+                material={view == 'list' ? "list" : "grid_view"}
+                className='material-symbols-outlined'
+              ></Icon>
+              <select
+                name="view"
+                onChange={(selection) => setView(selection.target.value)}
+                value={view}
+              >
+                <option value="list">List View</option>
+                <option value="card">Grid/Card View</option>
               </select>
             </ListItem>
           </List>
@@ -362,6 +424,24 @@ const SettingsPage = ({ f7router }) => {
                 checked={stream}
                 onToggleChange={() =>
                   setStream(!stream)
+                }
+              />
+            </ListItem>
+            <ListItem
+              link="#"
+              className="no-chevron"
+              onClick={() => setRoundGrades(!roundGrades)}
+            >
+              <Icon
+                slot="media"
+                material="decimal_decrease"
+                className='material-symbols-outlined'
+              ></Icon>
+              <span>Round Grades</span>
+              <Toggle
+                checked={roundGrades}
+                onToggleChange={() =>
+                  setRoundGrades(!roundGrades)
                 }
               />
             </ListItem>

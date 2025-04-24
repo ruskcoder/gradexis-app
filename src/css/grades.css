@@ -45,3 +45,121 @@
 .options-dialog .dialog-inner {
     text-align: center;
 }
+:root {
+    --card-view-gap: calc(var(--f7-typography-margin) * 3/4);
+}
+.cards-grades {
+    margin: var(--card-view-gap);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--card-view-gap);
+}
+
+.grade-card {
+    width: calc(calc(100vw - calc(var(--card-view-gap) * 3)) / 2);
+    aspect-ratio: 15/16;
+    margin: 0;
+    position: relative; 
+    overflow: hidden !important; 
+    z-index: 1 !important;
+    cursor: pointer !important;
+}
+
+@media (min-width: 768px) {
+    .cards-grades {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grade-card {
+        width: calc(calc(100vw - calc(var(--f7-typography-margin) * 4)) / 3);
+    }
+}
+
+@media (min-width: 1200px) {
+    .cards-grades {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .grade-card {
+        width: calc(calc(100vw - calc(var(--f7-typography-margin) * 5)) / 4);
+    }
+}
+
+.grade-card .card-content {
+    display: flex;
+    padding: 0;
+    margin: 0 calc(var(--f7-typography-padding) / 1);
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    height: 35%;
+    font-weight: 600;
+    overflow: hidden;
+}
+.grade-card .card-content .title {
+    font-size: var(--f7-list-font-size) !important;
+    line-height: var(--f7-list-font-size) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    margin-bottom: 2px;
+}
+.grade-card .card-content .subtitle {
+    font-size: var(--f7-list-item-subtitle-font-size);
+    line-height: var(--f7-list-item-subtitle-font-size);
+}
+.grade-card .card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 65%;
+    z-index: -2;
+    padding: calc(var(--f7-typography-padding) * 3/4) var(--f7-typography-padding);
+}
+
+.grade-card .grade-number {
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: calc(var(--f7-typography-margin) * 1);
+    color: white; 
+    position: absolute;
+}
+.grade-card .card-header.progress-hidden div {
+    display: none;
+  }
+.grade-card .card-header.progress-hidden .grade-number { 
+    margin-bottom: 0;
+}
+.grade-card .progressbar-container {
+    padding: 0;
+    height: 100%; 
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    width: 100%;
+}
+.grade-card .progress-percent {
+    font-size: 0.6em;
+    line-height: 0.6em;
+    width: 42px;
+
+}
+.grade-card .progress {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    width: 100%;
+    justify-content: center;
+    align-items: center;    
+    margin-top: var(--f7-typography-margin);
+}
+.grade-card .progressbar {
+    background-color: white;
+    height: 5px;
+    border-radius: 5px;
+    margin: 0 8px !important;
+    border: 1px solid white;
+}

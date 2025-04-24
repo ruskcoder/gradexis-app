@@ -236,8 +236,8 @@ const Gradexis = ({ f7router }) => {
           />
           <Link
             tabLink="#view-todo"
-            iconIos="f7:checkmark_2"
-            iconMd="material:done_all"
+            iconIos="material:checklist"
+            iconMd="material:checklist"
             text="Todo"
             onClick={() => { f7.emit('/todo/') }}
           />

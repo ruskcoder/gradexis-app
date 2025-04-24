@@ -81,6 +81,12 @@
 .assignments-item {
     position: relative;
 }
+.ios .scores-list .item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 4px;
+}
 
 /* .ios a.item-link.active-state {
     background-color: transparent;

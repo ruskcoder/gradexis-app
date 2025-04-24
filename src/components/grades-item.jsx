@@ -1,6 +1,7 @@
-import { Card, ListItem, f7 } from 'framework7-react';
+import { Card, ListItem, f7, CardContent, CardHeader, Progressbar, useStore } from 'framework7-react';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import store from '../js/store';
 
 function colorFromGrade(grade) {
   if (grade == "0.00" || grade == "···") {
@@ -20,8 +21,17 @@ function colorFromGrade(grade) {
   }
 }
 
+function roundGrade(grade) {
+  if (grade == "") return "0";
+  if (store.state.currentUser.roundGrades && !isNaN(parseFloat(grade))) {
+    return Math.round(parseFloat(grade))
+  }
+  else return grade;
+}
+
 const ClassGradeItem = ({ title, subtitle, grade }) => {
   grade = grade == "" ? "0.00" : parseFloat(grade.slice(0, -1)).toPrecision(4);
+  grade = roundGrade(grade);
   return (
     <>
       <div className="grades-item">
@@ -55,6 +65,51 @@ ClassGradeItem.propTypes = {
   grade: PropTypes.string.isRequired,
 };
 
+function colorFromSubtitle(subtitle, sat, light) {
+  const sha = sha256(subtitle);
+  const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0)/2, 0);
+  const hue = hash % 360;
+  return `hsl(${hue}, ${sat}%, ${light}%)`;
+}
+
+const CardClassGradeItem = ({ title, subtitle, grade }) => {
+  grade = !grade ? "--" : parseFloat(grade.slice(0, -1)).toPrecision(3);
+  grade = roundGrade(grade);
+  return (
+    <Card className="ripple grade-card">
+      <CardHeader
+        style={{
+          backgroundColor: colorFromSubtitle(subtitle, 44, 42),
+        }}
+        className = {grade == "--" ? "progress-hidden" : ""}
+      >
+        <span className='grade-number'>{grade}</span>
+        <div className='progressbar-container'>
+          <div className="progress">
+            <span className='progress-percent' style={{ textAlign: 'end' }}>0%</span>
+            <span className="progressbar" data-progress={grade}>
+              <span style={{
+                transform: `translate3d(-${100 - grade}%, 0px, 0px)`,
+                backgroundColor: colorFromSubtitle(subtitle, 90, 67)
+              }}></span>
+            </span>
+            <span className='progress-percent' style={{ textAlign: 'start' }}>100%</span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <span className='title'>{title}</span>
+        <span className='subtitle'>{subtitle}</span>
+      </CardContent>
+    </Card>
+  )
+}
+CardClassGradeItem.propTypes = {
+  title: PropTypes.string.isRequired,
+  subtitle: PropTypes.string.isRequired,
+  grade: PropTypes.string.isRequired,
+};
+
 const AssignmentGradeItem = ({ name, date, color, grade, badges }) => {
   grade = grade == "" ? "···" : parseFloat(grade).toPrecision(4);
   if (badges.includes("missing")) {
@@ -63,6 +118,7 @@ const AssignmentGradeItem = ({ name, date, color, grade, badges }) => {
   if (badges.includes("exempt")) {
     grade = "X"
   }
+  grade = roundGrade(grade);
   return (
     <>
       <i
@@ -158,4 +214,4 @@ WhatIfGradeItem.propTypes = {
   total: PropTypes.string.isRequired,
 };
 
-export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem };
+export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem, CardClassGradeItem, roundGrade };

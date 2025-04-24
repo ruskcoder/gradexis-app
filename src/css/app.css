@@ -68,7 +68,7 @@
 .ios .iosRound .item-link {
     background: var(--f7-block-strong-bg-color);
     border-radius: 16px;
-    margin: calc(var(--f7-typography-margin) * 2/4)
+    margin: calc(var(--f7-typography-margin) * 1/2) !important;
 }
 
 .ios .iosRound .item-inner {
@@ -93,4 +93,7 @@
 }
 .dialog {
     z-index: 100001 !important;
+}
+.picker {
+    z-index: 100002 !important;
 }

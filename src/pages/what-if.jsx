@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Navbar, Block, Checkbox, ListInput, Gauge, Card, List, ListItem, useStore, f7, Preloader } from 'framework7-react';
+import { Page, Navbar, Block, Checkbox, ListInput, Gauge, Card, List, ListItem, useStore, f7, ListButton, Button } from 'framework7-react';
 import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { gaugeBackgroundColor, colorFromCategory } from '../pages/class-grades.jsx';
-import { WhatIfGradeItem } from '../components/grades-item.jsx';
+import { WhatIfGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { WhatIfEditDialog } from '../components/custom-dialogs.jsx';
+import { WhatIfEditDialog, WhatIfAddDialog } from '../components/custom-dialogs.jsx';
 
 const WhatIfPage = ({ f7router, ...props }) => {
   updateRouter(f7router);
@@ -38,13 +38,13 @@ const WhatIfPage = ({ f7router, ...props }) => {
       else {
         newScores[key].badges = newScores[key].badges.filter((badge) => badge !== "exempt");
       }
-      setEditScores(newScores); 
+      setEditScores(newScores);
     }
     return () => {
       const dialog = f7.dialog.create({
         title: assignment.name,
         closeByBackdropClick: true,
-        cssClass: 'whatif-edit-dialog',
+        cssClass: 'whatif-edit-dialog no-padding-bottom',
         content: '<div id="whatif-edit-dialog-container"></div>',
         buttons: user.layout == 'ios' ? [
           {
@@ -67,7 +67,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
       window.f7alert = dialog;
     };
   };
-  
+
   const calculateNewAvg = () => {
     let categoryGrades = {};
     for (let assignment of editScores) {
@@ -87,7 +87,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
       for (let score of categoryGrades[category]) {
         total += parseFloat(score);
       }
-      categoryGrades[category] = total / categoryGrades[category].length; 
+      categoryGrades[category] = total / categoryGrades[category].length;
     }
 
     let weightedSum = 0;
@@ -125,6 +125,91 @@ const WhatIfPage = ({ f7router, ...props }) => {
       </ListItem>
     ));
   };
+
+  const createCategories = () => {
+    let categoryCards = []
+
+    for (let category of Object.keys(categories)) {
+      categoryCards.push(
+        <div
+          style={{ display: "contents", cursor: "pointer" }}
+        >
+          <Card className="no-margin grade-category-item">
+            <h4 className="no-margin">{category}</h4>
+            <h1 className="no-margin category-number">
+              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4))}
+              <i
+                style={{
+                  backgroundColor: `${colorFromCategory(category)}`,
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '30%',
+                }}
+                className="icon demo-list-icon wheel-picker-target"
+              />
+            </h1>
+          </Card>
+        </div>
+      )
+    }
+    let categoryDivs = [];
+    for (let i = 0; i < categoryCards.length; i += 2) {
+      categoryDivs.push(
+        <div className="grade-categories assignment-grade-item" key={i}>
+          {categoryCards[i]}
+          {categoryCards[i + 1] ? categoryCards[i + 1] : ""}
+        </div>
+      );
+    }
+    return categoryDivs;
+  }
+
+  const addGrade = () => {
+    return () => {
+      const afterDone = (name, score, category) => {
+        if (name === "" || score === "" || category === "") {
+          f7.dialog.alert("Please fill out all fields.");
+          return;
+        }
+        const newGrade = {
+          name: name,
+          score: score,
+          percentage: score + "%",
+          category: category,
+          badges: [],
+          dateAssigned: "--",
+          dateDue: "--",
+          totalPoints: 100
+        };
+        setEditScores([newGrade, ...editScores]);
+      };
+
+      const dialog = f7.dialog.create({
+        title: "Add Grade",
+        closeByBackdropClick: true,
+        cssClass: 'whatif-edit-dialog',
+        content: '<div id="whatif-add-dialog-container"></div>',
+        buttons: user.layout == 'ios' ? [
+          {
+            text: 'Done',
+            strong: true,
+            close: true,
+            onClick: () => {
+              afterDone(window.currentWhatIfEdit.name, window.currentWhatIfEdit.score, window.currentWhatIfEdit.category);
+            }
+          }
+        ] : []
+      });
+
+      dialog.open();
+      createRoot(document.getElementById('whatif-add-dialog-container')).render(
+        <WhatIfAddDialog layout={user.layout} categories={Object.keys(categories)} callback={afterDone} />
+      );
+
+      window.f7alert = dialog;
+    }
+  }
+
   return (
     <Page>
       <Navbar title={"What If: " + props.course} backLink="Back" />
@@ -145,9 +230,11 @@ const WhatIfPage = ({ f7router, ...props }) => {
               labelFontSize={20}
             />
           </Card>
+          {createCategories()}
         </div>
       </Block>
-      <List dividersIos mediaList strongIos strong inset className="scores-list no-chevron mod-list margin-top">
+      <List dividersIos mediaList strongIos strong inset className="scores-list whatif-list no-chevron mod-list margin-top">
+        <ListButton title="Add Grade" onClick={addGrade()} />
         {createGrades()}
       </List>
     </Page>

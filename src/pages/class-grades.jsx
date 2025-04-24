@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, useStore, f7, Preloader } from 'framework7-react';
-import { AssignmentGradeItem } from '../components/grades-item.jsx';
+import { AssignmentGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
@@ -211,7 +211,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const createCategories = () => {
     let categoryCards = []
 
-
     for (let category of Object.keys(categories)) {
       categoryCards.push(
         <div
@@ -221,7 +220,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <Card className="no-margin grade-category-item">
             <h4 className="no-margin">{category}</h4>
             <h1 className="no-margin category-number">
-              {parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4)}
+              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4))}
               <i
                 style={{
                   backgroundColor: `${colorFromCategory(category)}`,
@@ -284,7 +283,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                 borderColor={primaryFromColor(user.theme)}
                 borderBgColor={gaugeBackgroundColor(user)}
                 borderWidth={20}
-                valueText={`${(user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4)}`}
+                valueText={`${roundGrade((user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4))}`}
                 valueFontSize={50}
                 valueTextColor={primaryFromColor(user.theme)}
                 labelText="Overall"
