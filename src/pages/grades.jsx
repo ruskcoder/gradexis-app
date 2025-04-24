@@ -103,9 +103,6 @@ const GradesPage = ({ f7router }) => {
     return updatedGradelist;
   };
 
-  useEffect(() => {
-    window.activeButtonIndex = activeButtonIndex;
-  }, [activeButtonIndex]);
   const cacheToastTimeout = (newterm) => {
     return setTimeout(() => {
       if (!useCacheToast.current
@@ -209,9 +206,10 @@ const GradesPage = ({ f7router }) => {
               value: true,
             });
           }
-          setActiveButtonIndex(data.termList.indexOf(data.term));
-          setTermsLoading(false);
-          setLoading(false);
+          if (!usingCache) {
+            setTermsLoading(false);
+            setLoading(false);
+          }
           updateTermGradelist(data.term, data.classes);
         }
       } catch (err) {
@@ -229,6 +227,7 @@ const GradesPage = ({ f7router }) => {
   const switchTerm = async (index) => {
     const selectedTerm = user.termList[index];
     setProgressMessage('Logging In...');
+
     try {
       setLoading(true);
       setActiveButtonIndex(index);
@@ -270,6 +269,7 @@ const GradesPage = ({ f7router }) => {
 
           setActiveButtonIndex(user.termList.indexOf(data.term));
           setTermsLoading(false);
+          alert("Updated to " + data.term);
           setLoading(false);
         }
       } else {
@@ -484,6 +484,7 @@ const GradesPage = ({ f7router }) => {
             globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (
               <CardClassGradeItem
                 key={index}
+                index={index}
                 title={globalgradelist[user.term][item].rename}
                 subtitle={globalgradelist[user.term][item].course}
                 grade={globalgradelist[user.term][item].average}

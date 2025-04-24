@@ -41,6 +41,7 @@
 .item-input-invalid .item-inner{
     padding-bottom: 8px !important;
 }
+
 .md .item-input-error-message {
     overflow: visible;
     text-align: left;

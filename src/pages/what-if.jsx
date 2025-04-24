@@ -5,6 +5,7 @@ import { gaugeBackgroundColor, colorFromCategory } from '../pages/class-grades.j
 import { WhatIfGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { WhatIfEditDialog, WhatIfAddDialog } from '../components/custom-dialogs.jsx';
+import terminal from 'virtual:terminal'
 
 const WhatIfPage = ({ f7router, ...props }) => {
   updateRouter(f7router);
@@ -71,23 +72,27 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const calculateNewAvg = () => {
     let categoryGrades = {};
     for (let assignment of editScores) {
+      terminal.log(assignment.name)
       if (!assignment.badges.includes('exempt') && assignment.score) {
         if (assignment.badges.includes('missing')) {
           assignment.score = "0.00";
         }
         if (Object.keys(categoryGrades).includes(assignment.category)) {
-          categoryGrades[assignment.category].push(assignment.score);
+          categoryGrades[assignment.category].push(assignment);
         } else {
-          categoryGrades[assignment.category] = [assignment.score];
+          categoryGrades[assignment.category] = [assignment];
         }
       }
     }
     for (let category of Object.keys(categoryGrades)) {
       let total = 0;
-      for (let score of categoryGrades[category]) {
-        total += parseFloat(score);
+      let outOf = 0;
+      for (let assignment of categoryGrades[category]) {
+        total += parseFloat(assignment.score);
+        outOf += parseFloat(assignment.weightedTotalPoints);
       }
-      categoryGrades[category] = total / categoryGrades[category].length;
+      terminal.log(total, outOf);
+      categoryGrades[category] = (total / outOf) * 100;
     }
 
     let weightedSum = 0;
@@ -179,7 +184,9 @@ const WhatIfPage = ({ f7router, ...props }) => {
           badges: [],
           dateAssigned: "--",
           dateDue: "--",
-          totalPoints: 100
+          totalPoints: 100,
+          weight: 1,
+          weightedTotalPoints: 100,
         };
         setEditScores([newGrade, ...editScores]);
       };

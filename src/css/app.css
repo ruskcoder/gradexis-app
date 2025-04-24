@@ -89,11 +89,20 @@
     z-index: 9999 !important;
 }
 .dialog-backdrop {
-    z-index: 100000 !important;
+    z-index: 99999 !important;
 }
 .dialog {
-    z-index: 100001 !important;
+    z-index: 99999 !important;
 }
 .picker {
-    z-index: 100002 !important;
+    z-index: 999999 !important;
+}
+/* .popover {
+    z-index: 999999 !important;
+}
+.popover-backdrop {
+    z-index: 999999 !important;
+} */
+.subnavbar .button {
+    font-size: 13px;
 }

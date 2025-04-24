@@ -68,3 +68,29 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+
+function showNotification() {
+    if (Notification.permission === "granted") {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                registration.showNotification('hi', {
+                    body: 'Hello world!',
+                    icon: '/icons/192x192.png',
+                    vibrate: [200, 100, 200],
+                    data: {
+                        url: 'https://example.com'
+                    }
+                });
+            } else {
+                console.error('Service worker registration not found.');
+            }
+        });
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(function (permission) {
+
+        });
+    }
+}
+// https://web.dev/explore/notifications
+
+// setInterval(() => {showNotification();}, 1000);
