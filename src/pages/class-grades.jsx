@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, useStore, f7, Preloader } from 'framework7-react';
-import { AssignmentGradeItem, roundGrade } from '../components/grades-item.jsx';
+import { AssignmentGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
+import { errorDialog, primaryFromColor, updateRouter, roundGrade } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { getGrades } from '../js/grades-api.js';
 import store from '../js/store.js';
@@ -280,12 +280,12 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                 className="margin-half"
                 type="circle"
                 value={user.anim != false ? animatedValue / 100 : average / 100} // Use animated value here
-                borderColor={primaryFromColor(user.theme)}
+                borderColor={`var(--f7-${user.layout}-primary)`}
                 borderBgColor={gaugeBackgroundColor(user)}
                 borderWidth={20}
                 valueText={`${roundGrade((user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4))}`}
                 valueFontSize={50}
-                valueTextColor={primaryFromColor(user.theme)}
+                valueTextColor={`var(--f7-${user.layout}-primary)`}
                 labelText="Overall"
                 labelFontSize={20}
               />

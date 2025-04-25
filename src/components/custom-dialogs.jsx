@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Checkbox, List, ListInput, Button, ListItem, Icon, f7, f7ready } from "framework7-react";
 
 const WhatIfEditDialog = ({ layout, startingGrade, badges, callback }) => {
@@ -67,8 +67,10 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
   useEffect(() => {
     pickerCategory.current = f7.picker.create({
       inputEl: "#category-select",
-      rotateEffect: true,
       toolbarCloseText: "Done",
+      openIn: 'popover',
+      cssClass: "picker-category",
+      rotateEffect: false,
       cols: [
         {
           textAlign: "center",

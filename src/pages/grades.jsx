@@ -42,6 +42,7 @@ const GradesPage = ({ f7router }) => {
   const [progressMessage, setProgressMessage] = useState('Logging In...');
   const [termsLoading, setTermsLoading] = useState(false);
   const [usingCache, setUsingCache] = useState(false);
+  const [cardColor, setCardColor] = useState(store.state.currentUser.theme)
 
   useEffect(() => {
     store.state.activeButtonIndex = activeButtonIndex;
@@ -207,6 +208,7 @@ const GradesPage = ({ f7router }) => {
             });
           }
           if (!usingCache) {
+            setActiveButtonIndex(data.termList.indexOf(data.term));
             setTermsLoading(false);
             setLoading(false);
           }
@@ -249,8 +251,7 @@ const GradesPage = ({ f7router }) => {
 
       if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
-
-        if (user.termList[window.activeButtonIndex] === data.term) {
+        if (data.termList[store.state.activeButtonIndex] == data.term) {
           closeCacheToast(window.cacheToastTimeout);
 
           if (data.scoresIncluded) {
@@ -269,7 +270,6 @@ const GradesPage = ({ f7router }) => {
 
           setActiveButtonIndex(user.termList.indexOf(data.term));
           setTermsLoading(false);
-          alert("Updated to " + data.term);
           setLoading(false);
         }
       } else {
@@ -340,7 +340,6 @@ const GradesPage = ({ f7router }) => {
     updateGradelist(user.term, termGradelist);
   }, [user.term, updateGradelist]);
 
-  // Update createDialog to pass the correct term-based gradelist
   const createDialog = useCallback((course, hidden) => {
     f7.dialog.create({
       title: 'Options',
@@ -405,7 +404,7 @@ const GradesPage = ({ f7router }) => {
             createDialog(course, true);
           } else {
             if (opts.average !== "" && sortMode === false) {
-              f7router.navigate(`/grades/${cls}/`)
+              f7router.navigate(`/grades/${encodeURIComponent(cls)}/`)
             }
           }
         }
@@ -437,6 +436,11 @@ const GradesPage = ({ f7router }) => {
       hour12: true,
     });
   }
+  f7.on('themeUpdated', function() {
+    if (cardColor != user.theme) {
+      setCardColor(user.theme);
+    }
+  })
   return (
     <Page name="grades" >
       <Navbar title="Grades" subtitle={usingCache ? `Last Updated: ${lastUpdated()}` : ""} sliding={true} className='navbar-grades'>
@@ -485,6 +489,7 @@ const GradesPage = ({ f7router }) => {
               <CardClassGradeItem
                 key={index}
                 index={index}
+                theme={cardColor}
                 title={globalgradelist[user.term][item].rename}
                 subtitle={globalgradelist[user.term][item].course}
                 grade={globalgradelist[user.term][item].average}

@@ -1,4 +1,4 @@
-
+  
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import Terminal from 'vite-plugin-terminal'
@@ -33,6 +33,9 @@ export default async () => {
     },
     server: {
       host: true,
+      allowedHosts: [
+        '5173-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com'
+      ]
     },
 
   };

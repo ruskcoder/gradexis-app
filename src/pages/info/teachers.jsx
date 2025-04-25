@@ -64,7 +64,7 @@ const TeachersPage = ({f7router}) => {
                                 title={prettifyName(item.teacher)}
                                 subtitle={item.email}
                                 text={item.class}>
-                                <div slot="media" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '44px', height: '44px', backgroundColor: primaryFromColor(user.theme), borderRadius: '8px' }}>
+                                <div slot="media" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '44px', height: '44px', backgroundColor: `var(--f7-${user.layout}-primary)`, borderRadius: '8px' }}>
                                     {teacherInitials(item.teacher)}
                                 </div>
                                 <Link

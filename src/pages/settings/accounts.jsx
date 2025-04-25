@@ -47,7 +47,7 @@ const AccountsPage = ({ f7router }) => {
                         width: "50px",
                         borderRadius: "50%",
                         aspectRatio: "1/1",
-                        border: `4px solid ${primaryFromColor(user.theme)}`,
+                        border: `4px solid var(--f7-${user.layout}-primary)`,
                         marginBottom: 2,
                       }}
                     />

@@ -47,7 +47,7 @@ const HomePage = ({ f7router }) => {
                       width: 44px;
                       border-radius: 50%;
                       aspect-ratio: 1/1;
-                      border: 4px solid ${primaryFromColor(user.theme)};
+                      border: 4px solid var(--f7-${user.layout}-primary);
                     ">
                   </div>
                   <div class="item-inner" style="
@@ -161,7 +161,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View classes and course requests"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="/info/teachers/">
+        <ListItem link="#">
           <OverviewIcon
             slot="media"
             iconIos="f7:at"

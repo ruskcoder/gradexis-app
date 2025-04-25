@@ -38,10 +38,9 @@
     position: relative;
     z-index: 2;
 }
-.item-input-invalid .item-inner{
+.md .item-input-with-error-message {
     padding-bottom: 8px !important;
 }
-
 .md .item-input-error-message {
     overflow: visible;
     text-align: left;

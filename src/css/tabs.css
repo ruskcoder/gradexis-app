@@ -1,6 +1,6 @@
 .tabbar {
     transform: translateY(0px);
-    transition: transform 0.2s ease-out;
+    transition: transform 0.4s ease-out;
 }
 .tabbar-hidden{
     transform: translateY(100px);

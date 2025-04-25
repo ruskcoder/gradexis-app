@@ -34,11 +34,20 @@ import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
 import { show } from "dom7";
 
+export const roundGrade = (grade) => {
+  if (grade == "") return "0";
+  if (store.state.currentUser.roundGrades && !isNaN(parseFloat(grade))) {
+    return Math.round(parseFloat(grade))
+  }
+  else return grade;
+}
+
 export const primaryFromColor = (theme) => {
   return (store.state.currentUser.layout == "md" ? hexFromArgb(themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme].primary) : theme)
 }
-export const mdThemeFromColor = (theme) => {
-  return themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme]
+export const mdThemeFromColor = (theme, value) => {
+  let mdTheme = themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme];
+  console.log(hexFromArgb(mdTheme[value]))
 }
 export const initEmits = (f7, f7router) => {
   f7.on('/grades/', () => {
@@ -60,7 +69,8 @@ export const errorDialog = (err = "") => {
   }
   f7.dialog.create({
     title: 'Error',
-    text: `An error occurred. Please restart the app and try again. ${err ? "<br> Error:" + err : ""}`,
+    text: `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`,
+    cssClass: "error-dialog",
     buttons: [
       {
         text: 'OK',

@@ -21,7 +21,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
     if (user.username) {
       setLoading(false);
       setScores(user.gradelist[user.term][props.course].scores);
-      setCategories(user.gradelist[user.term][props.course].categories);
+      setCategories(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].categories)));
       setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
       setEditAverage(average);
       setEditScores(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].scores))); // Deep copy
@@ -33,6 +33,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
       const newScores = [...editScores];
       newScores[key].score = newGrade;
       newScores[key].percentage = newGrade + "%";
+      newScores[key].weightedScore = newGrade;
       if (checked) {
         newScores[key].badges = ["exempt"];
       }
@@ -72,8 +73,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const calculateNewAvg = () => {
     let categoryGrades = {};
     for (let assignment of editScores) {
-      terminal.log(assignment.name)
-      if (!assignment.badges.includes('exempt') && assignment.score) {
+      if (!assignment.badges.includes('exempt') && !assignment.name.trim().endsWith('*') && assignment.score) {
         if (assignment.badges.includes('missing')) {
           assignment.score = "0.00";
         }
@@ -88,26 +88,27 @@ const WhatIfPage = ({ f7router, ...props }) => {
       let total = 0;
       let outOf = 0;
       for (let assignment of categoryGrades[category]) {
-        total += parseFloat(assignment.score);
+        total += parseFloat(assignment.weightedScore);
         outOf += parseFloat(assignment.weightedTotalPoints);
       }
-      terminal.log(total, outOf);
+      terminal.log(total, outOf)
       categoryGrades[category] = (total / outOf) * 100;
     }
 
     let weightedSum = 0;
     let totalWeight = 0;
-
+    let newCategories = {...categories};
     for (let category of Object.keys(categoryGrades)) {
       if (categories[category] && categories[category].categoryWeight) {
         const weight = parseFloat(categories[category].categoryWeight);
         weightedSum += categoryGrades[category] * weight;
         totalWeight += weight;
       }
+      newCategories[category].percent = `${categoryGrades[category]}%`;
     }
-
     const newAverage = totalWeight > 0 ? (weightedSum / totalWeight).toFixed(2) : 0;
     setEditAverage(newAverage);
+    setCategories(newCategories);
   };
 
   useEffect(() => {
@@ -182,10 +183,11 @@ const WhatIfPage = ({ f7router, ...props }) => {
           percentage: score + "%",
           category: category,
           badges: [],
-          dateAssigned: "--",
-          dateDue: "--",
-          totalPoints: 100,
+          dateAssigned: "Custom Grade",
+          dateDue: "Custom Grade",
+          totalPoints: "100.00",
           weight: 1,
+          weightedScore: score,
           weightedTotalPoints: 100,
         };
         setEditScores([newGrade, ...editScores]);
@@ -227,12 +229,12 @@ const WhatIfPage = ({ f7router, ...props }) => {
               className="margin-half"
               type="circle"
               value={editAverage / 100}
-              borderColor={primaryFromColor(user.theme)}
+              borderColor={`var(--f7-${user.layout}-primary)`}
               borderBgColor={gaugeBackgroundColor(user)}
               borderWidth={20}
               valueText={`${parseFloat(editAverage).toPrecision(4)}`}
               valueFontSize={50}
-              valueTextColor={primaryFromColor(user.theme)}
+              valueTextColor={`var(--f7-${user.layout}-primary)`}
               labelText={"from " + parseFloat(average).toPrecision(4)}
               labelFontSize={20}
             />

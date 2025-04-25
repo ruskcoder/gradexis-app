@@ -19,7 +19,7 @@ if (currentUserNumber >= users.length) {
 }
 const defaultUser = {
   pfp: defaultpfp,
-  scheme: 'light',
+  scheme: 'dark',
   theme: '#007aff',
   layout: 'md',
   term: -1,
@@ -28,7 +28,8 @@ const defaultUser = {
   scoresIncluded: false,
   stream: true,
   gradesView: 'card',
-  roundGrades: false
+  roundGrades: false,
+  pageTransition: 'f7-parallax'
 };
 const store = createStore({
   state: {

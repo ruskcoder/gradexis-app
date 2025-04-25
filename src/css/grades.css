@@ -124,7 +124,7 @@
     font-weight: 600;
     margin: 0;
     margin-bottom: calc(var(--f7-typography-margin) * 1);
-    color: white; 
+    /* color: white;  */
     position: absolute;
 }
 .grade-card .card-header.progress-hidden div {
@@ -150,7 +150,7 @@
 .grade-card .progress {
     display: flex;
     flex-direction: row;
-    color: white;
+    /* color: white; */
     width: 100%;
     justify-content: center;
     align-items: center;    

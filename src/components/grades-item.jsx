@@ -1,5 +1,6 @@
 import { Card, ListItem, f7, CardContent, CardHeader, Progressbar, useStore } from 'framework7-react';
 import React, { useState, useEffect } from 'react';
+import { primaryFromColor, roundGrade } from '../components/app';
 import PropTypes from 'prop-types';
 import store from '../js/store';
 import terminal from 'virtual:terminal';
@@ -20,14 +21,6 @@ function colorFromGrade(grade) {
   } else {
     return "#ff796a";
   }
-}
-
-function roundGrade(grade) {
-  if (grade == "") return "0";
-  if (store.state.currentUser.roundGrades && !isNaN(parseFloat(grade))) {
-    return Math.round(parseFloat(grade))
-  }
-  else return grade;
 }
 
 const ClassGradeItem = ({ title, subtitle, grade }) => {
@@ -66,34 +59,53 @@ ClassGradeItem.propTypes = {
   grade: PropTypes.string.isRequired,
 };
 
-function colorFromSubtitle(subtitle, sat, light) {
-  const sha = sha256(subtitle);
-  const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0)/2, 0);
-  // const hash = sha.replace(/\D/g, '');
-  const hue = hash % 360;
-  // const hue = index * 37 % 360;
+function cardColor(subtitle, sat, light, theme) {
+  let hue;
+  if (store.state.currentUser.matchColorCards) {
+    let primary = primaryFromColor(theme);
+    const rgb = primary.match(/\w\w/g).map((x) => parseInt(x, 16));
+    const [r, g, b] = rgb;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    if (max === min) {
+      hue = 0;
+    } else if (max === r) {
+      hue = ((60 * ((g - b) / (max - min)) + 360) % 360);
+    } else if (max === g) {
+      hue = ((60 * ((b - r) / (max - min)) + 120) % 360);
+    } else {
+      hue = ((60 * ((r - g) / (max - min)) + 240) % 360);
+    }
+  }
+  else {
+    const sha = sha256(subtitle);
+    const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0) / 2, 0);
+    // const hash = sha.replace(/\D/g, '');
+    hue = hash % 360;
+  }
   return `hsl(${hue}, ${sat}%, ${light}%)`;
+
 }
 
-const CardClassGradeItem = ({ index, title, subtitle, grade }) => {
+const CardClassGradeItem = ({ index, theme, title, subtitle, grade }) => {
   grade = !grade ? "--" : parseFloat(grade.slice(0, -1)).toPrecision(3);
   grade = roundGrade(grade);
   return (
     <Card className="ripple grade-card">
       <CardHeader
         style={{
-          backgroundColor: colorFromSubtitle(subtitle, 44, 42),
+          backgroundColor: cardColor(subtitle, 44, 42, theme),
         }}
-        className = {grade == "--" ? "progress-hidden" : ""}
+        className={grade == "--" ? "progress-hidden" : ""}
       >
-        <span className='grade-number'>{grade}</span>
-        <div className='progressbar-container'>
+        <span className='grade-number' style={{color: cardColor(subtitle, 100, 95, theme)}}>{grade}</span>
+        <div className='progressbar-container' style={{color: cardColor(subtitle, 100, 95, theme)}}>
           <div className="progress">
             <span className='progress-percent' style={{ textAlign: 'end' }}>0%</span>
             <span className="progressbar" data-progress={grade}>
               <span style={{
                 transform: `translate3d(-${100 - grade}%, 0px, 0px)`,
-                backgroundColor: colorFromSubtitle(subtitle, 90, 67)
+                backgroundColor: cardColor(subtitle, 90, 67, theme)
               }}></span>
             </span>
             <span className='progress-percent' style={{ textAlign: 'start' }}>100%</span>
@@ -214,7 +226,7 @@ WhatIfGradeItem.propTypes = {
   color: PropTypes.string.isRequired,
   grade: PropTypes.any.isRequired,
   badges: PropTypes.array.isRequired,
-  total: PropTypes.number.isRequired,
+  total: PropTypes.string.isRequired,
 };
 
 export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem, CardClassGradeItem, roundGrade };
