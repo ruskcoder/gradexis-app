@@ -25,6 +25,7 @@ import '../css/class-grades.css';
 import '../css/account-switcher.css'
 import '../css/what-if.css';
 import '../css/login.css';
+import '../css/tables.css';
 
 // Import App Component
 import App from '../components/app.jsx';

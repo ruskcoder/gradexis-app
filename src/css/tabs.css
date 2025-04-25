@@ -1,6 +1,12 @@
+html {
+    --tabs-animation: 0.2s;
+}
+.f7-parallax {
+    --tabs-animation: 0.4s;
+}
 .tabbar {
     transform: translateY(0px);
-    transition: transform 0.4s ease-out;
+    transition: transform var(--tabs-animation) ease-out;
 }
 .tabbar-hidden{
     transform: translateY(100px);

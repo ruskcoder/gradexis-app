@@ -1,5 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Page, Navbar, Block, List, ListItem, Preloader, Button, Popover, f7 } from 'framework7-react';
+import {
+    Page,
+    Navbar,
+    Block,
+    List,
+    ListItem,
+    Preloader,
+    Button,
+    Popover,
+    Card,
+    CardContent,
+    CardHeader,
+    Link,
+    Checkbox,
+    Icon,
+    f7
+} from 'framework7-react';
 import { updateRouter } from '@/components/app';
 import { getProgressReport } from "@/js/grades-api";
 
@@ -23,7 +39,7 @@ const ProgressReportPage = ({ f7router }) => {
     }, []);
 
     function capitalizeHeader(string) {
-        if (string.includes('com')){
+        if (string.includes('com')) {
             return string.toUpperCase();
         }
         else {
@@ -44,56 +60,59 @@ const ProgressReportPage = ({ f7router }) => {
     return (
         <Page>
             <Navbar title="Progress Report" backLink="Back" />
-            {loading ? (
-                <div className='display-flex align-items-center justify-content-center' style={{ height: '100%', width: '100%' }}>
+            {loading && 
+                <div className='loader-container'>
                     <Preloader />
                 </div>
-            ) : (
-                hasData ? (
-                    <>
-                        <Button popoverOpen=".popover-menu" className="margin-top">Select Period (Current: {getCurrentPeriod()})</Button>
-                        <Popover className="popover-menu">
-                            <List>
-                                {progressReports.map((report, index) => (
-                                    <ListItem key={index} title={report.date} onClick={() => handlePeriodChange(index)} />
-                                ))}
-                            </List>
-                        </Popover>
-                        <Block strong className="margin-top report-card-block">
+            }
+            {!loading && hasData &&
+                <>
+                    <Card className="data-table data-table-init">
+                        <CardHeader>
+                            <div className="data-table-title margin-right">Period: </div>
+                            <Button fill small popoverOpen=".popover-menu">
+                                {getCurrentPeriod()}
+                            </Button>
+                        </CardHeader>
+                        <CardContent padding={false}>
                             <table>
                                 <thead>
-                                <tr>
-                                    {Object.keys(progressReports[selectedPeriod].report[0]).filter(key => key !== 'comments').map((key, index) => (
-                                        <th key={index} className="table-header">{capitalizeHeader(key)}</th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {progressReports[selectedPeriod].report.filter(item => !item.comments).map((item, index) => (
-                                    <tr key={index}>
-                                        {Object.values(item).map((value, idx) => (
-                                            <td key={idx} className="table-cell string-padding">{typeof value === 'object' ? JSON.stringify(value) : value}</td>
+                                    <tr>
+                                        {Object.keys(progressReports[selectedPeriod].report[0]).filter(key => key !== 'comments').map((key, index) => (
+                                            <th key={index} className="table-header">{capitalizeHeader(key)}</th>
                                         ))}
                                     </tr>
-                                ))}
+                                </thead>
+                                <tbody>
+                                    {progressReports[selectedPeriod].report.filter(item => !item.comments).map((item, index) => (
+                                        <tr key={index}>
+                                            {Object.values(item).map((value, idx) => (
+                                                <td key={idx} className="table-cell string-padding">{typeof value === 'object' ? JSON.stringify(value) : value}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+
                                 </tbody>
                             </table>
-                        </Block>
-                        <Block strong className="margin-top report-card-block">
-                            <h3>Comments</h3>
-                            {Array.isArray(progressReports[selectedPeriod].report.find(item => item.comments)?.comments) &&
-                                progressReports[selectedPeriod].report.find(item => item.comments).comments.map((comment, index) => (
-                                    <p key={index} className="string-padding">{comment.comment}: {comment.commentDescription}</p>
-                                ))
-                            }
-                        </Block>
-                    </>
-                ) : (
-                    <Block strong className="margin-top">
-                        <p>No progress report data available.</p>
+                        </CardContent>
+                    </Card>
+                    <Block strong inset className="margin-top">
+                        <h3>Comments</h3>
+                        {Array.isArray(progressReports[selectedPeriod].report.find(item => item.comments)?.comments) &&
+                            progressReports[selectedPeriod].report.find(item => item.comments).comments.map((comment, index) => (
+                                <p key={index} className="string-padding">{comment.comment}: {comment.commentDescription}</p>
+                            ))}
                     </Block>
-                )
-            )}
+                    <Popover className="popover-menu">
+                        <List>
+                            {progressReports.map((report, index) => (
+                                <ListItem key={index} title={report.date} onClick={() => handlePeriodChange(index)} />
+                            ))}
+                        </List>
+                    </Popover>
+                </>
+            }
+            {!loading && !hasData && <Block strong inset>No data available</Block>}
         </Page>
     );
 }

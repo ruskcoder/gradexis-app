@@ -101,6 +101,9 @@
 .popover-backdrop {
     z-index: 100002 !important;
 }
+.popover-menu {
+    z-index: 100003 !important;
+}
 .picker-popover {
     z-index: 100003 !important;
 }
@@ -113,4 +116,11 @@
 
 .subnavbar .button {
     font-size: 13px;
+}
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }
