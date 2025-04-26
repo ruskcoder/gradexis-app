@@ -13,6 +13,7 @@ import ProgressReportPage from "@/pages/info/ipr";
 import ReportCardPage from "@/pages/info/reportCard";
 import store from './store.js';
 import WhatIfPage from '../pages/what-if.jsx';
+import TranscriptPage from "@/pages/info/transcript";
 
 var routes = [
   {
@@ -74,6 +75,11 @@ var routes = [
   {
     path: '/info/reportCard/',
     component: ReportCardPage,
+    hideTabbar: true
+  },
+  {
+    path: '/info/transcript/',
+    component: TranscriptPage,
     hideTabbar: true
   },
   {

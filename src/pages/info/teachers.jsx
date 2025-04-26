@@ -12,7 +12,6 @@ const TeachersPage = ({f7router}) => {
     useEffect(() => {
         getTeachers()
             .then((data) => {
-                console.log('Fetched teachers data:', data);
                 setTeachers(data);
                 setLoading(false);
             })
@@ -24,7 +23,8 @@ const TeachersPage = ({f7router}) => {
 
     function filterTeachers(teachers) {
         let unique = {};
-        teachers = teachers.filter(obj => !unique[obj.teacher] && (unique[obj.teacher] = true));
+        teachers = teachers.filter(obj => !unique[obj.teacher] && (unique[obj.teacher] = true) && (obj.teacher !== ""));
+        console.log(teachers);
         return teachers;
     }
 
@@ -36,16 +36,6 @@ const TeachersPage = ({f7router}) => {
     function teacherInitials(name) {
         let splitName = name.split(' ');
         return splitName[0].charAt(0) + splitName[1].charAt(0);
-    }
-
-    function copyToClipboard(text) {
-        const el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        f7.dialog.alert('Email copied to clipboard');
     }
 
     return (
@@ -70,7 +60,7 @@ const TeachersPage = ({f7router}) => {
                                 <Link
                                     iconF7="link"
                                     slot="after"
-                                    onClick={() => copyToClipboard(item.email)}
+                                    onClick={() => navigator.clipboard.writeText(item.email)}
                                 />
                             </ListItem>
                         ))

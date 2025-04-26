@@ -2,14 +2,16 @@ import store from "./store.js";
 import terminal from 'virtual:terminal';
 
 // var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
-var apiUrl = 'https://3000-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com/'
-// var apiUrl = 'https://api.gradexis.com';
+//var apiUrl = 'https://3000-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com/'
+var apiUrl = 'https://api.gradexis.com';
 if (location.host == "mobile.gradexis.com" || location.host == "gradexis-app.vercel.app") {
     apiUrl = 'https://api.gradexis.com';
 }
+/**
 else if (location.hostname == "localhost") {
     apiUrl = 'http://localhost:3000';
 }
+    **/
 const platformList = ['hac']
 function updateSession(data) {
     store.dispatch('setSession', data.session);
@@ -231,7 +233,27 @@ export async function getReportCard() {
         }
         else {
             throw "Invalid Platform";
-            return;
+        }
+
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+export async function getTranscript(){
+    const user = store.state.currentUser;
+    const session = store.state.session;
+    try {
+        if (platformList.includes(user.platform)) {
+            const response = await fetch(
+                `${apiUrl}/${user.platform}/transcript?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            );
+            const data = await response.json();
+            updateSession(data);
+            return data
+        }
+        else {
+            throw "Invalid Platform";
         }
 
     } catch (error) {
