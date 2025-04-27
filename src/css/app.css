@@ -104,7 +104,7 @@
 .popover-menu {
     z-index: 100003 !important;
 }
-.picker-popover {
+.popover {
     z-index: 100003 !important;
 }
 .popover.smart-select-popover, .popover.color-picker-popover {
@@ -113,7 +113,12 @@
 .popover.smart-select-popover + .dialog-backdrop{
     z-index: 100004 !important;
 }
-
+.custom-modal-backdrop {
+    z-index: 100006 !important;
+}
+.calendar-modal {
+    z-index: 100007 !important;
+}
 .subnavbar .button {
     font-size: 13px;
 }
@@ -123,4 +128,28 @@
     align-items: center;
     height: 100%;
     width: 100%;
+}
+.link.icon-only i {
+    vertical-align: inherit;
+}
+.teachers-list .item-title-row {
+    overflow: visible !important;
+}
+.todo-edit-dialog .dialog-inner {
+    padding: 0;
+}
+.list-border-top::before{
+    content: '';
+    position: absolute;
+    background-color: var(--f7-list-item-border-color);
+    display: block;
+    z-index: 15;
+    top: 0;
+    right: auto;
+    bottom: auto;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    transform-origin: 50% 100%;
+    transform: scaleY(calc(1 / var(--f7-device-pixel-ratio)));
 }

@@ -68,27 +68,27 @@ const TranscriptPage = ({ f7router }) => {
                                     {value.data && value.data.length > 0 ? (
                                         <table>
                                             <thead>
-                                            <tr>
-                                                {value.data[0].map((header, idx) => (
-                                                    <th key={idx} className="table-header">{header}</th>
-                                                ))}
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {value.data.slice(1).map((row, idx) => (
-                                                <tr key={idx}>
-                                                    {row.map((cell, cellIdx) => (
-                                                        <td key={cellIdx} className="table-cell string-padding">{cell}</td>
+                                                <tr>
+                                                    {value.data[0].map((header, idx) => (
+                                                        <th key={idx} className="table-header">{header}</th>
                                                     ))}
                                                 </tr>
-                                            ))}
+                                            </thead>
+                                            <tbody>
+                                                {value.data.slice(1).map((row, idx) => (
+                                                    <tr key={idx}>
+                                                        {row.map((cell, cellIdx) => (
+                                                            <td key={cellIdx} className="table-cell string-padding">{cell}</td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
                                             </tbody>
-                                            <tfoot>
-                                            <tr>
-                                                <td colSpan={value.data[0].length} className="table-cell string-padding">
-                                                    Total Credits: {value.credits}
-                                                </td>
-                                            </tr>
+                                            <tfoot style={{ borderTop: '1px solid var(--f7-table-cell-border-color)' }}>
+                                                <tr>
+                                                    <td colSpan={value.data[0].length} className="table-cell string-padding padding-top padding-bottom">
+                                                    <strong>Total Credits: </strong>{value.credits}
+                                                    </td>
+                                                </tr>
                                             </tfoot>
                                         </table>
                                     ) : (
@@ -104,7 +104,9 @@ const TranscriptPage = ({ f7router }) => {
                             quartile: "Quartile",
                             rank: "Rank"
                         }).map(([key, label]) => (
-                            <p key={key}>{label}: {transcriptData[key] || "N/A"}</p>
+                            <p key={key}>
+                                <strong>{label}: </strong>{transcriptData[key] || "N/A"}
+                            </p>
                         ))}
                     </Block>
                 </>

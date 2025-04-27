@@ -72,25 +72,25 @@ const ReportCardPage = ({ f7router }) => {
                         <CardContent padding={false}>
                             <table>
                                 <thead>
-                                <tr>
-                                    {Object.keys(reportCards[selectedPeriod].report[0]).filter(key => key !== 'comments' && key !== 'totalEarnedCredit').map((key, index) => (
-                                        <th key={index} className="table-header">{capitalizeHeader(key)}</th>
-                                    ))}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {reportCards[selectedPeriod].report.filter(item => !item.comments).map((item, index) => (
-                                    <tr key={index}>
-                                        {Object.entries(item).filter(([key]) => key !== 'comments' && key !== 'totalEarnedCredit').map(([key, value], idx) => (
-                                            <td key={idx} className="table-cell string-padding">{typeof value === 'object' ? JSON.stringify(value) : value}</td>
+                                    <tr>
+                                        {Object.keys(reportCards[selectedPeriod].report[0]).filter(key => key !== 'comments' && key !== 'totalEarnedCredit').map((key, index) => (
+                                            <th key={index} className="table-header">{capitalizeHeader(key)}</th>
                                         ))}
                                     </tr>
-                                ))}
+                                </thead>
+                                <tbody>
+                                    {reportCards[selectedPeriod].report.filter(item => !item.comments).map((item, index) => (
+                                        <tr key={index}>
+                                            {Object.entries(item).filter(([key]) => key !== 'comments' && key !== 'totalEarnedCredit').map(([key, value], idx) => (
+                                                <td key={idx} className="table-cell string-padding">{typeof value === 'object' ? JSON.stringify(value) : value}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
                                 </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td colSpan={Object.keys(reportCards[selectedPeriod].report[0]).length} className="table-cell string-padding">Total Earned Credit: {reportCards[selectedPeriod].report.find(item => item.totalEarnedCredit).totalEarnedCredit}</td>
-                                </tr>
+                                <tfoot style={{ borderTop: '1px solid var(--f7-table-cell-border-color)' }}>
+                                    <tr>
+                                        <td colSpan={Object.keys(reportCards[selectedPeriod].report[0]).length} className="table-cell string-padding padding-top padding-bottom"><strong>Total Earned Credit:</strong> {reportCards[selectedPeriod].report.find(item => item.totalEarnedCredit).totalEarnedCredit}</td>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </CardContent>

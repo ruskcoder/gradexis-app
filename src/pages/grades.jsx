@@ -229,7 +229,7 @@ const GradesPage = ({ f7router }) => {
   const switchTerm = async (index) => {
     const selectedTerm = user.termList[index];
     setProgressMessage('Logging In...');
-
+    setUsingCache(false);
     try {
       setLoading(true);
       setActiveButtonIndex(index);

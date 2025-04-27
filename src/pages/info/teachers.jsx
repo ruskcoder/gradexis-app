@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
-import {Page, Navbar, Block, List, ListItem, Preloader, Link, f7, useStore} from 'framework7-react';
-import {primaryFromColor, updateRouter} from '@/components/app';
-import {getTeachers} from "@/js/grades-api";
+import React, { useEffect, useState } from "react";
+import { Page, Navbar, Block, List, ListItem, Preloader, Link, f7, useStore } from 'framework7-react';
+import { primaryFromColor, updateRouter } from '@/components/app';
+import { getTeachers } from "@/js/grades-api";
 
-const TeachersPage = ({f7router}) => {
+const TeachersPage = ({ f7router }) => {
     updateRouter(f7router);
     const [loading, setLoading] = useState(true);
     const [teachers, setTeachers] = useState([]);
@@ -40,13 +40,13 @@ const TeachersPage = ({f7router}) => {
 
     return (
         <Page>
-            <Navbar title="Teachers" backLink="Back"/>
+            <Navbar title="Teachers" backLink="Back" />
             {loading ? (
                 <div className='display-flex align-items-center justify-content-center' style={{ height: '100%', width: '100%' }}>
                     <Preloader />
                 </div>
             ) : (
-                <List mediaList inset strong className="margin-top">
+                <List mediaList inset strong className="margin-top teachers-list">
                     {teachers.teachers.length > 0 ? (
                         filterTeachers(teachers.teachers).map((item, index) => (
                             <ListItem
@@ -54,11 +54,23 @@ const TeachersPage = ({f7router}) => {
                                 title={prettifyName(item.teacher)}
                                 subtitle={item.email}
                                 text={item.class}>
-                                <div slot="media" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '44px', height: '44px', backgroundColor: `var(--f7-${user.layout}-primary)`, borderRadius: '8px' }}>
+                                <div slot="media" style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '44px',
+                                    height: '44px',
+                                    backgroundColor: `var(--f7-${user.layout}-primary)`,
+                                    borderRadius: '8px',
+                                    color: 'var(--f7-text-editor-bg-color)',
+                                    fontWeight: '600'
+                                }}>
                                     {teacherInitials(item.teacher)}
                                 </div>
                                 <Link
-                                    iconF7="link"
+                                    iconMaterial="link"
+                                    className='material-symbols-outlined'
+                                    style={{height: '24px', width: '24px'}}
                                     slot="after"
                                     onClick={() => navigator.clipboard.writeText(item.email)}
                                 />
