@@ -37,37 +37,36 @@ const HomePage = ({ f7router }) => {
         </>
       )
       for (const user of users) {
-        const isCurrentUser = user.username === store.state.currentUser.username;
         chooseList.push(`
-    <li class="media-item ${isCurrentUser ? 'current-user' : ''}">
-        <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
-          <div class="item-content">
-            <div class="item-media">
-              <img slot="media" src=${user.pfp} 
-              style="
-                width: 44px;
-                border-radius: 50%;
-                aspect-ratio: 1/1;
-                border: 4px solid var(--f7-${user.layout}-primary);
-              ">
-            </div>
-            <div class="item-inner" style="
-              display: flex;
-              flex-direction: column;
-              align-items: start;
-              justify-content: center;  
-            ">
-              <div>
-                <div class="item-title-row">
-                  <div class="item-title">${user.name}</div>
+          <li class="media-item">
+              <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
+                <div class="item-content">
+                  <div class="item-media">
+                    <img slot="media" src=${user.pfp} 
+                    style="
+                      width: 44px;
+                      border-radius: 50%;
+                      aspect-ratio: 1/1;
+                      border: 4px solid var(--f7-${user.layout}-primary);
+                    ">
+                  </div>
+                  <div class="item-inner" style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: start;
+                    justify-content: center;  
+                  ">
+                    <div>
+                      <div class="item-title-row">
+                        <div class="item-title">${user.name}</div>
+                      </div>
+                      <div class="item-subtitle" style="text-align: left">${user.username}</div>
+                    </div>
+                  </div>
                 </div>
-                <div class="item-subtitle" style="text-align: left">${user.username}</div>
-              </div>
-            </div>
-          </div>
-        </a>
-      </li>
-  `);
+              </a>
+            </li>
+        `)
       }
       var accountPicker;
       setTimeout(() => {
@@ -87,7 +86,9 @@ const HomePage = ({ f7router }) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
           accountPicker.close()
           f7router.refreshPage()
-          location.href = "/"
+          if (store.state.currentUser.layout !== f7.theme) {
+            location.href = "/"
+          }
         }
       }, 0)
     }
@@ -138,8 +139,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View your absences and calendar"
           ></OverviewItem>
         </ListItem>
-
-        {/*<ListItem link="/info/bellSchedule">
+        <ListItem link="#">
           <OverviewIcon
             slot="media"
             iconIos="f7:bell_fill"
@@ -149,7 +149,7 @@ const HomePage = ({ f7router }) => {
             title="Bell Schedule"
             subtitle="Track periods and the bell"
           ></OverviewItem>
-        </ListItem>*/}
+        </ListItem>
         <ListItem link="/info/schedule/">
           <OverviewIcon
             slot="media"
