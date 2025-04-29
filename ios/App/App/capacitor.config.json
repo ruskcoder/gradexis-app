@@ -1,0 +1,10 @@
+{
+	"appId": "com.ruskcoder.gradexis",
+	"appName": "gradexis",
+	"webDir": "www",
+	"packageClassList": [
+		"AppPlugin",
+		"StatusBarPlugin",
+		"NavigationBarPlugin"
+	]
+}

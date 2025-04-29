@@ -18,3 +18,16 @@
 .account-switcher .list {
     margin: 0px !important;
 }
+
+.media-item.current-user {
+    border: 2px solid #2facf3;
+    border-radius: 14px;
+}
+
+.media-item.current-user .item-title {
+    font-weight: bolder; /* Make the title bold */
+}
+
+.media-item.current-user .item-subtitle {
+    font-weight: bold;
+}
