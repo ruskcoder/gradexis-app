@@ -74,7 +74,6 @@ const LoginPage = ({ f7router }) => {
           tabindex={-1}
         >
           <option value="hac">HAC</option>
-          <option value="powerschool">PowerSchool SIS</option>
         </ListInput>
 
         <ListItem checkbox className="classlink-sso"

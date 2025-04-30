@@ -14,6 +14,7 @@ import ReportCardPage from "@/pages/info/reportCard";
 import store from './store.js';
 import WhatIfPage from '../pages/what-if.jsx';
 import TranscriptPage from "@/pages/info/transcript";
+import BellSchedulePage from "@/pages/info/bellSchedule"; 
 
 var routes = [
   {
@@ -55,6 +56,11 @@ var routes = [
   {
     path: '/info/schedule/',
     component: SchedulePage,
+    hideTabbar: true
+  },
+  {
+    path: '/info/bellschedule',
+    component: BellSchedulePage,
     hideTabbar: true
   },
   {

@@ -139,7 +139,7 @@ const HomePage = ({ f7router }) => {
             subtitle="View your absences and calendar"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="#">
+        {/* <ListItem link="/info/bellschedule/">
           <OverviewIcon
             slot="media"
             iconIos="f7:bell_fill"
@@ -149,7 +149,7 @@ const HomePage = ({ f7router }) => {
             title="Bell Schedule"
             subtitle="Track periods and the bell"
           ></OverviewItem>
-        </ListItem>
+        </ListItem> */}
         <ListItem link="/info/schedule/">
           <OverviewIcon
             slot="media"
