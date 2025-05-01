@@ -2,7 +2,8 @@ import store from "./store.js";
 import terminal from 'virtual:terminal';
 
 // var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
-var apiUrl = 'https://3000-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com/'
+// var apiUrl = 'https://3000-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com/'
+var apiUrl = 'https://api.gradexis.com';
 if (location.host == "mobile.gradexis.com" || location.host == "gradexis-app.vercel.app") {
     apiUrl = 'https://api.gradexis.com';
 }
@@ -38,7 +39,7 @@ export async function login(loginData) {
             return { name: data.name, ...loginData };
         } else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -96,14 +97,13 @@ export async function* getClasses(term = null) {
         }
         if (!data || data.success == false) {
             throw "An error occurred";
-            return;
+
         }
         updateSession(data);
         return data;
     }
     else {
         throw "Invalid Platform";
-        return;
     }
 
 }
@@ -122,7 +122,7 @@ export async function getGrades(className, term = null) {
         }
         else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -144,7 +144,7 @@ export async function getAttendance(date = "") {
         }
         else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -166,7 +166,7 @@ export async function getSchedule() {
         }
         else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -188,7 +188,7 @@ export async function getTeachers() {
         }
         else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -210,7 +210,7 @@ export async function getProgressReport() {
         }
         else {
             throw "Invalid Platform";
-            return;
+
         }
 
     } catch (error) {
@@ -239,7 +239,7 @@ export async function getReportCard() {
     }
 }
 
-export async function getTranscript(){
+export async function getTranscript() {
     const user = store.state.currentUser;
     const session = store.state.session;
     try {
@@ -260,7 +260,7 @@ export async function getTranscript(){
     }
 }
 
-export async function getBellSchedule(){
+export async function getBellSchedule() {
     const user = store.state.currentUser;
     const session = store.state.session;
     try {
@@ -275,7 +275,7 @@ export async function getBellSchedule(){
         else {
             throw "Invalid Platform";
         }
-        } catch (error) {
+    } catch (error) {
         return { success: false, message: error.message };
     }
 }

@@ -1,5 +1,17 @@
 {
   "appId": "com.ruskcoder.gradexis",
   "appName": "gradexis",
-  "webDir": "www"
+  "webDir": "www",
+  "android": {
+    "buildOptions": {
+      "releaseSigning": {
+        "releaseType": "APK",
+        "keystorePath": "./android/app/keystore.jks",
+        "keystorePassword": "gradexis-app",
+        "keyAlias": "gradexis-alias",
+        "keysroeAliasPassword": "gradexis-app",
+        "keyPassword": "gradexis-app"
+      }
+    }
+  }
 }

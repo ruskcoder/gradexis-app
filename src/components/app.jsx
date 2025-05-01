@@ -89,7 +89,7 @@ export const updateRouter = (f7router) => {
       window.f7alert.close()
     }
     else {
-      window.backing= true;
+      window.backing = true;
       f7router.back();
       // history.pushState({url: f7router.url}, null, f7router.url);
     }
@@ -124,11 +124,11 @@ const Gradexis = ({ f7router }) => {
     if (!window.init) {
       window.init = true;
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
-        if (localStorage.getItem('appPopupDismissed') != "true") {
-        
-          f7.dialog.create({
-            title: 'Add to Home Screen',
-            text: `To use this as an app 
+      if (localStorage.getItem('appPopupDismissed') != "true") {
+
+        f7.dialog.create({
+          title: 'Add to Home Screen',
+          text: `To use this as an app 
                   <br> <b>For iOS: </b>
                   <br> 1. Press the share icon
                   <br> 2. Press Add to Home Screen
@@ -136,46 +136,55 @@ const Gradexis = ({ f7router }) => {
                   <br> <b>For Android (and PC): </b>
                   <br> Wait for the following popup
             `,
-            buttons: [
-              {
-                text: 'OK',
-                onClick: async () => {
-                  if (window.deferredPrompt !== null && window.deferredPrompt !== undefined) {
-                    window.deferredPrompt.prompt();
-                    const { outcome } = await window.deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                      window.deferredPrompt = null;
-                    }
+          buttons: [
+            {
+              text: 'OK',
+              onClick: async () => {
+                if (window.deferredPrompt !== null && window.deferredPrompt !== undefined) {
+                  window.deferredPrompt.prompt();
+                  const { outcome } = await window.deferredPrompt.userChoice;
+                  if (outcome === 'accepted') {
+                    window.deferredPrompt = null;
                   }
-                  f7.dialog.close()
-                  localStorage.setItem('appPopupDismissed', "true")
                 }
-              },
-            ]
-          }).open()
-        }
-      
-        if ("Notification" in window) {
-          if (Notification.permission == "denied") {
-            f7.dialog.alert("Please enable notifications to get the best experience", "Notifications")
-          }
-          else if (Notification.permission != "granted" && localStorage.getItem('notifications') != "dontshow") {
-            f7.dialog.confirm("This app uses notifications to notify you of new grades and assignments. ", 
-              "Notifications",
-              () => {
-                Notification.requestPermission().then((permission) => {
-                  if (permission == "granted") {
-                    f7.dialog.alert("Notifications enabled successfully", "Notifications")
-                  }
-                })
-              },
-              () => {
-                localStorage.setItem('notifications', "dontshow");
-                f7.dialog.alert("You can enable notifications in settings later on.", "Notifications")
+                f7.dialog.close()
+                localStorage.setItem('appPopupDismissed', "true")
               }
-            )
-          }
+            },
+          ]
+        }).open()
+      }
+
+      if ("Notification" in window && localStorage.getItem('notifications') != "dontshow") {
+        if (Notification.permission == "denied") {
+          localStorage.setItem('notifications', "dontshow");
+          f7.dialog.alert("Please enable notifications to get the best experience", "Notifications")
         }
+        else if (Notification.permission != "granted" && localStorage.getItem('notifications') != "dontshow") {
+          f7.dialog.confirm("This app uses notifications to notify you of new grades and assignments. ",
+            "Notifications",
+            function () {
+              Notification.requestPermission().then((permission) => {
+                if (permission == "granted") {
+                  f7.dialog.alert("Notifications enabled successfully", "Notifications")
+                  return;
+                }
+                else {
+                  localStorage.setItem('notifications', "dontshow");
+                  f7.dialog.alert("Notifications not enabled. You can enable them in your system settings later on.", "Notifications")
+                  return;
+                }
+              });
+              localStorage.setItem('notifications', "dontshow");
+              f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications");
+            },
+            () => {
+              localStorage.setItem('notifications', "dontshow");
+              f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications")
+            }
+          )
+        }
+      }
 
 
       if (store.state.currentUser.layout === "ios") {
@@ -197,7 +206,7 @@ const Gradexis = ({ f7router }) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
         let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
         if (!invalid.includes(route.url) && !window.backing) {
-          history.pushState({url: route.url}, null, route.url);
+          history.pushState({ url: route.url }, null, route.url);
         }
         else if (window.backing) {
           window.backing = false;
@@ -208,7 +217,7 @@ const Gradexis = ({ f7router }) => {
       })
       updateStatusBars();
     }
-    
+
   });
 
   const [showTabbar, setShowTabbar] = useState(true);
