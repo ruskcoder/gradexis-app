@@ -11,7 +11,8 @@
     "dev": "cross-env NODE_ENV=development vite",
     "all": "concurrently \"npm run dev\" \"npm run api\"",
     "build": "cross-env NODE_ENV=production vite build && npx cap sync",
-    "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/"
+    "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
+    "android": "npm run build && npx cap sync android && npx cap run android"
   },
   "browserslist": [
     "IOS >= 15",
@@ -46,6 +47,7 @@
     "swiper": "^11.1.14"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
     "cpy-cli": "^5.0.0",

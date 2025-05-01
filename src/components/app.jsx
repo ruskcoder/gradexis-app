@@ -85,8 +85,11 @@ export const errorDialog = (err = "") => {
 export const updateRouter = (f7router) => {
   window.router = f7router;
   window.onpopstate = function (event) {
+    console.log("popstate");
     if (window.f7alert && window.f7alert.opened == true) {
       window.f7alert.close()
+      event.preventDefault();
+      event.stopPropagation();
     }
     else {
       window.backing = true;
@@ -112,13 +115,20 @@ const Gradexis = ({ f7router }) => {
     store: store,
     routes: routes,
   };
-  CapacitorApp.addListener('backButton', ({ canGoBack }) => {
-    if (!canGoBack) {
-      CapacitorApp.exitApp();
-    } else {
-      f7router.back();
-    }
-  });
+  useEffect(() => {
+    const backButtonListener = CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      if (!canGoBack) {
+        CapacitorApp.exitApp();
+      } else {
+        history.back();
+      }
+    });
+
+    return () => {
+      backButtonListener.remove();
+    };
+  }, [f7router]);
+
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
   f7ready(async () => {
     if (!window.init) {

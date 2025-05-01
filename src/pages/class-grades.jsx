@@ -28,7 +28,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   updateRouter(f7router);
 
   useEffect(() => {
-   if (user.username) {
+    if (user.username) {
       if (!user.scoresIncluded) {
         getGrades(props.course).then((data) => {
           if (data.success != false) {
@@ -147,7 +147,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           closeByBackdropClick: true,
           cssClass: 'extra-info-dialog',
           content: container.innerHTML,
-        })
+        });
         window.f7alert.open();
       }, 0);
     }
@@ -198,7 +198,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       );
 
       setTimeout(() => {
-        f7.dialog.create({
+        window.f7alert = f7.dialog.create({
           title: category.name,
           closeByBackdropClick: true,
           cssClass: 'extra-info-dialog',

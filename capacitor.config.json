@@ -1,8 +1,11 @@
 {
   "appId": "com.ruskcoder.gradexis",
-  "appName": "gradexis",
+  "appName": "Gradexis",
+  "appIcon": "www/icons/1024x1024.png",
   "webDir": "www",
   "android": {
+    "versionCode": 2,
+    "versionName": "v1.1",
     "buildOptions": {
       "releaseSigning": {
         "releaseType": "APK",

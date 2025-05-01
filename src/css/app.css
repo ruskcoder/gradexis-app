@@ -1,155 +1,158 @@
 :root {
-    --f7-navbar-subtitle-font-size: 14px !important;
-    --f7-subnavbar-height: 48px !important;
-    --f7-dialog-width: 300px !important;
-    --f7-grid-gap: calc(var(--f7-typography-margin) * 3/4);
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
+  --f7-navbar-subtitle-font-size: 14px !important;
+  --f7-subnavbar-height: 48px !important;
+  --f7-dialog-width: 300px !important;
+  --f7-grid-gap: calc(var(--f7-typography-margin) * 3 / 4);
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 }
 
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .title-large-text {
-    display: flex;
+  display: flex;
 }
 
 .subnavbar .button {
-    font-size: 10px;
-    font-weight: 600;
-    height: 24px;
+  font-size: 10px;
+  font-weight: 600;
+  height: 24px;
 }
 
 .overview-icon {
-    border-radius: 8px;
-    width: 44px !important;
-    height: 44px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  border-radius: 8px;
+  width: 44px !important;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grades-number {
-    border-radius: 8px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600 !important;
-    font-size: 18px;
-    width: 64px;
-    padding: 4px 0px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600 !important;
+  font-size: 18px;
+  width: 64px;
+  padding: 4px 0px;
 }
 
 .assignments-number {
-    width: 54px;
+  width: 54px;
 }
 
 .login-screen-content .item-label {
-    background-color: var(--f7-login-screen-content-bg-color) !important;
+  background-color: var(--f7-login-screen-content-bg-color) !important;
 }
 
 .md .link-input .item-input-wrap {
-    display: flex
+  display: flex;
 }
 
 .md .link-input .item-input-wrap::before {
-    content: "https://";
-    color: var(--f7-text-editor-placeholder-colorx);
+  content: "https://";
+  color: var(--f7-text-editor-placeholder-colorx);
 }
 
 .ios .iosRound ul {
-    background: none;
+  background: none;
 }
 
 .ios .iosRound .item-link {
-    background: var(--f7-block-strong-bg-color);
-    border-radius: 16px;
-    margin: calc(var(--f7-typography-margin) * 1/2) !important;
+  background: var(--f7-block-strong-bg-color);
+  border-radius: 16px;
+  margin: calc(var(--f7-typography-margin) * 1 / 2) !important;
 }
 
 .ios .iosRound .item-inner {
-    padding: 6px 12px 8px 0px !important;
+  padding: 6px 12px 8px 0px !important;
 }
 
 .calendar-day-event {
-    display: none;
+  display: none;
 }
 
 .toast-bottom {
-    bottom: calc(var(--f7-tabbar-icons-height) + 8px) !important;
+  bottom: calc(var(--f7-tabbar-icons-height) + 8px) !important;
 }
 .ios .toast-bottom {
-    bottom: var(--f7-tabbar-icons-height) !important;
+  bottom: var(--f7-tabbar-icons-height) !important;
 }
 .toast {
-    z-index: 9999 !important;
+  z-index: 9999 !important;
 }
 
 .dialog-backdrop {
-    z-index: 99999 !important;
+  z-index: 99999 !important;
 }
 .dialog {
-    z-index: 100000 !important;
+  z-index: 100000 !important;
 }
-.restart-dialog, .error-dialog {
-    z-index: 100005 !important;
+.restart-dialog,
+.error-dialog {
+  z-index: 100005 !important;
 }
 .popover-backdrop {
-    z-index: 100002 !important;
+  z-index: 100002 !important;
 }
 .popover-menu {
-    z-index: 100003 !important;
+  z-index: 100003 !important;
 }
 .popover {
-    z-index: 100003 !important;
+  z-index: 100003 !important;
 }
-.popover.smart-select-popover, .popover.color-picker-popover {
-    z-index: 100004 !important;
+.popover.smart-select-popover,
+.popover.color-picker-popover {
+  z-index: 100004 !important;
 }
-.popover.smart-select-popover + .dialog-backdrop{
-    z-index: 100004 !important;
+.popover.smart-select-popover + .dialog-backdrop {
+  z-index: 100004 !important;
 }
 .custom-modal-backdrop {
-    z-index: 100006 !important;
+  z-index: 100006 !important;
 }
 .calendar-modal {
-    z-index: 100007 !important;
+  z-index: 100007 !important;
 }
 .subnavbar .button {
-    font-size: 13px;
+  font-size: 13px;
 }
 .loader-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 .link.icon-only i {
-    vertical-align: inherit;
+  vertical-align: inherit;
 }
+/* fix */
 .teachers-list .item-title-row {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 .todo-edit-dialog .dialog-inner {
-    padding: 0;
+  padding: 0;
 }
-.list-border-top::before{
-    content: '';
-    position: absolute;
-    background-color: var(--f7-list-item-border-color);
-    display: block;
-    z-index: 15;
-    top: 0;
-    right: auto;
-    bottom: auto;
-    left: 0;
-    height: 1px;
-    width: 100%;
-    transform-origin: 50% 100%;
-    transform: scaleY(calc(1 / var(--f7-device-pixel-ratio)));
+.list-border-top::before {
+  content: "";
+  position: absolute;
+  background-color: var(--f7-list-item-border-color);
+  display: block;
+  z-index: 15;
+  top: 0;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform-origin: 50% 100%;
+  transform: scaleY(calc(1 / var(--f7-device-pixel-ratio)));
 }

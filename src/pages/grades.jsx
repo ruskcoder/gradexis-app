@@ -51,31 +51,11 @@ const GradesPage = ({ f7router }) => {
   const updateTermGradelist = (term, classes) => {
     const previousTerm = Object.keys(store.state.currentUser.gradelist).pop();
     const previousTermGradelist = store.state.currentUser.gradelist[previousTerm] || {};
-
-    // Initialize or update the gradelist for the selected term
-    const updatedTermGradelist = classes.reduce((acc, item) => {
-      if (store.state.currentUser.gradelist[term] && store.state.currentUser.gradelist[term][item.name]) {
-        // Update existing class data for the term
-        acc[item.name] = {
-          ...store.state.currentUser.gradelist[term][item.name],
-          average: item.average,
-          course: item.course,
-          scores: item.scores || [],
-          categories: item.categories || {},
-        };
-      } else if (previousTermGradelist[item.name]) {
-        // Match hide, rename, and other properties from the previous term
-        acc[item.name] = {
-          ...previousTermGradelist[item.name],
-          average: item.average,
-          course: item.course,
-          scores: item.scores || [],
-        };
-      } else {
-        // Add new classes to the end
-        acc[item.name] = {
-          hide: false,
-          rename: item.name,
+    const updatedTermGradelist = Object.keys(previousTermGradelist).reduce((acc, key) => {
+      const item = classes.find(cls => cls.name === key);
+      if (item) {
+        acc[key] = {
+          ...previousTermGradelist[key],
           average: item.average,
           course: item.course,
           scores: item.scores || [],
@@ -84,6 +64,20 @@ const GradesPage = ({ f7router }) => {
       }
       return acc;
     }, {});
+
+    // Add any new classes that are not in the previousTermGradelist
+    classes.forEach(item => {
+      if (!updatedTermGradelist[item.name]) {
+        updatedTermGradelist[item.name] = {
+          hide: false,
+          rename: item.name,
+          average: item.average,
+          course: item.course,
+          scores: item.scores || [],
+          categories: item.categories || {},
+        };
+      }
+    });
 
     // Add or update the lastUpdated field for the term
     updatedTermGradelist.lastUpdated = new Date();
@@ -299,7 +293,10 @@ const GradesPage = ({ f7router }) => {
 
   // Update updateGradelist to handle term-based gradelist
   const updateGradelist = useCallback((term, termGradelist) => {
-    const updatedGradelist = { ...store.state.currentUser.gradelist, [term]: termGradelist };
+    const updatedGradelist = {
+      ...store.state.currentUser.gradelist,
+      [term]: { ...termGradelist, lastUpdated: store.state.currentUser.gradelist[term].lastUpdated },
+    };
     store.dispatch('changeUserData', {
       userNumber: store.state.currentUserNumber,
       item: 'gradelist',
@@ -308,7 +305,6 @@ const GradesPage = ({ f7router }) => {
     setGradelist({ ...updatedGradelist });
   }, []);
 
-  // Update handleCourseAction to handle term-based gradelist
   const handleCourseAction = useCallback((course, action) => {
     const termGradelist = store.state.currentUser.gradelist[user.term];
     if (!termGradelist) return;
@@ -341,7 +337,7 @@ const GradesPage = ({ f7router }) => {
   }, [user.term, updateGradelist]);
 
   const createDialog = useCallback((course, hidden) => {
-    f7.dialog.create({
+    window.f7alert = f7.dialog.create({
       title: 'Options',
       cssClass: 'options-dialog',
       closeByBackdropClick: true,
@@ -374,10 +370,15 @@ const GradesPage = ({ f7router }) => {
 
     let newTermGradelist = {};
     list.each(function () {
-      const name = $(this).find('.item-title').text().trim();
-      newTermGradelist[name] = termGradelist[name];
+      const course = $(this).find('.item-subtitle').text().trim();
+      const cls = Object.keys(termGradelist).find(key => termGradelist[key].course === course);
+      if (cls) {
+        newTermGradelist[cls] = {
+          ...termGradelist[cls],
+          hide: false,
+        };
+      }
     });
-
     const hidden = {};
     for (const [key, val] of Object.entries(termGradelist)) {
       if (val && val.hide === true) {
@@ -395,30 +396,34 @@ const GradesPage = ({ f7router }) => {
       const course = $(this).find('.item-subtitle, .subtitle').text().trim();
 
       $(this).on('click', function () {
-        const cls = Object.keys(store.state.currentUser.gradelist[user.term]).find(
-          key => store.state.currentUser.gradelist[user.term][key].course === course
-        );
-        const opts = store.state.currentUser.gradelist[user.term][cls];
-        try {
-          if (opts.hide) {
-            createDialog(course, true);
-          } else {
-            if (opts.average !== "" && sortMode === false) {
-              f7router.navigate(`/grades/${encodeURIComponent(cls)}/`)
+        if (!(window.f7alert && window.f7alert.opened == true)) {
+          const cls = Object.keys(store.state.currentUser.gradelist[user.term]).find(
+            key => store.state.currentUser.gradelist[user.term][key].course === course
+          );
+          const opts = store.state.currentUser.gradelist[user.term][cls];
+          try {
+            if (opts.hide) {
+              createDialog(course, true);
+            } else {
+              if (opts.average !== "" && sortMode === false) {
+                f7router.navigate(`/grades/${encodeURIComponent(cls)}/`)
+              }
             }
           }
-        }
-        catch {
-          //pass
+          catch {
+            //pass
+          }
         }
       });
 
       if ($(this).attr('class') && !$(this).attr('class').includes('grade-card')) {
         $(this).on('taphold', function () {
-          const hidden = Object.values(store.state.currentUser.gradelist[user.term]).find(
-            item => item.course === course
-          ).hide;
-          createDialog(course, hidden);
+          if (!(window.f7alert && window.f7alert.opened == true)) {
+            const hidden = Object.values(store.state.currentUser.gradelist[user.term]).find(
+              item => item.course === course
+            ).hide;
+            createDialog(course, hidden);
+          }
         });
       }
     });
@@ -436,7 +441,7 @@ const GradesPage = ({ f7router }) => {
       hour12: true,
     });
   }
-  f7.on('themeUpdated', function() {
+  f7.on('themeUpdated', function () {
     if (cardColor != user.theme) {
       setCardColor(user.theme);
     }
