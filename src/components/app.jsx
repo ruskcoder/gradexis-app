@@ -67,7 +67,7 @@ export const errorDialog = (err = "") => {
   if (err.includes("not valid JSON") || err.includes("Failed to fetch")) {
     err = "Unable to fetch server. Perhaps it is blocked?"
   }
-  f7.dialog.create({
+  window.f7alert = f7.dialog.create({
     title: 'Error',
     text: `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`,
     cssClass: "error-dialog",
@@ -75,29 +75,34 @@ export const errorDialog = (err = "") => {
       {
         text: 'OK',
         onClick: () => {
-          f7.dialog.close()
+          window.f7alert.close()
         }
       },
       { text: 'Restart', onClick: () => { location.href = "/" } },
     ]
-  }).open()
+  })
+  window.f7alert.open()
 }
 export const updateRouter = (f7router) => {
   window.router = f7router;
   window.onpopstate = function (event) {
     console.log("popstate");
-    if (window.f7alert && window.f7alert.opened == true) {
-      window.f7alert.close()
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    else {
+    if (window.f7alert && window.f7alert.opened === true) {
+      window.f7alert.close();
+      // event.preventDefault();
+      // event.stopPropagation();
+      // history.pushState(null, null, window.location.href);
+    } else {
+      // history.back();
       window.backing = true;
       f7router.back();
-      // history.pushState({url: f7router.url}, null, f7router.url);
+      history.pushState(null, null, window.location.href);
     }
   };
-}
+
+  // Ensure the initial state is pushed to the history stack
+  history.pushState(null, null, window.location.href);
+};
 
 const Gradexis = ({ f7router }) => {
   var f7params = {
@@ -136,7 +141,7 @@ const Gradexis = ({ f7router }) => {
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
       if (localStorage.getItem('appPopupDismissed') != "true") {
 
-        f7.dialog.create({
+        window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
           text: `To use this as an app 
                   <br> <b>For iOS: </b>
@@ -157,42 +162,38 @@ const Gradexis = ({ f7router }) => {
                     window.deferredPrompt = null;
                   }
                 }
-                f7.dialog.close()
+                window.f7alert.close()
                 localStorage.setItem('appPopupDismissed', "true")
               }
             },
           ]
-        }).open()
+        })
+        window.f7alert.open()
       }
 
-      if ("Notification" in window && localStorage.getItem('notifications') != "dontshow") {
-        if (Notification.permission == "denied") {
+      if ("Notification" in window && localStorage.getItem('notifications') !== "dontshow") {
+        if (Notification.permission === "denied") {
           localStorage.setItem('notifications', "dontshow");
-          f7.dialog.alert("Please enable notifications to get the best experience", "Notifications")
-        }
-        else if (Notification.permission != "granted" && localStorage.getItem('notifications') != "dontshow") {
-          f7.dialog.confirm("This app uses notifications to notify you of new grades and assignments. ",
+          window.f7alert = f7.dialog.alert("Please enable notifications to get the best experience", "Notifications");
+        } else if (Notification.permission !== "granted") {
+          window.f7alert = f7.dialog.confirm(
+            "This app uses notifications to notify you of new grades and assignments.",
             "Notifications",
-            function () {
+            () => {
               Notification.requestPermission().then((permission) => {
-                if (permission == "granted") {
-                  f7.dialog.alert("Notifications enabled successfully", "Notifications")
-                  return;
-                }
-                else {
+                if (permission === "granted") {
+                  window.f7alert = f7.dialog.alert("Notifications enabled successfully", "Notifications");
+                } else {
                   localStorage.setItem('notifications', "dontshow");
-                  f7.dialog.alert("Notifications not enabled. You can enable them in your system settings later on.", "Notifications")
-                  return;
+                  window.f7alert = f7.dialog.alert("Notifications not enabled. You can enable them in your system settings later on.", "Notifications");
                 }
               });
-              localStorage.setItem('notifications', "dontshow");
-              f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications");
             },
             () => {
               localStorage.setItem('notifications', "dontshow");
-              f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications")
+              window.f7alert = f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications");
             }
-          )
+          );
         }
       }
 

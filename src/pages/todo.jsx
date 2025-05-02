@@ -159,6 +159,7 @@ const TodoPage = ({ f7router }) => {
           ]
         })
         dialog.open();
+        window.f7alert = dialog;
         const TodoDialog = () => {
           const $ = f7.$;
           const calendarInline = useRef(null);
@@ -233,8 +234,9 @@ const TodoPage = ({ f7router }) => {
         window.f7alert = dialog;
       }, () => {
 
-      }).open();
-      window.f7dialog = dialog;
+      })
+      dialog.open();
+      window.f7alert = dialog
 
     }
   }

@@ -203,7 +203,8 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           closeByBackdropClick: true,
           cssClass: 'extra-info-dialog',
           content: container.innerHTML,
-        }).open();
+        })
+        window.f7alert.open();
       }, 0);
     }
   }

@@ -71,7 +71,7 @@ const store = createStore({
         
         return userData;
       } else {
-        f7.dialog.alert(userData.message, "Login Failed");
+        window.f7alert = f7.dialog.alert(userData.message, "Login Failed");
         return false;
       }
     },

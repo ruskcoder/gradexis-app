@@ -82,6 +82,7 @@ const HomePage = ({ f7router }) => {
           `
         })
         accountPicker.open()
+        window.f7alert = accountPicker;
         window.pickAccount = (username) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
           accountPicker.close()

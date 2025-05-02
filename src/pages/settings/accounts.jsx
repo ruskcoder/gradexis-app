@@ -17,7 +17,7 @@ const AccountsPage = ({ f7router }) => {
   updateRouter(f7router);
   const logout = (username) => {
     return () => {
-      f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {
+      window.f7alert = f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {
         if (store.state.currentUser.username == username) {
           store.dispatch("removeUser", username);
           location.href = "/";

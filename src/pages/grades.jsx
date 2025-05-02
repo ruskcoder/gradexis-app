@@ -315,14 +315,14 @@ const GradesPage = ({ f7router }) => {
     // Check if hiding the last visible item
     const visibleItems = Object.values(termGradelist).filter(item => !item.hide);
     if (action === 'hide' && visibleItems.length <= 1) {
-      f7.dialog.alert('You need at least one item unhidden.');
+      window.f7alert = f7.dialog.alert('You need at least one item unhidden.');
       return;
     }
 
     if (action === 'unhide') termGradelist[key].hide = false;
     if (action === 'hide') termGradelist[key].hide = true;
     if (action === 'rename') {
-      f7.dialog.prompt(
+      window.f7alert = f7.dialog.prompt(
         `Enter a new course name for: ${course}`,
         'Rename',
         (value) => {

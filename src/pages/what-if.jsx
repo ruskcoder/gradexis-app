@@ -174,7 +174,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
     return () => {
       const afterDone = (name, score, category) => {
         if (name === "" || score === "" || category === "") {
-          f7.dialog.alert("Please fill out all fields.");
+          window.f7alert = f7.dialog.alert("Please fill out all fields.");
           return;
         }
         const newGrade = {
