@@ -12,7 +12,8 @@
     "all": "concurrently \"npm run dev\" \"npm run api\"",
     "build": "cross-env NODE_ENV=production vite build && npx cap sync",
     "postinstall": "cpy --flat ./node_modules/framework7-icons/fonts/*.* ./src/fonts/ && cpy --flat ./node_modules/material-icons/iconfont/*.* ./src/fonts/",
-    "android": "npm run build && npx cap sync android && npx cap run android"
+    "android": "npm run build && npx cap sync android && npx cap run android",
+    "android:build": "npm run build && npx cap sync android"
   },
   "browserslist": [
     "IOS >= 15",

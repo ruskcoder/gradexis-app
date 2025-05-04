@@ -1,17 +1,15 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-var apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev';
-// var apiUrl = 'https://3000-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com/'
-// var apiUrl = 'https://api.gradexis.com';
-if (location.host == "mobile.gradexis.com" || location.host == "gradexis-app.vercel.app") {
-    apiUrl = 'https://api.gradexis.com';
+var apiUrl = 'https://api.gradexis.com';
+
+if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
+    apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
 }
-/** 
 else if (location.hostname == "localhost") {
     apiUrl = 'http://localhost:3000';
 }
-    **/
+
 const platformList = ['hac']
 function updateSession(data) {
     store.dispatch('setSession', data.session);
