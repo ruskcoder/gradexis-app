@@ -22,7 +22,7 @@ const HomePage = ({ f7router }) => {
   updateRouter(f7router);
   const users = useStore('users');
   const user = useStore('currentUser');
-  
+
   const switchAccount = () => {
     return () => {
       var chooseList = []
@@ -111,11 +111,11 @@ const HomePage = ({ f7router }) => {
           </div>
         </NavTitleLarge>
         <NavRight>
-          <Link
+          {/* <Link
             iconIos="f7:person_crop_circle"
             iconMd="material:account_circle"
             onClick={switchAccount()}
-          />
+          /> */}
         </NavRight>
       </Navbar>
       <List
