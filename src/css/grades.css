@@ -163,3 +163,61 @@
     margin: 0 8px !important;
     border: 1px solid white;
 }
+.grade-card .subtitle {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+.subnavbar-terms .segmented {
+    overflow-x: scroll;
+}
+.subnavbar-terms {
+    --subnavbar-items-max: 8;
+}
+.subnavbar-terms .button,
+.subnavbar-terms .segmented-highlight {
+    min-width: calc((100vw - var(--f7-typography-margin) * 2 - 4px - var(--f7-segmented-strong-between-buttons) * (var(--subnavbar-items-max) - 1)) / var(--subnavbar-items-max)) !important;
+}
+.ios .subnavbar-terms .button, .ios .subnavbar-terms .segmented-highlight {
+    min-width: calc((100vw - var(--f7-typography-margin) * 1 - 4px - var(--f7-segmented-strong-between-buttons) * (var(--subnavbar-items-max) - 1)) / var(--subnavbar-items-max)) !important;
+}
+
+.button-active:nth-child(11) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 10;
+}
+.button-active:nth-child(12) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 11;
+}
+
+.button-active:nth-child(13) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 12;
+}
+
+.button-active:nth-child(14) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 13;
+}
+
+.button-active:nth-child(15) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 14;
+}
+
+.button-active:nth-child(16) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 15;
+}
+
+.button-active:nth-child(17) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 16;
+}
+
+.button-active:nth-child(18) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 17;
+}
+
+.button-active:nth-child(19) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 18;
+}
+
+.button-active:nth-child(20) ~ .segmented-highlight {
+    --f7-segmented-highlight-active: 19;
+}

@@ -69,7 +69,7 @@ const SettingsPage = ({ f7router }) => {
         {
           text: 'Restart',
           onClick: () => {
-            location.reload();
+            document.location.href = 'index.html';
           }
         }
       ]
@@ -444,25 +444,27 @@ const SettingsPage = ({ f7router }) => {
       <Card>
         <CardContent>
           <List>
-            <ListItem
-              link="#"
-              className="no-chevron"
-              onClick={() => setStream(!stream)}
-            >
-              <Icon
-                slot="media"
-                ios="material:line_end"
-                md="material:line_end"
-                className='material-symbols-outlined'
-              ></Icon>
-              <span>Progress Bar</span>
-              <Toggle
-                checked={stream}
-                onToggleChange={() =>
-                  setStream(!stream)
-                }
-              />
-            </ListItem>
+            {user.platform != 'powerschool' &&
+              <ListItem
+                link="#"
+                className="no-chevron"
+                onClick={() => setStream(!stream)}
+              >
+                <Icon
+                  slot="media"
+                  ios="material:line_end"
+                  md="material:line_end"
+                  className='material-symbols-outlined'
+                ></Icon>
+                <span>Progress Bar</span>
+                <Toggle
+                  checked={stream}
+                  onToggleChange={() =>
+                    setStream(!stream)
+                  }
+                />
+              </ListItem>
+            }
             <ListItem
               link="#"
               className="no-chevron"

@@ -159,6 +159,15 @@ const GradesPage = ({ f7router }) => {
   }
 
   useEffect(() => {
+    f7.on('userChanged', function () {
+      setLoading(true);
+      setTermsLoading(true);
+      setUsingCache(false);
+      setProgressPercent(0);
+      setProgressMessage('Logging In...');
+      setActiveButtonIndex(-1);
+      fetchClasses();
+    })
     const fetchClasses = async () => {
       try {
         setTermsLoading(true);
@@ -182,7 +191,7 @@ const GradesPage = ({ f7router }) => {
         closeCacheToast(window.cacheToastTimeout);
 
         if (data.success !== false && !usingCache) {
-          if (user.termList.length == 0) {
+          if (user.termList != data.termList) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
               item: 'termList',
@@ -201,10 +210,27 @@ const GradesPage = ({ f7router }) => {
               value: true,
             });
           }
+          else {
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'scoresIncluded',
+              value: false,
+            });
+          }
           if (!usingCache) {
             setActiveButtonIndex(data.termList.indexOf(data.term));
             setTermsLoading(false);
             setLoading(false);
+            setTimeout(
+              function () {
+                const subnavbar = document.querySelector('.subnavbar-terms .segmented');
+                const buttonWidth = $('.subnavbar-terms .button').width();
+                const highlightWidth = $('.subnavbar-terms .segmented-highlight').width();
+                if (subnavbar) {
+                  subnavbar.scrollLeft = subnavbar.scrollWidth;
+                }
+              }, 0
+            )
           }
           updateTermGradelist(data.term, data.classes);
         }
@@ -218,10 +244,11 @@ const GradesPage = ({ f7router }) => {
     if (user.username && !store.state.loaded) {
       fetchClasses();
     }
-  }, [user.username]);
+  }, [user.username, store.state.currentUser.username]);
 
   const switchTerm = async (index) => {
     const selectedTerm = user.termList[index];
+    terminal.log(selectedTerm)
     setProgressMessage('Logging In...');
     setUsingCache(false);
     try {
@@ -432,14 +459,19 @@ const GradesPage = ({ f7router }) => {
 
   const lastUpdated = () => {
     const lastUpdated = new Date(user.gradelist[user.term].lastUpdated);
-    return lastUpdated.toLocaleString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
+    try {
+      return lastUpdated.toLocaleString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      });
+    }
+    catch (e) {
+      return ""
+    }
   }
   f7.on('themeUpdated', function () {
     if (cardColor != user.theme) {
@@ -465,8 +497,8 @@ const GradesPage = ({ f7router }) => {
         </Block>
       }
 
-      {!termsLoading &&
-        <Subnavbar sliding={true} style={{ marginTop: "-1px !important" }}>
+      {!termsLoading && user.termList &&
+        <Subnavbar sliding={true} style={{ marginTop: "-1px !important" }} className='subnavbar-terms'>
           <Segmented strong>
             {user.termList.map((_, index) => (
               <Button

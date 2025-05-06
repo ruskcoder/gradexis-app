@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Page, Navbar, Block, List, ListItem, Preloader, f7 } from 'framework7-react';
 import { updateRouter } from '@/components/app';
 import { getSchedule } from "@/js/grades-api";
+import { errorDialog } from "../../components/app";
 const SchedulePage = ({ f7router }) => {
     updateRouter(f7router);
     const [loading, setLoading] = useState(true);
@@ -10,10 +11,17 @@ const SchedulePage = ({ f7router }) => {
 
     useEffect(() => {
         getSchedule().then((data) => {
-            setSchedule(data);
-            setLoading(false);
-        });
-    }, []);
+            if (data.success != false) {
+                setSchedule(data);
+                setLoading(false);
+            }
+            else {
+                errorDialog(data.message);
+            }
+        }).catch((error) => {
+            errorDialog(error.message);
+        })
+    });
 
     const infoDialog = (schedule) => {
         return () => {
@@ -35,18 +43,18 @@ const SchedulePage = ({ f7router }) => {
                     </div>
                 </>
             );
-    
-          setTimeout(() => {
-            window.f7alert = f7.dialog.create({
-                title: description,
-                closeByBackdropClick: true,
-                cssClass: 'extra-info-dialog',
-                content: container.innerHTML,
-            })
-            window.f7alert.open();
-          }, 0);
+
+            setTimeout(() => {
+                window.f7alert = f7.dialog.create({
+                    title: description,
+                    closeByBackdropClick: true,
+                    cssClass: 'extra-info-dialog',
+                    content: container.innerHTML,
+                })
+                window.f7alert.open();
+            }, 0);
         }
-      }
+    }
     return (
         <Page>
             <Navbar title="Schedule" backLink="Back" />

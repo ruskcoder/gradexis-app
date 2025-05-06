@@ -23,7 +23,10 @@ const LoginPage = ({ f7router }) => {
   const [link, setLink] = useState("");
 
   const [loginLoading, setLoginLoading] = useState(false);
-
+  let platformDefaults = {
+    "hac": "homeaccess.katyisd.org",
+    "powerschool": "hisdconnect.houstonisd.org"
+  }
   const signIn = () => {
     setLoginLoading(true);
     let data = {
@@ -43,7 +46,7 @@ const LoginPage = ({ f7router }) => {
     else {
       data.classlink = "";
       if (link === "") {
-        data.link = "homeaccess.katyisd.org";
+        data.link = platformDefaults[platform];
       }
       data.link = 'https://' + data.link.replace(/^(https?:\/\/)?([^/]+).*/, '$2') + "/";
     }
@@ -74,6 +77,7 @@ const LoginPage = ({ f7router }) => {
           tabindex={-1}
         >
           <option value="hac">HAC</option>
+          <option value="powerschool">PowerSchool SIS</option>
         </ListInput>
 
         <ListItem checkbox className="classlink-sso"
@@ -101,7 +105,9 @@ const LoginPage = ({ f7router }) => {
             label="Link"
             type="text"
             name="link"
-            placeholder="homeaccess.katyisd.org"
+            placeholder={
+              platformDefaults[platform]
+            }
             value={link}
             onInput={(e) => setLink(e.target.value)}
             className="link-input"

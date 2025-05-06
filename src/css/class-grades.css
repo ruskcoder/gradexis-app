@@ -155,3 +155,10 @@
     text-overflow: ellipsis;
     width: 100%;
 }
+.grade-category-item h4 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: block;
+    overflow: hidden
+}

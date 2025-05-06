@@ -30,26 +30,38 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   useEffect(() => {
     if (user.username) {
       if (!user.scoresIncluded) {
-        getGrades(props.course).then((data) => {
+        getGrades(props.course, user.term).then((data) => {
           if (data.success != false) {
-            setScores(data.assignments);
+            setScores(data.scores);
             setCategories(data.categories);
-            setAverage(data.average.slice(0, -1));
+            setAverage(data.average);
+            let updatedGradelist = { ...user.gradelist };
+            updatedGradelist[user.term][props.course] = {
+              ...updatedGradelist[user.term][props.course],
+              scores: data.scores,
+              categories: data.categories,
+            };
+            store.dispatch('changeUserData', {
+              userNumber: store.state.currentUserNumber,
+              item: 'gradelist',
+              value: updatedGradelist,
+            });
             setLoading(false);
           }
           else {
             errorDialog(data.message);
           }
-        }).catch(() => { errorDialog() })
+        })
+          .catch(() => { errorDialog() })
       }
       else {
         setLoading(false);
         setScores(user.gradelist[user.term][props.course].scores);
         setCategories(user.gradelist[user.term][props.course].categories);
-        setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
+        setAverage(user.gradelist[user.term][props.course].average);
       }
     }
-  }, [user.username, user.gradelist, user.term, props.course]);
+  }, [user.username]);
 
 
   const [scores, setScores] = useState([]);
@@ -62,7 +74,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     if (user.anim != false) {
       const targetValue = average;
       let currentValue = 0;
-      const step = targetValue / 17;
+      const step = targetValue / 1;
       const interval = setInterval(() => {
         currentValue += step;
         if (currentValue >= targetValue) {
@@ -70,7 +82,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           clearInterval(interval);
         }
         setAnimatedValue(currentValue);
-      }, 5);
+      }, 1);
       return () => clearInterval(interval);
     }
   }, [average, user.anim]);

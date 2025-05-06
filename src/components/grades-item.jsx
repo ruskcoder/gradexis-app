@@ -15,7 +15,7 @@ function colorFromGrade(grade) {
   if (grade >= 90) {
     return "#00cf63";
   } else if (grade >= 80) {
-    return "#3dadfd";
+    return "#3dadfd"; 
   } else if (grade >= 70) {
     return "#feae2b";
   } else {
@@ -24,7 +24,7 @@ function colorFromGrade(grade) {
 }
 
 const ClassGradeItem = ({ title, subtitle, grade }) => {
-  grade = grade == "" ? "0.00" : parseFloat(grade.slice(0, -1)).toPrecision(4);
+  grade = grade == "" ? "0.00" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
   return (
     <>
@@ -88,7 +88,7 @@ function cardColor(subtitle, sat, light, theme) {
 }
 
 const CardClassGradeItem = ({ index, theme, title, subtitle, grade }) => {
-  grade = !grade ? "--" : parseFloat(grade.slice(0, -1)).toPrecision(3);
+  grade = !grade ? "--" : parseFloat(grade).toPrecision(3);
   grade = roundGrade(grade);
   return (
     <Card className="ripple grade-card">

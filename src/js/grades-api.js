@@ -10,7 +10,7 @@ else if (location.hostname == "localhost") {
     apiUrl = 'http://localhost:3000';
 }
 
-const platformList = ['hac']
+const platformList = ['hac', 'powerschool']
 function updateSession(data) {
     store.dispatch('setSession', data.session);
 }
@@ -67,8 +67,8 @@ export async function* getClasses(term = null) {
             let chunks = "";
             while (true) {
                 const { done, value } = await reader.read();
-                if (done) break;
-
+                // TODO: fix for powerschool
+                if (done) { break; }
                 chunks += decoder.decode(value, { stream: true });
                 try {
                     if (chunks.split('\n\n').length > 2) {

@@ -81,7 +81,7 @@ export const errorDialog = (err = "") => {
       { text: 'Restart', onClick: () => { location.href = "/" } },
     ]
   })
-  window.f7alert.open()
+  window.f7alert.open();
 }
 export const updateRouter = (f7router) => {
   window.router = f7router;

@@ -22,11 +22,11 @@ const WhatIfPage = ({ f7router, ...props }) => {
       setLoading(false);
       setScores(user.gradelist[user.term][props.course].scores);
       setCategories(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].categories)));
-      setAverage(user.gradelist[user.term][props.course].average.slice(0, -1));
+      setAverage(user.gradelist[user.term][props.course].average);
       setEditAverage(average);
       setEditScores(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].scores))); // Deep copy
     }
-  }, [average, props.course, user.gradelist, user.term, user.username]);
+  }, [user.username]);
 
   const editDialog = (assignment, key) => {
     const afterDone = (checked, newGrade) => {
@@ -91,7 +91,6 @@ const WhatIfPage = ({ f7router, ...props }) => {
         total += parseFloat(assignment.weightedScore);
         outOf += parseFloat(assignment.weightedTotalPoints);
       }
-      terminal.log(total, outOf)
       categoryGrades[category] = (total / outOf) * 100;
     }
 

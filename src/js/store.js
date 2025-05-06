@@ -19,7 +19,7 @@ if (currentUserNumber >= users.length) {
 }
 const defaultUser = {
   pfp: defaultpfp,
-  scheme: 'dark',
+  scheme: 'light',
   theme: '#007aff',
   layout: 'md',
   term: -1,
@@ -29,8 +29,18 @@ const defaultUser = {
   stream: true,
   gradesView: 'card',
   roundGrades: false,
-  pageTransition: 'f7-parallax'
+  pageTransition: 'f7-parallax',
+  displayAnimations: false,
 };
+const randomColors = [
+  '#b700ff',
+  '#ff00ae',
+  '#ff000d',
+  '#ff8400',
+  '#ffff00',
+  '#8cff00',
+  '#00ffb3'
+]
 const store = createStore({
   state: {
     users: users,
@@ -60,7 +70,10 @@ const store = createStore({
     async addUser({ state }, loginData) {
       const userData = await login(loginData)
       if (userData.success !== false) {
-        state.users = [...state.users, {...userData, ...defaultUser}];
+        let newUser = { ...defaultUser };
+        if (userData.platform == 'powerschool') newUser.stream = false;
+        newUser.theme = randomColors[Math.floor(Math.random() * randomColors.length)];
+        state.users = [...state.users, {...userData, ...newUser}];
         localStorage.setItem("users", JSON.stringify(state.users));
         
         if (state.currentUserNumber == -1) {

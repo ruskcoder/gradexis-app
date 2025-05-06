@@ -47,7 +47,7 @@ const HomePage = ({ f7router }) => {
                       width: 44px;
                       border-radius: 50%;
                       aspect-ratio: 1/1;
-                      border: 4px solid var(--f7-${user.layout}-primary);
+                      border: 4px solid ${user.theme};
                     ">
                   </div>
                   <div class="item-inner" style="
@@ -85,7 +85,8 @@ const HomePage = ({ f7router }) => {
         window.f7alert = accountPicker;
         window.pickAccount = (username) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
-          accountPicker.close()
+          accountPicker.close();
+          f7.emit('userChanged')
           f7router.refreshPage()
           if (store.state.currentUser.layout !== f7.theme) {
             location.href = "/"
@@ -111,11 +112,11 @@ const HomePage = ({ f7router }) => {
           </div>
         </NavTitleLarge>
         <NavRight>
-          {/* <Link
+          <Link
             iconIos="f7:person_crop_circle"
             iconMd="material:account_circle"
             onClick={switchAccount()}
-          /> */}
+          />
         </NavRight>
       </Navbar>
       <List
