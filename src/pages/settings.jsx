@@ -527,7 +527,7 @@ const SettingsPage = ({ f7router }) => {
                 ios="f7:person_circle"
                 md="material:group"
               ></Icon>
-              <span>Acount Manager</span>
+              <span>Account Manager</span>
             </ListItem>
           </List>
         </CardContent>

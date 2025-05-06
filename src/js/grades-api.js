@@ -6,9 +6,6 @@ var apiUrl = 'https://api.gradexis.com';
 if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
     apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
 }
-else if (location.hostname == "localhost") {
-    apiUrl = 'http://localhost:3000';
-}
 
 const platformList = ['hac', 'powerschool']
 function updateSession(data) {

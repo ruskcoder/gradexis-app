@@ -280,13 +280,13 @@ const Gradexis = ({ f7router }) => {
           />
         </Toolbar>
 
-        <View id="view-home" tab tabActive main url="/" />
+        <View iosSwipeBack={false} id="view-home" tab tabActive main url="/" />
 
-        <View id="view-grades" name="grades" tab url="/grades/" />
+        <View iosSwipeBack={false} id="view-grades" name="grades" tab url="/grades/" />
 
         <View id="view-todo" name="todo" tab url="/todo/" />
 
-        <View id="view-settings" name="settings" tab url="/settings/" />
+        <View iosSwipeBack={false} id="view-settings" name="settings" tab url="/settings/" />
       </Views>
     </App>
   );
