@@ -64,7 +64,7 @@ export const initEmits = (f7, f7router) => {
   })
 }
 export const errorDialog = (err = "") => {
-  if (err.includes("not valid JSON") || err.includes("Failed to fetch")) {
+  if (err.includes("not valid JSON") || err.includes("Failed to fetch") || err.includes('<html')) {
     err = "Unable to fetch server. Perhaps it is blocked?"
   }
   window.f7alert = f7.dialog.create({
