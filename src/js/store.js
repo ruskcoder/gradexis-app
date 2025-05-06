@@ -71,7 +71,10 @@ const store = createStore({
       const userData = await login(loginData)
       if (userData.success !== false) {
         let newUser = { ...defaultUser };
-        if (userData.platform == 'powerschool') newUser.stream = false;
+        if (userData.platform == 'powerschool') { 
+          newUser.stream = false; 
+          newUser.gradesView = 'list';
+        }
         newUser.theme = randomColors[Math.floor(Math.random() * randomColors.length)];
         state.users = [...state.users, {...userData, ...newUser}];
         localStorage.setItem("users", JSON.stringify(state.users));
