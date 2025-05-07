@@ -101,14 +101,28 @@ const GradesPage = ({ f7router }) => {
   const cacheToastTimeout = (newterm) => {
     return setTimeout(() => {
       if (!useCacheToast.current
-        && Object.keys(user.gradelist).length > 0
-        && user.gradelist[newterm] != undefined) {
+          && Object.keys(user.gradelist).length > 0
+          && user.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
           text: `Taking a while to load. Use cached data for term ${newterm}?`,
           closeButton: true,
           closeButtonText: 'Yes',
           closeButtonColor: 'red',
           closeTimeout: 100000,
+          buttons: [
+            {
+              text: 'No',
+              color: 'blue',
+              onClick: () => {
+                if (useCacheToast.current) {
+                  useCacheToast.current.close();
+                }
+                setLoading(false);
+                setTermsLoading(false);
+                setUsingCache(false);
+              }
+            }
+          ],
           on: {
             close: () => {
               useCacheToast.current = null;
@@ -119,8 +133,7 @@ const GradesPage = ({ f7router }) => {
               }
               if (activeButtonIndex == -1) {
                 setActiveButtonIndex(user.termList.indexOf(newterm));
-              }
-              else {
+              } else {
                 store.dispatch('changeUserData', {
                   userNumber: store.state.currentUserNumber,
                   item: 'term',
@@ -144,12 +157,12 @@ const GradesPage = ({ f7router }) => {
           while ($('#view-grades').attr('class').includes('tab-active') && useCacheToast.current) {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
-          if (useCacheToast.current) { useCacheToast.current.close() }
+          if (useCacheToast.current) { useCacheToast.current.close(); }
         };
         checkTabActive();
       }
     }, 3000);
-  }
+  };
   const closeCacheToast = (timeout) => {
     clearTimeout(timeout);
     if (useCacheToast.current) {

@@ -22,6 +22,8 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { terminal } from 'virtual:terminal'
 import { initEmits } from '../components/app.jsx';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 import { Dom7 } from 'framework7';
 
 export const updateStatusBars = async () => {
@@ -184,28 +186,51 @@ const SettingsPage = ({ f7router }) => {
   };
 
   const pickPfp = () => {
-    return () => {
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.accept = 'image/*';
-      fileInput.onchange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            store.dispatch("changeUserData", {
-              userNumber: store.state.currentUserNumber,
-              item: "pfp",
-              value: e.target.result,
-            });
-            f7router.refreshPage();
-          };
-          reader.readAsDataURL(file);
+    return async () => {
+      try {
+        const { Camera } = await import('@capacitor/camera');
+
+        const image = await Camera.getPhoto({
+          quality: 80,
+          allowEditing: false,
+          resultType: 'dataUrl',
+          source: 'camera',
+        });
+
+        if (image?.dataUrl) {
+          store.dispatch("changeUserData", {
+            userNumber: store.state.currentUserNumber,
+            item: "pfp",
+            value: image.dataUrl,
+          });
+          f7router.refreshPage();
         }
-      };
-      fileInput.click();
-    }
-  }
+
+      } catch (error) {
+        const isIOS = Capacitor.getPlatform() === 'ios';
+
+        if (error?.errorMessage === 'User denied access to camera') {
+          let message = 'Camera access was denied.';
+          if (isIOS) {
+            message += '\nPlease go to Settings → Apps → Gradexis → Turn on Camera Access.';
+          }
+          alert(message);
+        }
+        else if (error?.errorMessage === 'User denied access to photos'){
+          let message = 'Photo library access was denied.'
+          if (isIOS) {
+            message += '\nPlease go to Settings → Apps → Gradexis → Turn on Photo Library Access.';
+          }
+          alert(message);
+        }
+        else if (error?.errorMessage === 'User cancelled photos app'){ /* Keep this to prevent an error thrown */ }
+        else {
+          console.error('Unexpected error:', error);
+          alert('An unexpected error occurred when accessing the camera.');
+        }
+      }
+    };
+  };
 
   const logout = () => {
     return () => {

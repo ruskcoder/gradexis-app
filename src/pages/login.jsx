@@ -29,6 +29,19 @@ const LoginPage = ({ f7router }) => {
   }
   const signIn = () => {
     setLoginLoading(true);
+    const existingUser = store.state.users.find(user => user.username === username);
+    if (existingUser) {
+      f7.dialog.alert("This account already exists.", "Login Failed", () => {
+        try {
+          f7router.back();
+        }
+        catch (error){
+          /* Do nothing since this shouldn't happen */
+        }
+      });
+      setLoginLoading(false);
+      return;
+    }
     let data = {
       username: username,
       password: password,
@@ -80,7 +93,7 @@ const LoginPage = ({ f7router }) => {
           <option value="powerschool">PowerSchool SIS</option>
         </ListInput>
 
-        <ListItem checkbox className="classlink-sso"
+        <ListItem checkbox className="classlink-sso" aria-label="ClasslinkOption"
           checked={useClasslink}
           onChange={(e) => { setUseClasslink(e.target.checked); setLink("") }}>
           Use ClassLink SSO Login
@@ -122,6 +135,7 @@ const LoginPage = ({ f7router }) => {
           label="Username"
           type="text"
           name="username"
+          aria-label="EnterUsername"
           placeholder="Username"
           value={username}
           onInput={(e) => setUsername(e.target.value)}
@@ -135,6 +149,7 @@ const LoginPage = ({ f7router }) => {
           type="password"
           name="password"
           placeholder="Password"
+          aria-label="EnterPassword"
           value={password}
           onInput={(e) => setPassword(e.target.value)}
           clearButton
@@ -142,7 +157,7 @@ const LoginPage = ({ f7router }) => {
         ></ListInput>
       </List>
       <Block>
-        <Button preloader loading={loginLoading} onClick={signIn} large fill>
+        <Button preloader loading={loginLoading} label="Login" aria-label="Login" onClick={signIn} large fill>
           Login
         </Button>
       </Block>

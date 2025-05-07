@@ -139,7 +139,7 @@ const Gradexis = ({ f7router }) => {
     if (!window.init) {
       window.init = true;
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
-      if (localStorage.getItem('appPopupDismissed') != "true") {
+      {/*if (localStorage.getItem('appPopupDismissed') != "true") {
 
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
@@ -195,7 +195,7 @@ const Gradexis = ({ f7router }) => {
             }
           );
         }
-      }
+      }*/}
 
 
       if (store.state.currentUser.layout === "ios") {
@@ -284,7 +284,7 @@ const Gradexis = ({ f7router }) => {
 
         <View iosSwipeBack={false} id="view-grades" name="grades" tab url="/grades/" />
 
-        <View id="view-todo" name="todo" tab url="/todo/" />
+        <View iosSwipeBack={false} id="view-todo" name="todo" tab url="/todo/" />
 
         <View iosSwipeBack={false} id="view-settings" name="settings" tab url="/settings/" />
       </Views>

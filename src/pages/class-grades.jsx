@@ -277,6 +277,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <Button small className="margin-left" tonal
             onClick={() => f7router.navigate(`/whatif/${encodeURIComponent(props.course)}/`)}
             style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}
+                  aria-label="GetWhatIf"
           >
             What If
           </Button>

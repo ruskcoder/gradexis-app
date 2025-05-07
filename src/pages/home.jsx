@@ -37,36 +37,37 @@ const HomePage = ({ f7router }) => {
         </>
       )
       for (const user of users) {
+        const isCurrentUser = user.username === store.state.currentUser.username;
         chooseList.push(`
-          <li class="media-item">
-              <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
-                <div class="item-content">
-                  <div class="item-media">
-                    <img slot="media" src=${user.pfp} 
-                    style="
-                      width: 44px;
-                      border-radius: 50%;
-                      aspect-ratio: 1/1;
-                      border: 4px solid ${user.theme};
-                    ">
-                  </div>
-                  <div class="item-inner" style="
-                    display: flex;
-                    flex-direction: column;
-                    align-items: start;
-                    justify-content: center;  
+        <li class="media-item ${isCurrentUser ? 'current-user' : ''}">
+            <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
+              <div class="item-content">
+                <div class="item-media">
+                  <img slot="media" src=${user.pfp} 
+                  style="
+                    width: 44px;
+                    border-radius: 50%;
+                    aspect-ratio: 1/1;
+                    border: 4px solid var(--f7-${user.layout}-primary);
                   ">
-                    <div>
-                      <div class="item-title-row">
-                        <div class="item-title">${user.name}</div>
-                      </div>
-                      <div class="item-subtitle" style="text-align: left">${user.username}</div>
+                </div>
+                <div class="item-inner" style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: start;
+                  justify-content: center;  
+                ">
+                  <div>
+                    <div class="item-title-row">
+                      <div class="item-title">${user.name}</div>
                     </div>
+                    <div class="item-subtitle" style="text-align: left">${user.username}</div>
                   </div>
                 </div>
-              </a>
-            </li>
-        `)
+              </div>
+            </a>
+          </li>
+      `);
       }
       var accountPicker;
       setTimeout(() => {
@@ -130,7 +131,8 @@ const HomePage = ({ f7router }) => {
         className={`overviewList mod-list mt-fix ${user.groupLists == true ? "" : "iosRound"}`}
       >
         <ListItem
-          link="/info/attendance/">
+          link="/info/attendance/"
+          aria-label="GoToAttendance">
           <OverviewIcon
             slot="media"
             iconIos="f7:calendar"
@@ -141,18 +143,8 @@ const HomePage = ({ f7router }) => {
             subtitle="View your absences and calendar"
           ></OverviewItem>
         </ListItem>
-        {/* <ListItem link="/info/bellschedule/">
-          <OverviewIcon
-            slot="media"
-            iconIos="f7:bell_fill"
-            iconMd="material:notifications"
-          />
-          <OverviewItem
-            title="Bell Schedule"
-            subtitle="Track periods and the bell"
-          ></OverviewItem>
-        </ListItem> */}
-        <ListItem link="/info/schedule/">
+        <ListItem link="/info/schedule/"
+                  aria-label="GoToSchedule">
           <OverviewIcon
             slot="media"
             iconIos="f7:square_list_fill"
@@ -163,7 +155,8 @@ const HomePage = ({ f7router }) => {
             subtitle="View classes and course requests"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="/info/teachers/">
+        <ListItem link="/info/teachers/"
+                  aria-label="GoToTeachers">
           <OverviewIcon
             slot="media"
             iconIos="f7:at"
@@ -174,7 +167,8 @@ const HomePage = ({ f7router }) => {
             subtitle="Email your teachers"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="/info/ipr/">
+        <ListItem link="/info/ipr/"
+                  aria-label="GoToProgressReport">
           <OverviewIcon
             slot="media"
             iconIos="f7:gauge"
@@ -185,7 +179,8 @@ const HomePage = ({ f7router }) => {
             subtitle="View interim scores"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="/info/reportCard/">
+        <ListItem link="/info/reportCard/"
+                  aria-label="GoToReportCard">
           <OverviewIcon
             slot="media"
             iconIos="f7:doc_chart"
@@ -196,7 +191,8 @@ const HomePage = ({ f7router }) => {
             subtitle="View reporting period scores"
           ></OverviewItem>
         </ListItem>
-        <ListItem link="/info/transcript/">
+        <ListItem link="/info/transcript/"
+                  aria-label="GoToTranscript">
           <OverviewIcon
             slot="media"
             iconIos="f7:checkmark_seal_fill"
