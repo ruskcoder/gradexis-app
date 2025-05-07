@@ -1,6 +1,6 @@
 import { createStore } from 'framework7/lite';
-import {login} from './grades-api.js';
-import {Card, f7} from 'framework7-react';
+import { login } from './grades-api.js';
+import { Card, f7 } from 'framework7-react';
 import { terminal } from 'virtual:terminal'
 import {Capacitor} from "@capacitor/core";
 
@@ -138,7 +138,7 @@ const store = createStore({
       state.currentUser.term = term;
     },
     setSession({ state }, session) {
-      state.session = session;  
+      state.session = session;
     },
   }
 });

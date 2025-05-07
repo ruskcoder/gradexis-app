@@ -86,22 +86,31 @@ export const errorDialog = (err = "") => {
 export const updateRouter = (f7router) => {
   window.router = f7router;
   window.onpopstate = function (event) {
-    console.log("popstate");
-    if (window.f7alert && window.f7alert.opened === true) {
-      window.f7alert.close();
-      // event.preventDefault();
-      // event.stopPropagation();
-      // history.pushState(null, null, window.location.href);
-    } else {
-      // history.back();
-      window.backing = true;
-      f7router.back();
-      history.pushState(null, null, window.location.href);
+    if (!window.closingDialog) {
+      if (window.f7alert && window.f7alert.opened === true) {
+        window.f7alert.close();
+        window.closingDialog = true;
+        history.forward(1);
+      } else {
+        window.backing = true;
+        console.log("Navigating back from:", location.pathname);
+        console.log(f7router);
+        if (location.pathname == "/" && ['/', '/grades/', '/todo/', '/settings/'].includes(f7router.currentRoute.url)) {
+          document.querySelector('a[data-tab="#view-home"]').click();
+        } else if (location.pathname == "/home/") {
+          history.back();
+        } else {
+          f7router.back();
+          if (location.pathname == "/") {
+            history.pushState({ url: "/home/" }, null, "/home/");
+          }
+        }
+      }
+    }
+    else {
+      window.closingDialog = false;
     }
   };
-
-  // Ensure the initial state is pushed to the history stack
-  history.pushState(null, null, window.location.href);
 };
 
 const Gradexis = ({ f7router }) => {
@@ -138,9 +147,29 @@ const Gradexis = ({ f7router }) => {
   f7ready(async () => {
     if (!window.init) {
       window.init = true;
+      history.replaceState(null, null, "/");
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
-      {/*if (localStorage.getItem('appPopupDismissed') != "true") {
 
+      f7.on('/grades/', () => {
+        history.pushState({ url: "/grades/" }, null, "/grades/");
+      })
+      f7.on('/', () => {
+        if (window.backing == true) {
+          history.pushState({ url: "/home/" }, null, "/home/");
+          window.backing = false;
+        }
+        else {
+          history.pushState({ url: "/" }, null, "/");
+        }
+      })
+      f7.on('/todo/', () => {
+        history.pushState({ url: "/todo/" }, null, "/todo/");
+      })
+      f7.on('/settings/', () => {
+        history.pushState({ url: "/settings/" }, null, "/settings/");
+      })
+
+      if (localStorage.getItem('appPopupDismissed') != "true") {
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
           text: `To use this as an app 
