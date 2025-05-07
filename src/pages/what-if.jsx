@@ -96,7 +96,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
 
     let weightedSum = 0;
     let totalWeight = 0;
-    let newCategories = {...categories};
+    let newCategories = { ...categories };
     for (let category of Object.keys(categoryGrades)) {
       if (categories[category] && categories[category].categoryWeight) {
         const weight = parseFloat(categories[category].categoryWeight);

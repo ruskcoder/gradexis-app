@@ -1,223 +1,238 @@
 .gradesList ul li,
 .md .gradesList .item-content {
-    padding: 0px !important;
+  padding: 0px !important;
 }
 
 .md .gradesList .item-inner {
-    padding: calc(var(--f7-typography-margin) / 2) 0px !important;
-    padding-right: calc(var(--f7-typography-margin) * 3/4) !important;
-    padding-left: calc(var(--f7-typography-margin) * 3/4) !important;
+  padding: calc(var(--f7-typography-margin) / 2) 0px !important;
+  padding-right: calc(var(--f7-typography-margin) * 3 / 4) !important;
+  padding-left: calc(var(--f7-typography-margin) * 3 / 4) !important;
 }
 .md .gradesList .item-link {
-    margin: calc(var(--f7-typography-margin) / 2) var(--f7-typography-margin) !important;
-    background-color: var(--f7-card-bg-color);
+  margin: calc(var(--f7-typography-margin) / 2) var(--f7-typography-margin) !important;
+  background-color: var(--f7-card-bg-color);
 }
 
 .ios .gradesList:not(.iosRound) .item-inner {
-    padding: 16px 12px 16px 0px !important;
+  padding: 16px 12px 16px 0px !important;
 }
 
-.grades-item { flex: 1 }
+.grades-item {
+  flex: 1;
+}
 .grades-item .item-title {
-    font-weight: 500 !important;
-    font-size: var(--f7-list-item-title-font-size);
-    line-height: var(--f7-list-item-title-font-size);
+  font-weight: 500 !important;
+  font-size: var(--f7-list-item-title-font-size);
+  line-height: var(--f7-list-item-title-font-size);
 }
 .grades-item .item-subtitle {
-    font-size: var(--f7-list-item-subtitle-font-size);
-    line-height: var(--f7-list-item-subtitle-font-size);
+  font-size: var(--f7-list-item-subtitle-font-size);
+  line-height: var(--f7-list-item-subtitle-font-size);
 }
 
 .subnavbar {
-    margin-top: -1px !important;
+  margin-top: -1px !important;
 }
 
 .sortable.sortable-enabled:not(.no-handle) .grades-number {
-    margin-right: 24px;
+  margin-right: 24px;
 }
 
-.options-dialog .dialog-button{
-    width: 100%
+.options-dialog .dialog-button {
+  width: 100%;
 }
-.options-dialog .dialog-buttons .dialog-button:nth-child(2){
-    width: 70%
+.options-dialog .dialog-buttons .dialog-button:nth-child(2) {
+  width: 70%;
 }
 .options-dialog .dialog-inner {
-    text-align: center;
+  text-align: center;
 }
 :root {
-    --card-view-gap: calc(var(--f7-typography-margin) * 3/4);
+  --card-view-gap: calc(var(--f7-typography-margin) * 3 / 4);
 }
 .cards-grades {
-    margin: var(--card-view-gap);
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--card-view-gap);
+  margin: var(--card-view-gap);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--card-view-gap);
 }
 
 .grade-card {
-    width: calc(calc(100vw - calc(var(--card-view-gap) * 3)) / 2);
-    aspect-ratio: 15/16;
-    margin: 0;
-    position: relative; 
-    overflow: hidden !important; 
-    z-index: 1 !important;
-    cursor: pointer !important;
+  width: calc(calc(100vw - calc(var(--card-view-gap) * 3)) / 2);
+  aspect-ratio: 15/16;
+  margin: 0;
+  position: relative;
+  overflow: hidden !important;
+  z-index: 1 !important;
+  cursor: pointer !important;
 }
 
 @media (min-width: 768px) {
-    .cards-grades {
-        grid-template-columns: repeat(3, 1fr);
-    }
+  .cards-grades {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-    .grade-card {
-        width: calc(calc(100vw - calc(var(--f7-typography-margin) * 4)) / 3);
-    }
+  .grade-card {
+    width: calc(calc(100vw - calc(var(--f7-typography-margin) * 4)) / 3);
+  }
 }
 
 @media (min-width: 1200px) {
-    .cards-grades {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  .cards-grades {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
-    .grade-card {
-        width: calc(calc(100vw - calc(var(--f7-typography-margin) * 5)) / 4);
-    }
+  .grade-card {
+    width: calc(calc(100vw - calc(var(--f7-typography-margin) * 5)) / 4);
+  }
 }
 
 .grade-card .card-content {
-    display: flex;
-    padding: 0;
-    margin: 0 calc(var(--f7-typography-padding) / 1);
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    height: 35%;
-    font-weight: 600;
-    overflow: hidden;
+  display: flex;
+  padding: 0;
+  margin: 0 calc(var(--f7-typography-padding) / 1);
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  height: 35%;
+  font-weight: 600;
+  overflow: hidden;
 }
 .grade-card .card-content .title {
-    font-size: var(--f7-list-font-size) !important;
-    line-height: var(--f7-list-font-size) !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-    margin-bottom: 2px;
+  font-size: var(--f7-list-font-size) !important;
+  line-height: var(--f7-list-font-size) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin-bottom: 2px;
 }
 .grade-card .card-content .subtitle {
-    font-size: var(--f7-list-item-subtitle-font-size);
-    line-height: var(--f7-list-item-subtitle-font-size);
+  font-size: var(--f7-list-item-subtitle-font-size);
+  line-height: var(--f7-list-item-subtitle-font-size);
 }
 .grade-card .card-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 65%;
-    z-index: -2;
-    padding: calc(var(--f7-typography-padding) * 3/4) var(--f7-typography-padding);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 65%;
+  z-index: -2;
+  padding: calc(var(--f7-typography-padding) * 3 / 4)
+    var(--f7-typography-padding);
 }
 
 .grade-card .grade-number {
-    font-size: clamp(3rem, 10vw, 5.5rem);
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: calc(var(--f7-typography-margin) * 1);
-    /* color: white;  */
-    position: absolute;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: calc(var(--f7-typography-margin) * 1);
+  /* color: white;  */
+  position: absolute;
 }
 .grade-card .card-header.progress-hidden div {
-    display: none;
-  }
-.grade-card .card-header.progress-hidden .grade-number { 
-    margin-bottom: 0;
+  display: none;
+}
+.grade-card .card-header.progress-hidden .grade-number {
+  margin-bottom: 0;
 }
 .grade-card .progressbar-container {
-    padding: 0;
-    height: 100%; 
-    display: flex;
-    align-items: end;
-    justify-content: center;
-    width: 100%;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
 }
 .grade-card .progress-percent {
-    font-size: 0.6em;
-    line-height: 0.6em;
-    width: 42px;
-
+  font-size: 0.6em;
+  line-height: 0.6em;
+  width: 42px;
 }
 .grade-card .progress {
-    display: flex;
-    flex-direction: row;
-    /* color: white; */
-    width: 100%;
-    justify-content: center;
-    align-items: center;    
-    margin-top: var(--f7-typography-margin);
+  display: flex;
+  flex-direction: row;
+  /* color: white; */
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--f7-typography-margin);
 }
 .grade-card .progressbar {
-    background-color: white;
-    height: 5px;
-    border-radius: 5px;
-    margin: 0 8px !important;
-    border: 1px solid white;
+  background-color: white;
+  height: 5px;
+  border-radius: 5px;
+  margin: 0 8px !important;
+  border: 1px solid white;
 }
 .grade-card .subtitle {
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 .subnavbar-terms .segmented {
-    overflow-x: scroll;
+  overflow-x: scroll;
 }
 .subnavbar-terms {
-    --subnavbar-items-max: 8;
+  --subnavbar-items-max: 8;
 }
 .subnavbar-terms .button,
 .subnavbar-terms .segmented-highlight {
-    min-width: calc((100vw - var(--f7-typography-margin) * 2 - 4px - var(--f7-segmented-strong-between-buttons) * (var(--subnavbar-items-max) - 1)) / var(--subnavbar-items-max)) !important;
+  min-width: calc(
+    (
+        100vw - var(--f7-typography-margin) * 2 - 4px -
+          var(--f7-segmented-strong-between-buttons) *
+          (var(--subnavbar-items-max) - 1)
+      ) / var(--subnavbar-items-max)
+  ) !important;
 }
-.ios .subnavbar-terms .button, .ios .subnavbar-terms .segmented-highlight {
-    min-width: calc((100vw - var(--f7-typography-margin) * 1 - 4px - var(--f7-segmented-strong-between-buttons) * (var(--subnavbar-items-max) - 1)) / var(--subnavbar-items-max)) !important;
+.ios .subnavbar-terms .button,
+.ios .subnavbar-terms .segmented-highlight {
+  min-width: calc(
+    (
+        100vw - var(--f7-typography-margin) * 1 - 4px -
+          var(--f7-segmented-strong-between-buttons) *
+          (var(--subnavbar-items-max) - 1)
+      ) / var(--subnavbar-items-max)
+  ) !important;
 }
 
 .button-active:nth-child(11) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 10;
+  --f7-segmented-highlight-active: 10;
 }
 .button-active:nth-child(12) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 11;
+  --f7-segmented-highlight-active: 11;
 }
 
 .button-active:nth-child(13) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 12;
+  --f7-segmented-highlight-active: 12;
 }
 
 .button-active:nth-child(14) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 13;
+  --f7-segmented-highlight-active: 13;
 }
 
 .button-active:nth-child(15) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 14;
+  --f7-segmented-highlight-active: 14;
 }
 
 .button-active:nth-child(16) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 15;
+  --f7-segmented-highlight-active: 15;
 }
 
 .button-active:nth-child(17) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 16;
+  --f7-segmented-highlight-active: 16;
 }
 
 .button-active:nth-child(18) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 17;
+  --f7-segmented-highlight-active: 17;
 }
 
 .button-active:nth-child(19) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 18;
+  --f7-segmented-highlight-active: 18;
 }
 
 .button-active:nth-child(20) ~ .segmented-highlight {
-    --f7-segmented-highlight-active: 19;
+  --f7-segmented-highlight-active: 19;
 }
