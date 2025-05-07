@@ -169,7 +169,7 @@ const Gradexis = ({ f7router }) => {
         history.pushState({ url: "/settings/" }, null, "/settings/");
       })
 
-      if (localStorage.getItem('appPopupDismissed') != "true") {
+      {/*if (localStorage.getItem('appPopupDismissed') != "true") {
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
           text: `To use this as an app 

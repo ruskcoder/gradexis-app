@@ -108,7 +108,7 @@ const GradesPage = ({ f7router }) => {
           closeButton: true,
           closeButtonText: 'Yes',
           closeButtonColor: 'red',
-          closeTimeout: 100000,
+          closeTimeout: 10000,
           buttons: [
             {
               text: 'No',
