@@ -138,15 +138,21 @@ const SettingsPage = ({ f7router }) => {
   };
 
   const setLayout = (newLayout) => {
+    console.log("Current location: " + location.href);
+    let newlayouttxt = "";
     if (newLayout == 'md') {
       setTheme(fixHexColor(theme));
+      newlayouttxt = "Google";
     }
+    else
+        newlayouttxt = "Apple";
     store.dispatch("changeUserData", {
       userNumber: store.state.currentUserNumber,
       item: "layout",
       value: newLayout,
     });
-    restartApp();
+    location.href = "/";
+
   }
 
   const setStream = (newStream) => {
