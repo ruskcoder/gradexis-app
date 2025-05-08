@@ -6,7 +6,7 @@ import store from '../js/store';
 import terminal from 'virtual:terminal';
 
 function colorFromGrade(grade) {
-  if (grade == "0.00" || grade == "···") {
+  if (grade == "···") {
     return "#a9a9a9";
   }
   if (grade == "X") {
@@ -15,7 +15,7 @@ function colorFromGrade(grade) {
   if (grade >= 90) {
     return "#00cf63";
   } else if (grade >= 80) {
-    return "#3dadfd"; 
+    return "#3dadfd";
   } else if (grade >= 70) {
     return "#feae2b";
   } else {
@@ -23,7 +23,7 @@ function colorFromGrade(grade) {
   }
 }
 
-const ClassGradeItem = ({ title, subtitle, grade }) => {
+const GradeItem = ({ title, subtitle, grade }) => {
   grade = grade == "" ? "0.00" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
   return (
@@ -53,7 +53,7 @@ const ClassGradeItem = ({ title, subtitle, grade }) => {
   );
 };
 
-ClassGradeItem.propTypes = {
+GradeItem.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
   grade: PropTypes.string.isRequired,
@@ -78,6 +78,7 @@ function cardColor(subtitle, sat, light, theme) {
     }
   }
   else {
+    // eslint-disable-next-line no-undef
     const sha = sha256(subtitle);
     const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0) / 2, 0);
     // const hash = sha.replace(/\D/g, '');
@@ -87,7 +88,7 @@ function cardColor(subtitle, sat, light, theme) {
 
 }
 
-const CardClassGradeItem = ({ index, theme, title, subtitle, grade }) => {
+const CardGradeItem = ({ index, theme, title, subtitle, grade }) => {
   grade = !grade ? "--" : parseFloat(grade).toPrecision(3);
   grade = roundGrade(grade);
   return (
@@ -98,8 +99,8 @@ const CardClassGradeItem = ({ index, theme, title, subtitle, grade }) => {
         }}
         className={grade == "--" ? "progress-hidden" : ""}
       >
-        <span className='grade-number' style={{color: cardColor(subtitle, 100, 95, theme)}}>{grade}</span>
-        <div className='progressbar-container' style={{color: cardColor(subtitle, 100, 95, theme)}}>
+        <span className='grade-number' style={{ color: cardColor(subtitle, 100, 95, theme) }}>{grade}</span>
+        <div className='progressbar-container' style={{ color: cardColor(subtitle, 100, 95, theme) }}>
           <div className="progress">
             <span className='progress-percent' style={{ textAlign: 'end' }}>0%</span>
             <span className="progressbar" data-progress={grade}>
@@ -119,14 +120,14 @@ const CardClassGradeItem = ({ index, theme, title, subtitle, grade }) => {
     </Card>
   )
 }
-CardClassGradeItem.propTypes = {
+CardGradeItem.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
   grade: PropTypes.string.isRequired,
 };
 
-const AssignmentGradeItem = ({ name, date, color, grade, badges }) => {
-  grade = grade == "" ? "···" : parseFloat(grade).toPrecision(4);
+const ClassGradeItem = ({ name, date, color, grade, score, badges }) => {
+  grade = score == "" ? "···" : parseFloat(grade).toPrecision(4);
   if (badges.includes("missing")) {
     grade = "M"
   }
@@ -172,15 +173,16 @@ const AssignmentGradeItem = ({ name, date, color, grade, badges }) => {
   );
 };
 
-AssignmentGradeItem.propTypes = {
+ClassGradeItem.propTypes = {
   name: PropTypes.string.isRequired,
   date: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   grade: PropTypes.any.isRequired,
+  score: PropTypes.any.isRequired,
   badges: PropTypes.array.isRequired,
 };
 
-const WhatIfGradeItem = ({ name, date, color, grade, badges, total }) => {
+const WhatIfGradeItem = ({ name, date, color, grade, badges }) => {
   grade = grade == "" ? "‎" : parseFloat(grade).toPrecision(4);
   if (badges.includes("missing")) {
     grade = "M"
@@ -212,7 +214,7 @@ const WhatIfGradeItem = ({ name, date, color, grade, badges, total }) => {
           {grade}
         </span>
         <span className="whatif-total">
-          /{total}
+          /100.0
         </span>
       </div>
       <div className="chevron"></div>
@@ -226,7 +228,6 @@ WhatIfGradeItem.propTypes = {
   color: PropTypes.string.isRequired,
   grade: PropTypes.any.isRequired,
   badges: PropTypes.array.isRequired,
-  total: PropTypes.string.isRequired,
 };
 
-export { AssignmentGradeItem, ClassGradeItem, WhatIfGradeItem, CardClassGradeItem, roundGrade };
+export { ClassGradeItem, GradeItem, WhatIfGradeItem, CardGradeItem, roundGrade };

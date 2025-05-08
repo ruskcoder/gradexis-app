@@ -48,7 +48,7 @@ const HomePage = ({ f7router }) => {
                     width: 44px;
                     border-radius: 50%;
                     aspect-ratio: 1/1;
-                    border: 4px solid var(--f7-${user.layout}-primary);
+                    border: 4px solid ${user.theme};
                   ">
                 </div>
                 <div class="item-inner" style="
@@ -144,7 +144,7 @@ const HomePage = ({ f7router }) => {
           ></OverviewItem>
         </ListItem>
         <ListItem link="/info/schedule/"
-                  aria-label="GoToSchedule">
+          aria-label="GoToSchedule">
           <OverviewIcon
             slot="media"
             iconIos="f7:square_list_fill"
@@ -156,7 +156,7 @@ const HomePage = ({ f7router }) => {
           ></OverviewItem>
         </ListItem>
         <ListItem link="/info/teachers/"
-                  aria-label="GoToTeachers">
+          aria-label="GoToTeachers">
           <OverviewIcon
             slot="media"
             iconIos="f7:at"
@@ -168,7 +168,7 @@ const HomePage = ({ f7router }) => {
           ></OverviewItem>
         </ListItem>
         <ListItem link="/info/ipr/"
-                  aria-label="GoToProgressReport">
+          aria-label="GoToProgressReport">
           <OverviewIcon
             slot="media"
             iconIos="f7:gauge"
@@ -180,7 +180,7 @@ const HomePage = ({ f7router }) => {
           ></OverviewItem>
         </ListItem>
         <ListItem link="/info/reportCard/"
-                  aria-label="GoToReportCard">
+          aria-label="GoToReportCard">
           <OverviewIcon
             slot="media"
             iconIos="f7:doc_chart"
@@ -192,7 +192,7 @@ const HomePage = ({ f7router }) => {
           ></OverviewItem>
         </ListItem>
         <ListItem link="/info/transcript/"
-                  aria-label="GoToTranscript">
+          aria-label="GoToTranscript">
           <OverviewIcon
             slot="media"
             iconIos="f7:checkmark_seal_fill"

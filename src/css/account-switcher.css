@@ -1,32 +1,27 @@
 .account-switcher .dialog-inner {
-    padding: 0px !important;
+  padding: 0px !important;
 }
 
 .md .account-switcher .dialog-inner {
-    padding-bottom: 8px !important;
+  padding-bottom: 8px !important;
 }
 
 .account-switcher .dialog-title {
-    padding: 24px 24px 12px 24px !important;
+  padding: 24px 24px 12px 24px !important;
 }
 
 .ios .account-switcher .dialog-title {
-    padding: 12px 24px 12px 24px !important;
+  padding: 12px 24px 12px 24px !important;
 }
 
 .account-switcher .list {
-    margin: 0px !important;
-}
-.media-item.current-user {
-    background-color: var(--f7-color-blue-light); /* Highlight color */
-    border: 2px solid var(--f7-color-blue); /* Border for emphasis */
-    border-radius: 12px; /* Rounded corners */
+  margin: 0px !important;
 }
 
 .media-item.current-user .item-title {
-    font-weight: bold; /* Make the title bold */
+  font-weight: bold; /* Make the title bold */
 }
 
 .media-item.current-user .item-subtitle {
-    color: var(--f7-color-blue-dark); /* Change subtitle color */
+  color: var(--f7-color-blue-dark); /* Change subtitle color */
 }

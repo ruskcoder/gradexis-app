@@ -31,9 +31,9 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const editDialog = (assignment, key) => {
     const afterDone = (checked, newGrade) => {
       const newScores = [...editScores];
-      newScores[key].score = newGrade;
+      newScores[key].score = newScores[key].totalPoints * newGrade / 100;
       newScores[key].percentage = newGrade + "%";
-      newScores[key].weightedScore = newGrade;
+      newScores[key].weightedScore = newScores[key].score * newScores[key].weight;
       if (checked) {
         newScores[key].badges = ["exempt"];
       }
@@ -63,7 +63,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
       dialog.open();
 
       createRoot(document.getElementById('whatif-edit-dialog-container')).render(
-        <WhatIfEditDialog layout={user.layout} startingGrade={assignment.score} badges={assignment.badges} callback={afterDone} />
+        <WhatIfEditDialog layout={user.layout} startingGrade={assignment.percentage.slice(0, -1)} badges={assignment.badges} callback={afterDone} />
       );
 
       window.f7alert = dialog;
@@ -125,7 +125,6 @@ const WhatIfPage = ({ f7router, ...props }) => {
           grade={assignment.percentage.slice(0, -1)}
           color={colorFromCategory(assignment.category)}
           badges={assignment.badges}
-          total={assignment.totalPoints}
         />
       </ListItem>
     ));

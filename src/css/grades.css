@@ -175,7 +175,7 @@
   overflow-x: scroll;
 }
 .subnavbar-terms {
-  --subnavbar-items-max: 8;
+  --subnavbar-items-max: 6;
 }
 .subnavbar-terms .button,
 .subnavbar-terms .segmented-highlight {

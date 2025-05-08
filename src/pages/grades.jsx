@@ -20,7 +20,7 @@ import {
   AccordionContent,
   CardFooter,
 } from 'framework7-react';
-import { ClassGradeItem, CardClassGradeItem } from '../components/grades-item.jsx';
+import { GradeItem, CardGradeItem } from '../components/grades-item.jsx';
 import { errorDialog, initEmits } from '../components/app.jsx';
 import { getClasses } from '../js/grades-api.js';
 import $ from 'dom7';
@@ -101,8 +101,8 @@ const GradesPage = ({ f7router }) => {
   const cacheToastTimeout = (newterm) => {
     return setTimeout(() => {
       if (!useCacheToast.current
-          && Object.keys(user.gradelist).length > 0
-          && user.gradelist[newterm] != undefined) {
+        && Object.keys(user.gradelist).length > 0
+        && user.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
           text: `Taking a while to load. Use cached data for term ${newterm}?`,
           closeButton: true,
@@ -141,6 +141,7 @@ const GradesPage = ({ f7router }) => {
                 });
               }
               store.state.loaded = true;
+              store.state.useCache = true;
               setLoading(false);
               setTermsLoading(false);
               setUsingCache(true);
@@ -237,12 +238,13 @@ const GradesPage = ({ f7router }) => {
             setTimeout(
               function () {
                 const subnavbar = document.querySelector('.subnavbar-terms .segmented');
-                const buttonWidth = $('.subnavbar-terms .button').width();
-                const highlightWidth = $('.subnavbar-terms .segmented-highlight').width();
                 if (subnavbar) {
-                  subnavbar.scrollLeft = subnavbar.scrollWidth;
+                  subnavbar.scrollTo({
+                    left: subnavbar.scrollWidth,
+                    behavior: 'smooth'
+                  });
                 }
-              }, 0
+              }, 1
             )
           }
           updateTermGradelist(data.term, data.classes);
@@ -264,6 +266,8 @@ const GradesPage = ({ f7router }) => {
     terminal.log(selectedTerm)
     setProgressMessage('Logging In...');
     setUsingCache(false);
+    store.state.useCache = false;
+    store.state.loaded = false;
     try {
       setLoading(true);
       setActiveButtonIndex(index);
@@ -536,7 +540,7 @@ const GradesPage = ({ f7router }) => {
         <div className='cards-grades'>
           {Object.keys(globalgradelist[user.term] || {}).map((item, index) => (
             globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (
-              <CardClassGradeItem
+              <CardGradeItem
                 key={index}
                 index={index}
                 theme={cardColor}
@@ -566,7 +570,7 @@ const GradesPage = ({ f7router }) => {
                 <ListItem key={index}
                   link="#"
                   className='grades-list-item'>
-                  <ClassGradeItem
+                  <GradeItem
                     title={globalgradelist[user.term][item].rename}
                     subtitle={globalgradelist[user.term][item].course}
                     grade={globalgradelist[user.term][item].average}
@@ -584,7 +588,7 @@ const GradesPage = ({ f7router }) => {
                       <ListItem key={index}
                         link=""
                         className='grades-list-item'>
-                        <ClassGradeItem
+                        <GradeItem
                           title={globalgradelist[user.term][item].rename}
                           subtitle={globalgradelist[user.term][item].course}
                           grade={globalgradelist[user.term][item].average}

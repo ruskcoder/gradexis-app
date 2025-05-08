@@ -47,7 +47,7 @@ const AccountsPage = ({ f7router }) => {
                       width: "50px",
                       borderRadius: "50%",
                       aspectRatio: "1/1",
-                      border: `4px solid var(--f7-${user.layout}-primary)`,
+                      border: `4px solid ${user.theme}`,
                       marginBottom: 2,
                     }}
                   />
@@ -66,19 +66,19 @@ const AccountsPage = ({ f7router }) => {
       }
       <Block>
         <Button
-            round
-            fill
-            onClick={() => {
-              f7.dialog.confirm("Do you want to proceed to login?", "Confirmation", () => {
-                f7router.navigate('/login/', {
-                  props: {
-                    onPopupClose: () => {
-                      f7router.navigate('/settings/accounts/');
-                    },
+          round
+          fill
+          onClick={() => {
+            f7.dialog.confirm("Do you want to proceed to login?", "Confirmation", () => {
+              f7router.navigate('/login/', {
+                props: {
+                  onPopupClose: () => {
+                    f7router.navigate('/settings/accounts/');
                   },
-                });
+                },
               });
-            }}
+            });
+          }}
         >
           Add Account
         </Button>

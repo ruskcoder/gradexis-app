@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, useStore, f7, Preloader } from 'framework7-react';
-import { AssignmentGradeItem } from '../components/grades-item.jsx';
+import { ClassGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { errorDialog, primaryFromColor, updateRouter, roundGrade } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
@@ -29,7 +29,13 @@ const ClassGradesPage = ({ f7router, ...props }) => {
 
   useEffect(() => {
     if (user.username) {
-      if (!user.scoresIncluded) {
+      if (user.scoresIncluded || user.useCache) {
+        setLoading(false);
+        setScores(user.gradelist[user.term][props.course].scores);
+        setCategories(user.gradelist[user.term][props.course].categories);
+        setAverage(user.gradelist[user.term][props.course].average);
+      }
+      else {
         getGrades(props.course, user.term).then((data) => {
           if (data.success != false) {
             setScores(data.scores);
@@ -53,12 +59,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           }
         })
           .catch(() => { errorDialog() })
-      }
-      else {
-        setLoading(false);
-        setScores(user.gradelist[user.term][props.course].scores);
-        setCategories(user.gradelist[user.term][props.course].categories);
-        setAverage(user.gradelist[user.term][props.course].average);
       }
     }
   }, [user.username]);
@@ -103,14 +103,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               <p className="info-category-title">Category</p>
               <p className="info-category-data">{assignment.category}</p>
             </div>
-            {assignment.date &&
-              <div>
-                <p className="info-category-title">Date</p>
-                <p className="info-category-data">{assignment.date}</p>
-              </div>
-            }
           </div>
-
           <div className="extra-info last-info grid grid-cols-2 grid-gap">
             {assignment["dateAssigned"] &&
               <div>
@@ -130,25 +123,37 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             </div>
             <div>
               <p className="info-category-title">Weighted Points</p>
-              <p className="info-category-data">{`${(parseFloat(assignment.weightedScore)).toPrecision(4)} / ${parseFloat(assignment.weightedTotalPoints).toPrecision(4)}`}</p>
+              <p className="info-category-data">{`${assignment.weightedScore} / ${assignment.weightedTotalPoints}`}</p>
             </div>
             <div>
               <p className="info-category-title">Weight</p>
               <p className="info-category-data">{assignment.weight}</p>
             </div>
             <div>
-
               <p className="info-category-title">Percentage</p>
               <p className="info-category-data">{assignment.percentage}</p>
             </div>
           </div>
           <div className="extra-info grid grid-cols-1 margin-top-half">
-            {assignment['Average Score'] &&
-              <div>
-                <p className="info-category-title">Average Score</p>
-                <p className="info-category-data">{assignment['Average Score']}</p>
-              </div>
-            }
+            <div>
+              <p className="info-category-title">Badges</p>
+              <p className="info-category-data">{
+                assignment.badges.length > 0 ? assignment.badges.map((badge, i) => {
+                  if (badge == "missing") {
+                    return <span key={i} className="badge color-red">Missing</span>
+                  }
+                  if (badge == "exempt") {
+                    return <span key={i} className="badge color-blue">Exempt</span>
+                  }
+                  if (badge == "late") {
+                    return <span key={i} className="badge color-yellow">Late</span>
+                  }
+                  if (badge == "absent") {
+                    return <span key={i} className="badge color-orange">Absent</span>
+                  }
+                }) : "None"
+              }</p>
+            </div>
           </div>
         </>
       );
@@ -170,10 +175,11 @@ const ClassGradesPage = ({ f7router, ...props }) => {
     scores.forEach((assignment, i) => {
       assignmentList.push(
         <ListItem link='#' onClick={infoDialog(assignment)} key={i}>
-          <AssignmentGradeItem
+          <ClassGradeItem
             name={assignment.name}
             date={assignment.dateAssigned ? assignment.dateAssigned : (assignment.dateDue ? assignment.dateDue : "None")}
             grade={assignment.percentage.slice(0, -1)}
+            score={assignment.score}
             color={colorFromCategory(assignment.category)}
             badges={assignment.badges}
           />
@@ -277,7 +283,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <Button small className="margin-left" tonal
             onClick={() => f7router.navigate(`/whatif/${encodeURIComponent(props.course)}/`)}
             style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}
-                  aria-label="GetWhatIf"
+            aria-label="GetWhatIf"
           >
             What If
           </Button>
