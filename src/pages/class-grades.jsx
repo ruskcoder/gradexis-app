@@ -56,6 +56,8 @@ const ClassGradesPage = ({ f7router, ...props }) => {
               ...updatedGradelist[user.term][props.course],
               scores: data.scores,
               categories: data.categories,
+              averageType: data.averageType,
+              average: data.average,
             };
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
@@ -294,6 +296,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             onClick={() => f7router.navigate(`/whatif/${encodeURIComponent(props.course)}/`)}
             style={{ flex: "0 0 calc(34% - calc(var(--f7-typography-margin) / 2))" }}
             aria-label="GetWhatIf"
+            disabled={loading}
           >
             What If
           </Button>

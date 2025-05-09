@@ -6,7 +6,8 @@ import store from '../js/store';
 import terminal from 'virtual:terminal';
 import { height } from 'dom7';
 
-function colorFromGrade(grade) {
+function colorFromGrade(grade, badges=[]) {
+  if (badges.includes('missing')) return "#ff796a";
   if (grade == "···" || grade == "") {
     return "#a9a9a9";
   }
@@ -131,9 +132,6 @@ CardGradeItem.propTypes = {
 
 const ClassGradeItem = ({ name, date, color, grade, score, badges }) => {
   grade = score == "" ? "···" : parseFloat(grade).toPrecision(4);
-  if (badges.includes("missing")) {
-    grade = "M"
-  }
   if (badges.includes("exempt")) {
     grade = "X"
   }
@@ -159,24 +157,24 @@ const ClassGradeItem = ({ name, date, color, grade, score, badges }) => {
           className="item-subtitle"
         >
           {badges.includes('late') && (
-            <span className="badge color-orange margin-right-half" style={{ height: '14px' }}>L</span>
+            <span className="badge color-yellow margin-right-half" style={{ height: '14px' }}>L</span>
           )}
           {badges.includes('absent') && (
             <span className="badge color-green margin-right-half" style={{ height: '14px' }}>A</span>
           )}
-          {/* {badges.includes('missing') && (
+          {badges.includes('missing') && (
             <span className="badge color-red margin-right-half" style={{ height: '14px' }}>M</span>
           )}
           {badges.includes('exempt') && (
             <span className="badge color-blue margin-right-half" style={{ height: '14px' }}>X</span>
-          )} */}
+          )}
           {date}
         </div>
       </div>
       <span
         className="grades-number assignments-number"
         style={{
-          backgroundColor: colorFromGrade(grade),
+          backgroundColor: colorFromGrade(grade, badges),
           padding: "2px 6px",
           marginRight: "4px"
         }}
@@ -199,9 +197,6 @@ ClassGradeItem.propTypes = {
 
 const WhatIfGradeItem = ({ name, date, color, grade, badges }) => {
   grade = grade == "" ? "‎" : parseFloat(grade).toPrecision(4);
-  if (badges.includes("missing")) {
-    grade = "M"
-  }
   if (badges.includes("exempt")) {
     grade = "--"
   }

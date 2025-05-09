@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Checkbox, List, ListInput, Button, ListItem, Icon, f7, f7ready } from "framework7-react";
+import store from "../js/store";
 
 const WhatIfEditDialog = ({ layout, startingGrade, badges, callback }) => {
   const [checked, setIsChecked] = useState(false);
   const [grade, setGrade] = useState(startingGrade);
 
   useEffect(() => {
-    if (badges.includes("missing")) {
-      setIsChecked(false);
-      setGrade("0.00");
-    }
     if (badges.includes("exempt")) {
       setIsChecked(true);
       setGrade("");

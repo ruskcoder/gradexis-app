@@ -5,6 +5,7 @@ import { gaugeBackgroundColor, colorFromCategory } from '../pages/class-grades.j
 import { WhatIfGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
 import { WhatIfEditDialog, WhatIfAddDialog } from '../components/custom-dialogs.jsx';
+import store from '../js/store';
 import terminal from 'virtual:terminal'
 
 const WhatIfPage = ({ f7router, ...props }) => {
@@ -15,6 +16,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const [average, setAverage] = useState(0);
   const [editAverage, setEditAverage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [averageType, setAverageType] = useState('categorywise');
   const user = useStore('currentUser');
 
   useEffect(() => {
@@ -25,6 +27,23 @@ const WhatIfPage = ({ f7router, ...props }) => {
       setAverage(user.gradelist[user.term][props.course].average);
       setEditAverage(average);
       setEditScores(JSON.parse(JSON.stringify(user.gradelist[user.term][props.course].scores))); // Deep copy
+      if (user.gradelist[user.term][props.course].averageType) {
+        setAverageType(user.gradelist[user.term][props.course].averageType);
+      }
+      else {
+        if (user.platform == 'hac') {
+          setAverageType('categorywise');
+        }
+        else if (user.platform == 'powerschool') {
+          setAverageType('scorewise');
+        }
+        store.state.currentUser.gradelist[user.term][props.course].averageType = averageType;
+        store.dispatch('changeUserData', {
+          userNumber: store.state.currentUserNumber,
+          item: "gradelist",
+          value: store.state.currentUser.gradelist,
+        })
+      }
     }
   }, [user.username]);
 
@@ -71,43 +90,100 @@ const WhatIfPage = ({ f7router, ...props }) => {
   };
 
   const calculateNewAvg = () => {
-    let categoryGrades = {};
-    for (let assignment of editScores) {
-      if (!assignment.badges.includes('exempt') && !assignment.name.trim().endsWith('*') && assignment.score) {
-        if (assignment.badges.includes('missing')) {
-          assignment.score = "0.00";
-        }
-        if (Object.keys(categoryGrades).includes(assignment.category)) {
-          categoryGrades[assignment.category].push(assignment);
-        } else {
-          categoryGrades[assignment.category] = [assignment];
+    if (averageType === 'categorywise') {
+      let categoryGrades = {};
+      for (let assignment of editScores) {
+        if (!assignment.badges.includes('exempt') && !assignment.name.trim().endsWith('*') && assignment.score) {
+          if (assignment.badges.includes('missing')) {
+            assignment.score = "0.00";
+          }
+          if (Object.keys(categoryGrades).includes(assignment.category)) {
+            categoryGrades[assignment.category].push(assignment);
+          } else {
+            categoryGrades[assignment.category] = [assignment];
+          }
         }
       }
-    }
-    for (let category of Object.keys(categoryGrades)) {
-      let total = 0;
-      let outOf = 0;
-      for (let assignment of categoryGrades[category]) {
-        total += parseFloat(assignment.weightedScore);
-        outOf += parseFloat(assignment.weightedTotalPoints);
+      for (let category of Object.keys(categoryGrades)) {
+        let total = 0;
+        let outOf = 0;
+        for (let assignment of categoryGrades[category]) {
+          total += parseFloat(assignment.weightedScore);
+          outOf += parseFloat(assignment.weightedTotalPoints);
+        }
+        categoryGrades[category] = (total / outOf) * 100;
       }
-      categoryGrades[category] = (total / outOf) * 100;
-    }
 
-    let weightedSum = 0;
-    let totalWeight = 0;
-    let newCategories = { ...categories };
-    for (let category of Object.keys(categoryGrades)) {
-      if (categories[category] && categories[category].categoryWeight) {
-        const weight = parseFloat(categories[category].categoryWeight);
-        weightedSum += categoryGrades[category] * weight;
-        totalWeight += weight;
+      let weightedSum = 0;
+      let totalWeight = 0;
+      let newCategories = { ...categories };
+      for (let category of Object.keys(categoryGrades)) {
+        if (categories[category] && categories[category].categoryWeight) {
+          const weight = parseFloat(categories[category].categoryWeight);
+          weightedSum += categoryGrades[category] * weight;
+          totalWeight += weight;
+        }
+        newCategories[category].percent = `${categoryGrades[category]}%`;
       }
-      newCategories[category].percent = `${categoryGrades[category]}%`;
+      const newAverage = totalWeight > 0 ? (weightedSum / totalWeight).toFixed(2) : 0;
+      setEditAverage(newAverage);
+      setCategories(newCategories);
     }
-    const newAverage = totalWeight > 0 ? (weightedSum / totalWeight).toFixed(2) : 0;
-    setEditAverage(newAverage);
-    setCategories(newCategories);
+    else if (averageType == 'scorewise') {
+      let totalWeightedScore = 0;
+      let totalWeightedPoints = 0;
+      let newCategories = { ...categories };
+
+      for (let assignment of editScores) {
+        if (!assignment.badges.includes('exempt') && !assignment.name.trim().endsWith('*') && assignment.score) {
+          if (assignment.badges.includes('missing')) {
+            assignment.score = "0.00";
+          }
+          totalWeightedScore += parseFloat(assignment.weightedScore);
+          totalWeightedPoints += parseFloat(assignment.weightedTotalPoints);
+
+          if (newCategories[assignment.category]) {
+            if (!newCategories[assignment.category].assignments) {
+              newCategories[assignment.category].assignments = [];
+            }
+            newCategories[assignment.category].assignments.push(assignment);
+          }
+        }
+      }
+
+      for (let category of Object.keys(newCategories)) {
+        if (newCategories[category].assignments) {
+          let categoryTotal = 0;
+          let categoryOutOf = 0;
+          for (let assignment of newCategories[category].assignments) {
+            categoryTotal += parseFloat(assignment.weightedScore);
+            categoryOutOf += parseFloat(assignment.weightedTotalPoints);
+          }
+          newCategories[category].percent = categoryOutOf > 0 ? `${((categoryTotal / categoryOutOf) * 100).toFixed(2)}%` : "0%";
+        }
+      }
+
+      const newAverage = totalWeightedPoints > 0 ? (totalWeightedScore / totalWeightedPoints).toPrecision(4) * 100: 0;
+      setEditAverage(newAverage);
+      setCategories(newCategories);
+    }
+    else if (averageType == 'percentwise') {
+      let totalPercent = 0;
+      let totalCount = 0;
+
+      for (let assignment of editScores) {
+        if (!assignment.badges.includes('exempt') && assignment.score) {
+          if (assignment.badges.includes('missing') && user.platform == 'hac') {
+            assignment.score = "0.00";
+          }
+          totalPercent += parseFloat(assignment.percentage);
+          totalCount += 1;
+        }
+      }
+
+      const newAverage = totalCount != 0 ? totalPercent / totalCount : 0;
+      setEditAverage(newAverage);
+    }
   };
 
   useEffect(() => {

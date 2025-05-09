@@ -204,10 +204,9 @@ const GradesPage = ({ f7router }) => {
           }
         }
 
-        store.state.loaded = true;
         closeCacheToast(window.cacheToastTimeout);
 
-        if (data.success !== false && !usingCache) {
+        if (data.success !== false && !usingCache && data.termList.length > 0) {
           if (store.state.currentUser.termList != data.termList) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
@@ -238,6 +237,7 @@ const GradesPage = ({ f7router }) => {
             setActiveButtonIndex(data.termList.indexOf(data.term));
             setTermsLoading(false);
             setLoading(false);
+            store.state.loaded = true;
             setTimeout(
               function () {
                 const subnavbar = document.querySelector('.subnavbar-terms .segmented');
@@ -265,6 +265,7 @@ const GradesPage = ({ f7router }) => {
   }, [user.username, store.state.currentUser.username]);
 
   const switchTerm = async (index) => {
+    console.log("Switching term...");
     const selectedTerm = store.state.currentUser.termList[index];
     terminal.log(selectedTerm)
     setProgressMessage('Logging In...');
@@ -302,7 +303,12 @@ const GradesPage = ({ f7router }) => {
               value: true,
             });
           }
-
+          store.dispatch('changeUserData', {
+            userNumber: store.state.currentUserNumber,
+            item: 'term',
+            value: data.term,
+          });
+          store.state.loaded = true;
           setActiveButtonIndex(store.state.currentUser.termList.indexOf(data.term));
           setTermsLoading(false);
           setLoading(false);
