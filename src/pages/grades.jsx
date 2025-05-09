@@ -101,8 +101,8 @@ const GradesPage = ({ f7router }) => {
   const cacheToastTimeout = (newterm) => {
     return setTimeout(() => {
       if (!useCacheToast.current
-        && Object.keys(user.gradelist).length > 0
-        && user.gradelist[newterm] != undefined) {
+        && Object.keys(store.state.currentUser.gradelist).length > 0
+        && store.state.currentUser.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
           text: `Taking a while to load. Use cached data for term ${newterm}?`,
           closeButton: true,
@@ -132,8 +132,12 @@ const GradesPage = ({ f7router }) => {
                 useCacheToast.current.close();
               }
               if (activeButtonIndex == -1) {
+                // console.log(store.state.currentUser.gradelist)
+                // console.log(store.state.currentUser.term)
+                terminal.log('hi', newterm)
                 setActiveButtonIndex(user.termList.indexOf(newterm));
-              } else {
+              }
+              else {
                 store.dispatch('changeUserData', {
                   userNumber: store.state.currentUserNumber,
                   item: 'term',
@@ -186,8 +190,9 @@ const GradesPage = ({ f7router }) => {
       try {
         setTermsLoading(true);
         setLoading(true);
-        window.cacheToastTimeout = cacheToastTimeout(user.term);
-
+        if (store.state.currentUser.term != -1) {
+          window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.term);
+        } 
         const classesGen = getClasses();
         let done = false;
         let data;
@@ -299,12 +304,6 @@ const GradesPage = ({ f7router }) => {
               value: true,
             });
           }
-
-          store.dispatch('changeUserData', {
-            userNumber: store.state.currentUserNumber,
-            item: 'term',
-            value: data.term,
-          });
 
           setActiveButtonIndex(user.termList.indexOf(data.term));
           setTermsLoading(false);
@@ -475,7 +474,7 @@ const GradesPage = ({ f7router }) => {
     [sortMode, termsLoading, user.gradelist, createDialog, f7router, user.term]);
 
   const lastUpdated = () => {
-    const lastUpdated = new Date(user.gradelist[user.term].lastUpdated);
+    const lastUpdated = new Date(store.state.currentUser.gradelist[store.state.currentUser.term].lastUpdated);
     try {
       return lastUpdated.toLocaleString('en-US', {
         month: 'long',
