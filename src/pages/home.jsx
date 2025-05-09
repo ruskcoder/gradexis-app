@@ -39,8 +39,8 @@ const HomePage = ({ f7router }) => {
       for (const user of users) {
         const isCurrentUser = user.username === store.state.currentUser.username;
         chooseList.push(`
-        <li class="media-item ${isCurrentUser ? 'current-user' : ''}">
-            <a class="item-link dialog-close-button" onclick="window.pickAccount('${user.username}')">
+        <li class="media-item">
+            <a class="item-link dialog-close-button ${isCurrentUser ? 'current-user' : ''}" onclick="window.pickAccount('${user.username}')">
               <div class="item-content">
                 <div class="item-media">
                   <img slot="media" src=${user.pfp} 
@@ -80,10 +80,19 @@ const HomePage = ({ f7router }) => {
             <ul class="list" style="list-style: none; padding: 0">
               ${chooseList.join('')}
             </ul>
+            <button class="button button-fill margin" onclick="window.accountsPage()"
+              style="width: calc(100% - var(--f7-typography-margin) * 2);"
+            >
+              Add Account
+            </button>
           `
         })
         accountPicker.open()
         window.f7alert = accountPicker;
+        window.accountsPage = () => {
+          accountPicker.close();
+          f7router.navigate('/settings/accounts/');
+        }
         window.pickAccount = (username) => {
           store.dispatch('switchUser', users.findIndex((user) => user.username === username))
           accountPicker.close();

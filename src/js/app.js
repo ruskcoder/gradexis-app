@@ -48,11 +48,11 @@ window.addEventListener("load", function () {
     }, 0);
 });
 
-// window.onerror = function (message, source, lineno, colno, error) {
-//     alert(`Error: ${message}\nSource: ${source}\nLine: ${lineno}, Column: ${colno}\nError Object: ${error}`);
-//     window.alert = function () { };
-//     location.reload();
-// }
+window.onerror = function (message, source, lineno, colno, error) {
+    alert(`Error: ${message}\nSource: ${source}\nLine: ${lineno}, Column: ${colno}\nError Object: ${error}`);
+    window.alert = function () { };
+    location.reload();
+}
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

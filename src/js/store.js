@@ -31,6 +31,7 @@ const defaultUser = {
   stream: true,
   gradesView: 'card',
   roundGrades: false,
+  letterGrades: false,
   pageTransition: 'f7-parallax',
   displayAnimations: false,
 };
@@ -117,8 +118,6 @@ const store = createStore({
       }
     },
     switchUser({ state }, userNumber) {
-      state.currentUser.gradelist = {};
-      state.currentUser.termList = [];
       if (userNumber < state.users.length) {
         state.currentUser = state.users[userNumber];
         state.currentUserNumber = userNumber;
@@ -126,7 +125,6 @@ const store = createStore({
       localStorage.setItem('currentUserNumber', state.currentUserNumber);
       state.useCache = false;
       store.dispatch('setClasses', []);
-      store.dispatch('setTerm', -1);
       store.dispatch('setSession', {});
       f7.setColorTheme(state.currentUser.theme);
       f7.setDarkMode(state.currentUser.scheme === "dark");

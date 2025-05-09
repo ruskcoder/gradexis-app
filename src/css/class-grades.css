@@ -67,8 +67,14 @@
 .assignments-item .item-subtitle {
     font-size: var(--f7-list-item-subtitle-font-size);
     line-height: var(--f7-list-item-subtitle-font-size);
+    display: flex;
+    align-items: start;
+    overflow: visible !important;
 }
-
+.assignments-item .item-subtitle .badge {
+    z-index: 100;
+    transform: translateY(-1px);
+}
 .scores-list .item-title {
     text-overflow: clip;
 

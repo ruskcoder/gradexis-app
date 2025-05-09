@@ -13,7 +13,17 @@ export const colorFromCategory = (category) => {
   if (category == "minor") { return "#00de63" }
   if (category == "other") { return "#fa9917" }
   else {
-    return `hsl(${Array.from(category).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
+    let hash = 0;
+    category.split('').forEach(char => {
+      hash = char.charCodeAt(0) + ((hash << 5) - hash)
+    })
+    let colour = '#'
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff
+      colour += value.toString(16).padStart(2, '0')
+    }
+    return colour
+    // return `hsl(${Array.from(sha256(category)).reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0) % 360}, 100%, 45%)`;
   }
 }
 export const gaugeBackgroundColor = (user) => {
@@ -149,7 +159,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                     return <span key={i} className="badge color-yellow">Late</span>
                   }
                   if (badge == "absent") {
-                    return <span key={i} className="badge color-orange">Absent</span>
+                    return <span key={i} className="badge color-green">Absent</span>
                   }
                 }) : "None"
               }</p>
@@ -239,7 +249,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           <Card className="no-margin grade-category-item">
             <h4 className="no-margin">{category}</h4>
             <h1 className="no-margin category-number">
-              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4))}
+              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4), false)}
               <i
                 style={{
                   backgroundColor: `${colorFromCategory(category)}`,
@@ -293,7 +303,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
             <Preloader />
           </Block>
         }
-        {(!loading || store.state.useCache) &&
+        {(!loading) &&
           <div className="assignment-grade-container margin-top">
             <Card className="no-margin assignment-grade-item">
               <Gauge
@@ -306,7 +316,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                 valueText={`${roundGrade((user.anim != false ? animatedValue : parseFloat(average)).toPrecision(4))}`}
                 valueFontSize={50}
                 valueTextColor={`var(--f7-${user.layout}-primary)`}
-                labelText="Overall"
+                labelText={user.letterGrades ? parseFloat(user.anim != false ? animatedValue : average).toPrecision(4) : "Overall"}
                 labelFontSize={20}
               />
             </Card>

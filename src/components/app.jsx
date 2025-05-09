@@ -34,10 +34,26 @@ import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
 import { show } from "dom7";
 
-export const roundGrade = (grade) => {
+export const roundGrade = (grade, letters = true) => {
   if (grade == "") return "0";
   if (store.state.currentUser.roundGrades && !isNaN(parseFloat(grade))) {
     return Math.round(parseFloat(grade))
+  }
+  else if (store.state.currentUser.letterGrades && !isNaN(parseFloat(grade)) && letters) {
+    const num = parseFloat(grade);
+    if (num >= 97) return "A+";
+    else if (num >= 93) return "A";
+    else if (num >= 90) return "A-";
+    else if (num >= 87) return "B+";
+    else if (num >= 83) return "B";
+    else if (num >= 80) return "B-";
+    else if (num >= 77) return "C+";
+    else if (num >= 73) return "C";
+    else if (num >= 70) return "C-";
+    else if (num >= 67) return "D+";
+    else if (num >= 63) return "D";
+    else if (num >= 60) return "D-";
+    else return "F";
   }
   else return grade;
 }

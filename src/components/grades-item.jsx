@@ -4,19 +4,20 @@ import { primaryFromColor, roundGrade } from '../components/app';
 import PropTypes from 'prop-types';
 import store from '../js/store';
 import terminal from 'virtual:terminal';
+import { height } from 'dom7';
 
 function colorFromGrade(grade) {
-  if (grade == "···") {
+  if (grade == "···" || grade == "") {
     return "#a9a9a9";
   }
   if (grade == "X") {
     return "#3dadfd";
   }
-  if (grade >= 90) {
+  if (grade >= 90 || grade.includes('A')) {
     return "#00cf63";
-  } else if (grade >= 80) {
+  } else if (grade >= 80 || grade.includes('B')) {
     return "#3dadfd";
-  } else if (grade >= 70) {
+  } else if (grade >= 70 || grade.includes('C')) {
     return "#feae2b";
   } else {
     return "#ff796a";
@@ -24,6 +25,7 @@ function colorFromGrade(grade) {
 }
 
 const GradeItem = ({ title, subtitle, grade }) => {
+  let color = colorFromGrade(grade);
   grade = grade == "" ? "0.00" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
   return (
@@ -43,7 +45,7 @@ const GradeItem = ({ title, subtitle, grade }) => {
       <span
         className="grades-number"
         style={{
-          backgroundColor: colorFromGrade(grade),
+          backgroundColor: color,
         }}
       >
         {grade}
@@ -90,6 +92,7 @@ function cardColor(subtitle, sat, light, theme) {
 
 const CardGradeItem = ({ index, theme, title, subtitle, grade }) => {
   grade = !grade ? "--" : parseFloat(grade).toPrecision(3);
+  let ogGrade = grade
   grade = roundGrade(grade);
   return (
     <Card className="ripple grade-card">
@@ -103,9 +106,9 @@ const CardGradeItem = ({ index, theme, title, subtitle, grade }) => {
         <div className='progressbar-container' style={{ color: cardColor(subtitle, 100, 95, theme) }}>
           <div className="progress">
             <span className='progress-percent' style={{ textAlign: 'end' }}>0%</span>
-            <span className="progressbar" data-progress={grade}>
+            <span className="progressbar" data-progress={ogGrade}>
               <span style={{
-                transform: `translate3d(-${100 - grade}%, 0px, 0px)`,
+                transform: `translate3d(-${100 - ogGrade}%, 0px, 0px)`,
                 backgroundColor: cardColor(subtitle, 90, 67, theme)
               }}></span>
             </span>
@@ -155,6 +158,18 @@ const ClassGradeItem = ({ name, date, color, grade, score, badges }) => {
         <div
           className="item-subtitle"
         >
+          {badges.includes('late') && (
+            <span className="badge color-orange margin-right-half" style={{ height: '14px' }}>L</span>
+          )}
+          {badges.includes('absent') && (
+            <span className="badge color-green margin-right-half" style={{ height: '14px' }}>A</span>
+          )}
+          {/* {badges.includes('missing') && (
+            <span className="badge color-red margin-right-half" style={{ height: '14px' }}>M</span>
+          )}
+          {badges.includes('exempt') && (
+            <span className="badge color-blue margin-right-half" style={{ height: '14px' }}>X</span>
+          )} */}
           {date}
         </div>
       </div>

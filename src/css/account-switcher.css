@@ -18,10 +18,10 @@
   margin: 0px !important;
 }
 
-.media-item.current-user .item-title {
+.item-link.current-user .item-title {
   font-weight: bold; /* Make the title bold */
 }
 
-.media-item.current-user .item-subtitle {
+.item-link.current-user .item-subtitle {
   color: var(--f7-color-blue-dark); /* Change subtitle color */
 }

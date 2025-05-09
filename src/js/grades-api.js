@@ -46,6 +46,7 @@ export async function login(loginData) {
 }
 
 export async function* getClasses(term = null) {
+    window.classesFetch = new AbortController();
     const user = store.state.currentUser;
     const session = store.state.session;
     const stream = user.stream;
@@ -60,50 +61,55 @@ export async function* getClasses(term = null) {
             session: Object.keys(session).length ? JSON.stringify(session) : "",
         });
         let data;
-        const response = await fetch(`${apiUrl}/${user.platform}/classes?${cleanup(queryParams)}`);
-        if (stream) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let chunks = "";
-            while (true) {
-                const { done, value } = await reader.read();
-                // TODO: fix for powerschool
-                if (done) { break; }
-                chunks += decoder.decode(value, { stream: true });
-                try {
-                    if (chunks.split('\n\n').length > 2) {
-                        for (const chunk of chunks.split('\n\n')) {
-                            if (chunk.trim() === "") continue;
-                            const parsedChunk = JSON.parse(chunk);
-                            yield parsedChunk;
-                            data = parsedChunk;
-                            chunks = "";
+        try {
+            const response = await fetch(`${apiUrl}/${user.platform}/classes?${cleanup(queryParams)}`, {
+                signal: window.classesFetch.signal,
+            });
+            if (stream) {
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let chunks = "";
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) { break; }
+                    chunks += decoder.decode(value, { stream: true });
+                    try {
+                        if (chunks.split('\n\n').length > 2) {
+                            for (const chunk of chunks.split('\n\n')) {
+                                if (chunk.trim() === "") continue;
+                                const parsedChunk = JSON.parse(chunk);
+                                yield parsedChunk;
+                                data = parsedChunk;
+                                chunks = "";
+                            }
+                            continue;
                         }
+                        const chunk = JSON.parse(chunks);
+                        yield chunk;
+                        data = chunk;
+                        chunks = "";
+                    } catch (error) {
                         continue;
                     }
-                    const chunk = JSON.parse(chunks);
-                    yield chunk;
-                    data = chunk;
-                    chunks = "";
-                } catch (error) {
-                    continue;
                 }
+            } else {
+                data = await response.json();
             }
+            if (!data || data.success == false) {
+                throw "An error occurred";
+            }
+            updateSession(data);
+            return data;
+        } catch (error) {
+            if (error.name === "AbortError") {
+                console.log("Fetch aborted");
+                return { success: false, message: "Fetch aborted"};
+            }
+            throw error;
         }
-        else {
-            data = await response.json();
-        }
-        if (!data || data.success == false) {
-            throw "An error occurred";
-
-        }
-        updateSession(data);
-        return data;
-    }
-    else {
+    } else {
         throw "Invalid Platform";
     }
-
 }
 
 export async function getGrades(className, term = null) {

@@ -131,19 +131,12 @@ const GradesPage = ({ f7router }) => {
               if (useCacheToast.current) {
                 useCacheToast.current.close();
               }
-              if (activeButtonIndex == -1) {
-                // console.log(store.state.currentUser.gradelist)
-                // console.log(store.state.currentUser.term)
-                terminal.log('hi', newterm)
-                setActiveButtonIndex(user.termList.indexOf(newterm));
-              }
-              else {
-                store.dispatch('changeUserData', {
-                  userNumber: store.state.currentUserNumber,
-                  item: 'term',
-                  value: newterm,
-                });
-              }
+              setActiveButtonIndex(store.state.currentUser.termList.indexOf(newterm));
+              store.dispatch('changeUserData', {
+                userNumber: store.state.currentUserNumber,
+                item: 'term',
+                value: newterm,
+              });
               store.state.loaded = true;
               store.state.useCache = true;
               setLoading(false);
@@ -178,21 +171,26 @@ const GradesPage = ({ f7router }) => {
 
   useEffect(() => {
     f7.on('userChanged', function () {
-      setLoading(true);
-      setTermsLoading(true);
-      setUsingCache(false);
-      setProgressPercent(0);
-      setProgressMessage('Logging In...');
-      setActiveButtonIndex(-1);
-      fetchClasses();
+      if (!loading) {
+        if (window.classesFetch) {
+          window.classesFetch.abort();
+        }
+        useCacheToast.current = null;
+        setLoading(true);
+        setTermsLoading(true);
+        setUsingCache(false);
+        setProgressPercent(0);
+        setProgressMessage('Logging In...');
+        setActiveButtonIndex(-1);
+        fetchClasses();
+      }
     })
     const fetchClasses = async () => {
       try {
         setTermsLoading(true);
         setLoading(true);
-        if (store.state.currentUser.term != -1) {
-          window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.term);
-        } 
+
+        window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.term);
         const classesGen = getClasses();
         let done = false;
         let data;
@@ -210,7 +208,7 @@ const GradesPage = ({ f7router }) => {
         closeCacheToast(window.cacheToastTimeout);
 
         if (data.success !== false && !usingCache) {
-          if (user.termList != data.termList) {
+          if (store.state.currentUser.termList != data.termList) {
             store.dispatch('changeUserData', {
               userNumber: store.state.currentUserNumber,
               item: 'termList',
@@ -267,7 +265,7 @@ const GradesPage = ({ f7router }) => {
   }, [user.username, store.state.currentUser.username]);
 
   const switchTerm = async (index) => {
-    const selectedTerm = user.termList[index];
+    const selectedTerm = store.state.currentUser.termList[index];
     terminal.log(selectedTerm)
     setProgressMessage('Logging In...');
     setUsingCache(false);
@@ -277,7 +275,7 @@ const GradesPage = ({ f7router }) => {
       setLoading(true);
       setActiveButtonIndex(index);
       closeCacheToast(window.cacheToastTimeout);
-      window.cacheToastTimeout = cacheToastTimeout(user.termList[index]);
+      window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.termList[index]);
 
       const classesGen = getClasses(selectedTerm);
       let done = false;
@@ -305,7 +303,7 @@ const GradesPage = ({ f7router }) => {
             });
           }
 
-          setActiveButtonIndex(user.termList.indexOf(data.term));
+          setActiveButtonIndex(store.state.currentUser.termList.indexOf(data.term));
           setTermsLoading(false);
           setLoading(false);
         }
@@ -321,7 +319,7 @@ const GradesPage = ({ f7router }) => {
   };
 
   const ptr = (done) => {
-    getClasses(user.termList[activeButtonIndex]).then((data) => {
+    getClasses(store.state.currentUser.termList[activeButtonIndex]).then((data) => {
       if (data.success != false) {
         done();
         store.dispatch('setClasses', data.classes);
@@ -513,17 +511,17 @@ const GradesPage = ({ f7router }) => {
         </Block>
       }
 
-      {!termsLoading && user.termList &&
+      {!termsLoading && store.state.currentUser.termList &&
         <Subnavbar sliding={true} style={{ marginTop: "-1px !important" }} className='subnavbar-terms'>
           <Segmented strong>
-            {user.termList.map((_, index) => (
+            {store.state.currentUser.termList.map((_, index) => (
               <Button
                 key={index}
                 smallMd
                 active={activeButtonIndex === index}
                 onClick={() => switchTerm(index)}
               >
-                {user.termList[index]}
+                {store.state.currentUser.termList[index]}
               </Button>
             ))}
           </Segmented>
@@ -552,7 +550,7 @@ const GradesPage = ({ f7router }) => {
         </div>
       }
 
-      {!loading && (user.gradesView ? user.gradesView == "list" : true) &&
+      {!loading && (store.state.currentUser.gradesView ? store.state.currentUser.gradesView == "list" : true) &&
         <>
           <List
             dividersIos={user.groupLists == true}
