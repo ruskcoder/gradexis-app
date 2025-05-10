@@ -217,7 +217,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
           <Card className="no-margin grade-category-item">
             <h4 className="no-margin">{category}</h4>
             <h1 className="no-margin category-number">
-              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4))}
+              {roundGrade(parseFloat(categories[category].percent.slice(0, -1)).toPrecision(4), false)}
               <i
                 style={{
                   backgroundColor: `${colorFromCategory(category)}`,

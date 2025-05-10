@@ -99,8 +99,8 @@ const GradesPage = ({ f7router }) => {
   };
 
   const cacheToastTimeout = (newterm) => {
-    return setTimeout(() => {
-      if (!useCacheToast.current
+    const timeoutId = setTimeout(() => {
+      if (useCacheToast.current == null
         && Object.keys(store.state.currentUser.gradelist).length > 0
         && store.state.currentUser.gradelist[newterm] != undefined) {
         useCacheToast.current = f7.toast.create({
@@ -159,8 +159,19 @@ const GradesPage = ({ f7router }) => {
         };
         checkTabActive();
       }
-    }, 3000);
+    }, 1);
+
+    return timeoutId;
   };
+
+  useEffect(() => {
+    return () => {
+      if (window.cacheToastTimeout) {
+        clearTimeout(window.cacheToastTimeout);
+      }
+    };
+  }, []);
+
   const closeCacheToast = (timeout) => {
     clearTimeout(timeout);
     if (useCacheToast.current) {
@@ -176,6 +187,7 @@ const GradesPage = ({ f7router }) => {
           window.classesFetch.abort();
         }
         useCacheToast.current = null;
+        closeCacheToast(window.cacheToastTimeout);
         setLoading(true);
         setTermsLoading(true);
         setUsingCache(false);
@@ -189,7 +201,6 @@ const GradesPage = ({ f7router }) => {
       try {
         setTermsLoading(true);
         setLoading(true);
-
         window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.term);
         const classesGen = getClasses();
         let done = false;
@@ -265,9 +276,10 @@ const GradesPage = ({ f7router }) => {
   }, [user.username, store.state.currentUser.username]);
 
   const switchTerm = async (index) => {
-    console.log("Switching term...");
+    if (window.classesFetch) {
+      window.classesFetch.abort();
+    }
     const selectedTerm = store.state.currentUser.termList[index];
-    terminal.log(selectedTerm)
     setProgressMessage('Logging In...');
     setUsingCache(false);
     store.state.useCache = false;
@@ -314,8 +326,10 @@ const GradesPage = ({ f7router }) => {
           setLoading(false);
         }
       } else {
-        closeCacheToast(window.cacheToastTimeout);
-        errorDialog(data.message);
+        if (data.message != "abort") {
+          closeCacheToast(window.cacheToastTimeout);
+          errorDialog(data.message);
+        }
       }
     } catch (err) {
       closeCacheToast(window.cacheToastTimeout);

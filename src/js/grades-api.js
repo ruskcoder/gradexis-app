@@ -3,12 +3,12 @@ import terminal from 'virtual:terminal';
 
 var apiUrl = 'https://api.gradexis.com';
 
-if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
-    apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
-}
-if (location.hostname == 'localhost') {
-    apiUrl = 'http://localhost:3000'
-}
+// if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
+//     apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
+// }
+// if (location.hostname == 'localhost') {
+//     apiUrl = 'http://localhost:3000'
+// }
 
 const platformList = ['hac', 'powerschool']
 function updateSession(data) {
@@ -96,14 +96,13 @@ export async function* getClasses(term = null) {
                 data = await response.json();
             }
             if (!data || data.success == false) {
-                throw "An error occurred";
+                throw data.message || "Failed to fetch classes";
             }
             updateSession(data);
             return data;
         } catch (error) {
             if (error.name === "AbortError") {
-                console.log("Fetch aborted");
-                return { success: false, message: "Fetch aborted"};
+                return { success: false, message: "abort"};
             }
             throw error;
         }
