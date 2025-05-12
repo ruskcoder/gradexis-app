@@ -42,6 +42,7 @@ export const updateStatusBars = async () => {
     await StatusBar.setStyle({ style: store.state.currentUser.scheme == "dark" ? Style.Dark : Style.Light });
     await StatusBar.setBackgroundColor({ color: newColor });
     await NavigationBar.setColor({ color: newColor, darkButtons: store.state.currentUser.scheme == "light" });
+    await StatusBar.setOverlaysWebView({ overlay: false });
     await StatusBar.show();
   } catch (error) {
     console.log("Web UI detected, skipping status bar and navigation bar color changes.")
@@ -169,7 +170,7 @@ const SettingsPage = ({ f7router }) => {
       item: "layout",
       value: newLayout,
     });
-    location.href = "/";
+    restartApp();
 
   }
 

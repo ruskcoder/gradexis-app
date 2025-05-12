@@ -159,7 +159,7 @@ const GradesPage = ({ f7router }) => {
         };
         checkTabActive();
       }
-    }, 1);
+    }, 3000);
 
     return timeoutId;
   };
@@ -258,7 +258,7 @@ const GradesPage = ({ f7router }) => {
                     behavior: 'smooth'
                   });
                 }
-              }, 1
+              }, 10
             )
           }
           updateTermGradelist(data.term, data.classes);

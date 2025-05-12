@@ -7,8 +7,8 @@ android {
         applicationId "com.ruskcoder.gradexis"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.11"
+        versionCode 5
+        versionName "1.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,19 +16,10 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    signingConfigs {
-        release {
-            storeFile file('./keystore.jks') // Ensure this path matches your keystore location
-            storePassword 'gradexis-app'    // Replace with your actual keystore password
-            keyAlias 'gradexis-alias'       // Replace with your actual key alias
-            keyPassword 'gradexis-app'     // Replace with your actual key password
-        }
-    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
 }

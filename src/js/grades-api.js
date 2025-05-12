@@ -12,7 +12,9 @@ var apiUrl = 'https://api.gradexis.com';
 
 const platformList = ['hac', 'powerschool']
 function updateSession(data) {
-    store.dispatch('setSession', data.session);
+    if (store.state.currentUser.platform != 'powerschool') {
+        store.dispatch('setSession', data.session);
+    } // TODO: This is a temporary fix for powerschool, we need to find a better way to handle this
 }
 
 function cleanup(params) {
@@ -102,7 +104,7 @@ export async function* getClasses(term = null) {
             return data;
         } catch (error) {
             if (error.name === "AbortError") {
-                return { success: false, message: "abort"};
+                return { success: false, message: "abort" };
             }
             throw error;
         }

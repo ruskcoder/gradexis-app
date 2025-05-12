@@ -4,16 +4,14 @@
   "appIcon": "www/icons/1024x1024.png",
   "webDir": "www",
   "android": {
-    "versionCode": 2,
-    "versionName": "v1.1",
     "buildOptions": {
       "releaseSigning": {
         "releaseType": "APK",
-        "keystorePath": "./android/app/keystore.jks",
-        "keystorePassword": "gradexis-app",
-        "keyAlias": "gradexis-alias",
-        "keysroeAliasPassword": "gradexis-app",
-        "keyPassword": "gradexis-app"
+        "keystorePath": "C:/Coding/gradexis-key.jks",
+        "keystorePassword": "gradexis",
+        "keyAlias": "key0",
+        "keysroeAliasPassword": "gradexis",
+        "keyPassword": "gradexis"
       }
     }
   }

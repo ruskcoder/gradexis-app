@@ -112,6 +112,7 @@ export const updateRouter = (f7router) => {
         if (location.pathname == "/" && ['/', '/grades/', '/todo/', '/settings/'].includes(f7router.currentRoute.url)) {
           document.querySelector('a[data-tab="#view-home"]').click();
         } else if (location.pathname == "/home/") {
+          CapacitorApp.exitApp();
           history.back();
         } else {
           f7router.back();
