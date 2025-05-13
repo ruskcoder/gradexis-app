@@ -273,6 +273,22 @@ const SettingsPage = ({ f7router }) => {
     };
   }
 
+  const reviewApp = () => {
+    return () => {
+      if (Capacitor.getPlatform() === 'web'){
+        f7.dialog.alert("This feature is only available on mobile apps", "Review App");
+      }
+      else if (Capacitor.getPlatform() === 'ios'){
+        //Redirect the user to the link given
+        window.open("https://apps.apple.com/us/app/gradexis/id6745531312?action=write-review", "_system");
+      }
+      else{
+        //Redirect the user to the Android app page
+        window.open("https://play.google.com/store/apps/details?id=com.ruskcoder.gradexis", "_system");
+      }
+    }
+  }
+
   return (
     <Page name="settings">
       <Navbar large title="Settings" />
@@ -612,7 +628,7 @@ const SettingsPage = ({ f7router }) => {
       <Card>
         <CardContent>
           <List dividers>
-            <ListButton>Review</ListButton>
+            <ListButton onClick={reviewApp()}>Review</ListButton>
             <ListButton color="red" fill onClick={logout()}>
               Logout
             </ListButton>

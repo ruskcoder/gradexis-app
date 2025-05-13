@@ -22,6 +22,7 @@
     "last 5 Firefox versions"
   ],
   "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^9.0.0",
     "@capacitor/android": "^7.2.0",
     "@capacitor/app": "^7.0.1",
     "@capacitor/camera": "^7.0.1",
