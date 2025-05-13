@@ -9,9 +9,15 @@ import {
   BlockFooter,
   ListItem,
   Checkbox,
-  useStore
+  Icon,
+  useStore,
+  Searchbar,
+  Subnavbar,
+  Navbar,
+  ListButton
 } from "framework7-react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { createRoot } from 'react-dom/client';
 import store from "../js/store";
 
 const LoginPage = ({ f7router }) => {
@@ -23,9 +29,19 @@ const LoginPage = ({ f7router }) => {
   const [link, setLink] = useState("");
 
   const [loginLoading, setLoginLoading] = useState(false);
-  let platformDefaults = {
+  const platformDefaults = {
     "hac": "homeaccess.katyisd.org",
     "powerschool": "hisdconnect.houstonisd.org"
+  }
+  const platformNames = {
+    "hac": "HAC",
+    "powerschool": "PowerSchool SIS"
+  }
+  const defaults = {
+    "Katy ISD": { platform: "hac", link: "homeaccess.katyisd.org", classlink: false },
+    "Houston ISD": { platform: "powerschool", link: "hisdconnect.houstonisd.org", classlink: false },
+    "Cypress-Fairbanks ISD": { platform: "hac", link: "home-access.cfisd.net", classlink: false },
+    "Conroe ISD": { platform: "hac", link: "conroeisd", classlink: true },
   }
   const signIn = () => {
     setLoginLoading(true);
@@ -35,7 +51,7 @@ const LoginPage = ({ f7router }) => {
         try {
           f7router.back();
         }
-        catch (error){
+        catch (error) {
           /* Do nothing since this shouldn't happen */
         }
       });
@@ -77,12 +93,85 @@ const LoginPage = ({ f7router }) => {
       })
     }, 0);
   };
+  const createPopup = () => {
+    if (!popup.current) {
+      const PopupContent = ({ callback }) => {
+        return (
+          <Page>
+            <div className="navbar">
+              <div className="navbar-inner">
+                <div className="navbar-bg"></div>
+                <div className="title margin-left">Districts</div>
+                <div className="right">
+                  <a className="link popup-close" onClick={() => popup.current.close()}>Close</a>
+                </div>
+              </div>
+            </div>
+            <div className="page-content no-margin no-padding" style={{ height: "100%" }}>
+              <div className="block no-margin-top padding-top" style={{ height: "100%" }}>
+                <Searchbar
+                  searchContainer=".default-list"
+                  searchIn=".item-title"
+                  inline
+                  className="searchbar-districts"
+                />
+                <List mediaList inset strong noChevron className="default-list no-margin margin-top searchbar-found">
+                  {Object.keys(defaults).map((key) => (
+                    <ListItem
+                      key={key}
+                      link="#"
+                      title={key}
+                      subtitle={defaults[key].classlink ? `launchpad.classlink.com/${defaults[key].link}`: defaults[key].link}
+                      after={platformNames[defaults[key].platform]}
+                      onClick={() => { callback(key); }}
+                    />
+                  ))}
+                </List>
+              </div>
+            </div>
+          </Page>
+        );
+      };
+      const selectDistrict = (key) => {
+        setPlatform(defaults[key].platform);
+        setLink(defaults[key].link);
+        setUseClasslink(defaults[key].classlink);
+        setClasslink(defaults[key].classlink ? defaults[key].link : "");
+        popup.current.close();
+      }
+
+      popup.current = f7.popup.create({
+        content: `<div id="popup-districts" class="popup popup-districts"></div>`,
+      });
+      popup.current.open();
+
+      const root = createRoot(document.getElementById('popup-districts'));
+      root.render(
+        <PopupContent callback={(key) => selectDistrict(key)} />
+      );
+      f7.searchbar.create({
+        el: '.searchbar-districts',
+        inputEl: '.searchbar-districts input',
+        searchContainer: '.default-list',
+        searchIn: '.item-title',
+      });
+    }
+    else {
+      popup.current.open();
+    }
+  };
+  const onPageBeforeRemove = () => {
+    // Destroy popup when page removed
+    if (popup.current) popup.current.destroy();
+  };
+  const [popupOpened, setPopupOpened] = useState(false);
+  const popup = useRef(null);
 
   return (
-    <Page loginScreen>
+    <Page loginScreen onPageBeforeRemove={onPageBeforeRemove}>
       <LoginScreenTitle>Login</LoginScreenTitle>
-      <List form>
-        <ListInput label="Platform" name="platform"
+      <List form className="login-form">
+        <ListInput label="Platform" name="platform" className="platform-input"
           type="select"
           outline
           value={platform}
@@ -98,6 +187,7 @@ const LoginPage = ({ f7router }) => {
           onChange={(e) => { setUseClasslink(e.target.checked); setLink("") }}>
           Use ClassLink SSO Login
         </ListItem>
+
         {useClasslink &&
           <ListInput
             outline
@@ -107,7 +197,7 @@ const LoginPage = ({ f7router }) => {
             placeholder="katyisd"
             value={classlink}
             onInput={(e) => setClasslink(e.target.value)}
-            className="classlink-input"
+            className="classlink-input link-input"
             tabindex={-1}
           >
           </ListInput>
@@ -129,6 +219,14 @@ const LoginPage = ({ f7router }) => {
           </ListInput>
         }
 
+        <li>
+          <Block className="margin-bottom margin-top-half">
+            <Button fill small onClick={createPopup}>
+              Prefill from District
+            </Button>
+          </Block>
+          <hr />
+        </li>
         <ListInput
           outline
           floatingLabel
@@ -141,7 +239,6 @@ const LoginPage = ({ f7router }) => {
           onInput={(e) => setUsername(e.target.value)}
           tabindex={-1}
         ></ListInput>
-
         <ListInput
           outline
           floatingLabel
@@ -161,12 +258,6 @@ const LoginPage = ({ f7router }) => {
           Login
         </Button>
       </Block>
-      <List>
-        <BlockFooter>
-          Login information may be stored on this
-          device.
-        </BlockFooter>
-      </List>
     </Page>
   )
 };

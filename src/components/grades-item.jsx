@@ -6,28 +6,33 @@ import store from '../js/store';
 import terminal from 'virtual:terminal';
 import { height } from 'dom7';
 
+const accentGreen = "#00cf63";
+const accentBlue = "#3dadfd";
+const accentYellow = "#feae2b";
+const accentRed = "#ff796a";
+
 function colorFromGrade(grade, badges=[]) {
   if (badges.includes('missing')) return "#ff796a";
   if (grade == "···" || grade == "") {
     return "#a9a9a9";
   }
   if (grade == "X") {
-    return "#3dadfd";
+    return accentBlue;
   }
   if (grade >= 90 || grade.includes('A')) {
-    return "#00cf63";
+    return accentGreen;
   } else if (grade >= 80 || grade.includes('B')) {
-    return "#3dadfd";
+    return accentBlue;
   } else if (grade >= 70 || grade.includes('C')) {
-    return "#feae2b";
+    return accentYellow;
   } else {
-    return "#ff796a";
+    return accentRed;
   }
 }
 
-const GradeItem = ({ title, subtitle, grade }) => {
+const GradeItem = ({ title, subtitle, grade, prevGrade }) => {
   let color = colorFromGrade(grade);
-  grade = grade == "" ? "0.00" : parseFloat(grade).toPrecision(4);
+  grade = grade == "" ? "" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
   return (
     <>
@@ -43,6 +48,11 @@ const GradeItem = ({ title, subtitle, grade }) => {
           {subtitle}
         </div>
       </div>
+      {/* <span className="grades-diff"
+        style={{backgroundColor: accentRed}}
+      >
+        -4.09
+      </span> */}
       <span
         className="grades-number"
         style={{
@@ -60,6 +70,7 @@ GradeItem.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string.isRequired,
   grade: PropTypes.string.isRequired,
+  prevGrade: PropTypes.string.isRequired,
 };
 
 function cardColor(subtitle, sat, light, theme) {

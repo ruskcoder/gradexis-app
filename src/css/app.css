@@ -32,18 +32,6 @@
   align-items: center;
 }
 
-.grades-number {
-  border-radius: 8px;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600 !important;
-  font-size: 18px;
-  width: 64px;
-  padding: 4px 0px;
-}
-
 .assignments-number {
   width: 54px;
 }

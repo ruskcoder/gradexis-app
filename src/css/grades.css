@@ -236,3 +236,24 @@
 .button-active:nth-child(20) ~ .segmented-highlight {
   --f7-segmented-highlight-active: 19;
 }
+
+.grades-diff {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-right: calc(var(--f7-typography-margin) / 2);
+  font-weight: 600 !important;
+  color: white;
+}
+
+.grades-number {
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600 !important;
+  font-size: 18px;
+  width: 64px;
+  padding: 4px 0px;
+}

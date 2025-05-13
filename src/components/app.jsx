@@ -35,7 +35,7 @@ import { updateStatusBars } from "../pages/settings";
 import { show } from "dom7";
 
 export const roundGrade = (grade, letters = true) => {
-  if (grade == "") return "0";
+  if (grade == "" || grade == "0.00") return letters ? "···" : "0.00";
   if (store.state.currentUser.roundGrades && !isNaN(parseFloat(grade))) {
     return Math.round(parseFloat(grade))
   }

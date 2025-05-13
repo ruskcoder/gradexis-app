@@ -15,6 +15,7 @@
 .classlink-sso {
     z-index: 2;
 }
+
 .classlink-sso .item-content {
     padding-left: calc(var(--f7-typography-padding) * 2);
 }
@@ -27,6 +28,7 @@
     content: "https://";
     color: var(--f7-text-editor-placeholder-colorx);
 }
+
 .md .classlink-input .item-input-wrap {
     display: flex
 }
@@ -36,3 +38,18 @@
     color: var(--f7-text-editor-placeholder-colorx);
 }
 
+.md .searchbar-districts .searchbar-disable-button {
+    left: 0;
+}
+
+.md .login-form .item-input-outline .item-inner {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.md .login-form .item-input-with-value .item-floating-label,
+.md .login-form .item-input-focused .item-floating-label,
+.md .login-form .platform-input .item-input-outline .item-label,
+.md .login-form .link-input .item-input-outline .item-label {
+    transform: scale(1) translateY(4px) !important;
+}

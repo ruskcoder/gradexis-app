@@ -65,7 +65,6 @@ const GradesPage = ({ f7router }) => {
       return acc;
     }, {});
 
-    // Add any new classes that are not in the previousTermGradelist
     classes.forEach(item => {
       if (!updatedTermGradelist[item.name]) {
         updatedTermGradelist[item.name] = {
@@ -79,10 +78,8 @@ const GradesPage = ({ f7router }) => {
       }
     });
 
-    // Add or update the lastUpdated field for the term
     updatedTermGradelist.lastUpdated = new Date();
 
-    // Update the store and state with the updated term gradelist
     const updatedGradelist = {
       ...store.state.currentUser.gradelist,
       [term]: updatedTermGradelist,
@@ -591,6 +588,7 @@ const GradesPage = ({ f7router }) => {
                     title={globalgradelist[user.term][item].rename}
                     subtitle={globalgradelist[user.term][item].course}
                     grade={globalgradelist[user.term][item].average}
+                    // prevGrade=
                   />
                 </ListItem>
               )
