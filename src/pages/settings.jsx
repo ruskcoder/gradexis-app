@@ -82,7 +82,7 @@ const SettingsPage = ({ f7router }) => {
         {
           text: 'Restart',
           onClick: () => {
-            document.location.href = 'index.html';
+            location.href = "/";
           }
         }
       ]
