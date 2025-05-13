@@ -221,7 +221,7 @@ const LoginPage = ({ f7router }) => {
 
         <li>
           <Block className="margin-bottom margin-top-half">
-            <Button fill small onClick={createPopup}>
+            <Button outline small onClick={createPopup}>
               Prefill from District
             </Button>
           </Block>

@@ -19,11 +19,11 @@ function colorFromGrade(grade, badges=[]) {
   if (grade == "X") {
     return accentBlue;
   }
-  if (grade >= 90 || grade.includes('A')) {
+  if (grade >= 90 || grade.toString().includes('A')) {
     return accentGreen;
-  } else if (grade >= 80 || grade.includes('B')) {
+  } else if (grade >= 80 || grade.toString().includes('B')) {
     return accentBlue;
-  } else if (grade >= 70 || grade.includes('C')) {
+  } else if (grade >= 70 || grade.toString().includes('C')) {
     return accentYellow;
   } else {
     return accentRed;
