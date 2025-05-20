@@ -208,7 +208,7 @@ const LoginPage = ({ f7router }) => {
             label="Link"
             type="text"
             name="link"
-            placeholder={
+            placeholder={ 
               platformDefaults[platform]
             }
             value={link}
@@ -222,7 +222,7 @@ const LoginPage = ({ f7router }) => {
         <li>
           <Block className="margin-bottom margin-top-half">
             <Button outline small onClick={createPopup}>
-              Prefill from District
+              Select District
             </Button>
           </Block>
           <hr />
@@ -249,9 +249,10 @@ const LoginPage = ({ f7router }) => {
           aria-label="EnterPassword"
           value={password}
           onInput={(e) => setPassword(e.target.value)}
-          clearButton
           tabindex={-1}
-        ></ListInput>
+        >
+          <div slot="right">hi</div>
+        </ListInput>
       </List>
       <Block>
         <Button preloader loading={loginLoading} label="Login" aria-label="Login" onClick={signIn} large fill>

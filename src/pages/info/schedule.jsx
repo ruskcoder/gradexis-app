@@ -21,7 +21,7 @@ const SchedulePage = ({ f7router }) => {
         }).catch((error) => {
             errorDialog(error.message);
         })
-    });
+    }, []);
 
     const infoDialog = (schedule) => {
         return () => {

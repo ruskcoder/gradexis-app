@@ -1,47 +1,40 @@
 const CACHE_NAME = 'pwa-cache-v1';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/assets/' // Add this line to cache the assets directory
+  '/',
+  '/index.html',
+  '/assets/'
 ];
 
 // Install the service worker
 self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                return cache.addAll(urlsToCache);
-            })
-    );
-});
-
-// Cache and return requests
-self.addEventListener('fetch', event => {
-    if (!navigator.onLine) {
-        event.respondWith(
-            caches.match(event.request)
-        );
-    } else {
-        event.respondWith(
-            fetch(event.request).catch(() => {
-                return caches.match(event.request);
-            })
-        );
-    }
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
 // Update a service worker
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
         })
-    );
+      );
+    })
+  ); 
 });
+
+self.addEventListener('push', function (event) {
+  const options = {
+    body: event.data.text(),
+    icon: '/icons/192x192.png',
+  };
+  event.waitUntil(self.registration.showNotification('Title', options));
+}); 

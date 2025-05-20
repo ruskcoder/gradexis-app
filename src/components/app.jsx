@@ -213,9 +213,9 @@ const Gradexis = ({ f7router }) => {
           ]
         })
         window.f7alert.open()
-      }
+      } */}
 
-      if ("Notification" in window && localStorage.getItem('notifications') !== "dontshow") {
+      if ("Notification" in window && localStorage.getItem('notifications') != "dontshow") {
         if (Notification.permission === "denied") {
           localStorage.setItem('notifications', "dontshow");
           window.f7alert = f7.dialog.alert("Please enable notifications to get the best experience", "Notifications");
@@ -239,7 +239,7 @@ const Gradexis = ({ f7router }) => {
             }
           );
         }
-      }*/}
+      }
 
 
       if (store.state.currentUser.layout === "ios") {

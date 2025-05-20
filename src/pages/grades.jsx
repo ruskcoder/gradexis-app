@@ -136,6 +136,7 @@ const GradesPage = ({ f7router }) => {
               });
               store.state.loaded = true;
               store.state.useCache = true;
+              setGradelist(store.state.currentUser.gradelist);
               setLoading(false);
               setTermsLoading(false);
               setUsingCache(true);
@@ -550,7 +551,8 @@ const GradesPage = ({ f7router }) => {
           Complete Sorting
         </Button>
       }
-      {!loading && user.gradesView == "card" &&
+
+      {!loading && store.state.currentUser.gradesView == "card" &&
         <div className='cards-grades'>
           {Object.keys(globalgradelist[user.term] || {}).map((item, index) => (
             globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (

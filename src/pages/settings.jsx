@@ -57,7 +57,7 @@ const SettingsPage = ({ f7router }) => {
   const [groupLists, changeGroupLists] = useState(user.groupLists != undefined ? user.groupLists : false);
   const [anim, changeAnim] = useState(user.anim != false ? true : false);
   const [pageTransition, changePageTransition] = useState(user.pageTransition || "default");
-  const [view, changeView] = useState(user.gradesView || "list");
+  const [view, changeView] = useState(user.gradesView != undefined ? user.gradesView : "list");
   const [roundGrades, changeRoundGrades] = useState(user.roundGrades != undefined ? user.roundGrades : false);
   const [stream, changeStream] = useState(user.stream != undefined ? user.stream : true);
   const [matchColorCards, changeMatchColorCards] = useState(user.matchColorCards != undefined ? user.matchColorCards : false);
