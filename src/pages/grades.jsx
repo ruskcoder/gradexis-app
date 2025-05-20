@@ -262,7 +262,7 @@ const GradesPage = ({ f7router }) => {
         }
       } catch (err) {
         clearTimeout(window.cacheToastTimeout); // Clear the timeout if an error occurs
-        errorDialog(err.message);
+        errorDialog(err);
         throw err;
       }
     };
@@ -588,7 +588,7 @@ const GradesPage = ({ f7router }) => {
                     title={globalgradelist[user.term][item].rename}
                     subtitle={globalgradelist[user.term][item].course}
                     grade={globalgradelist[user.term][item].average}
-                    // prevGrade=
+                  // prevGrade=
                   />
                 </ListItem>
               )

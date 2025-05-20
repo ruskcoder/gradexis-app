@@ -13,7 +13,7 @@ if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
 const platformList = ['hac', 'powerschool']
 function updateSession(data) {
     // if (store.state.currentUser.platform != 'powerschool') {
-        store.dispatch('setSession', data.session);
+    store.dispatch('setSession', data.session);
     // } // TODO: This is a temporary fix for powerschool, we need to find a better way to handle this
 }
 
