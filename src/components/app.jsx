@@ -29,6 +29,7 @@ import {
 import PropTypes from 'prop-types';
 import routes from "../js/routes";
 import store from "../js/store";
+import subscribe from "../js/notifications";
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
@@ -83,9 +84,13 @@ export const errorDialog = (err = "") => {
   if (err.includes("not valid JSON") || err.includes("Failed to fetch") || err.includes('<html')) {
     err = "Unable to fetch server. Perhaps it is blocked?"
   }
+  let text = `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`;
+  if (store.state.currentUser.platform == 'powerschool') {
+    text = `This feature is still in progress. Please wait for an update.`;
+  }
   window.f7alert = f7.dialog.create({
     title: 'Error',
-    text: `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`,
+    text: text,
     cssClass: "error-dialog",
     buttons: [
       {
@@ -183,7 +188,9 @@ const Gradexis = ({ f7router }) => {
       f7.on('/settings/', () => {
         history.pushState({ url: "/settings/" }, null, "/settings/");
       })
-
+      if (store.state.currentUserNumber != -1) {
+        subscribe(store.state.users[0])
+      }
       {/*if (localStorage.getItem('appPopupDismissed') != "true") {
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',

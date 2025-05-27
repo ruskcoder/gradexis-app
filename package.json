@@ -48,7 +48,8 @@
     "react-dom": "^19.1.0",
     "skeleton-elements": "^4.0.1",
     "swiper": "^11.2.6",
-    "tough-cookie": "^5.1.2"
+    "tough-cookie": "^5.1.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
