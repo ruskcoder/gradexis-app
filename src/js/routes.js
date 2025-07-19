@@ -24,6 +24,7 @@ var routes = [
   {
     path: '/grades/',
     component: GradesPage,
+    keepAlive: true,
   },
   {
     path: '/grades/:course/',

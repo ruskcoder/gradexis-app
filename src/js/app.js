@@ -29,8 +29,6 @@ import '../css/tables.css';
 
 // Import App Component
 import App from '../components/app.jsx';
-import { apiUrl } from './grades-api.js';
-
 
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));

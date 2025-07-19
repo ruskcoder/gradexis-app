@@ -45,7 +45,7 @@ const TodoPage = ({ f7router }) => {
 
     setTodo(sortedTodo);
     store.dispatch('changeUserData', {
-      userNumber: store.state.currentUserNumber,
+      
       item: 'todo',
       value: sortedTodo
     })
@@ -63,7 +63,7 @@ const TodoPage = ({ f7router }) => {
         newTodo[date]['incomplete'].splice(index, 1);
         setTodo(newTodo);
         store.dispatch('changeUserData', {
-          userNumber: store.state.currentUserNumber,
+          
           item: 'todo',
           value: newTodo
         })
@@ -78,7 +78,7 @@ const TodoPage = ({ f7router }) => {
         newTodo[date]['complete'].splice(index, 1);
         setTodo(newTodo);
         store.dispatch('changeUserData', {
-          userNumber: store.state.currentUserNumber,
+          
           item: 'todo',
           value: newTodo
         })
@@ -91,7 +91,7 @@ const TodoPage = ({ f7router }) => {
         window.dialog.close();
         setTodo({});
         store.dispatch('changeUserData', {
-          userNumber: store.state.currentUserNumber,
+          
           item: 'todo',
           value: {}
         })

@@ -30,7 +30,7 @@ function colorFromGrade(grade, badges=[]) {
   }
 }
 
-const GradeItem = ({ title, subtitle, grade, prevGrade }) => {
+const GradeItem = ({ index, title, subtitle, grade, prevGrade }) => {
   let color = colorFromGrade(grade);
   grade = grade == "" ? "" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
@@ -107,7 +107,7 @@ const CardGradeItem = ({ index, theme, title, subtitle, grade }) => {
   let ogGrade = grade
   grade = roundGrade(grade);
   return (
-    <Card className="ripple grade-card">
+    <Card className="ripple grade-card" style={{ "--index": index }}>
       <CardHeader
         style={{
           backgroundColor: cardColor(subtitle, 44, 42, theme),

@@ -21,7 +21,6 @@ import store from "../js/store.js";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { terminal } from 'virtual:terminal'
-import { initEmits } from '../components/app.jsx';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Dom7 } from 'framework7';
@@ -50,7 +49,7 @@ export const updateStatusBars = async () => {
 }
 
 const SettingsPage = ({ f7router }) => {
-  var user = store.state.currentUser;
+  var user = useStore('currentUser');
   const [theme, changeTheme] = useState(user.theme);
   const [scheme, changeScheme] = useState(user.scheme);
   const [biometrics, changeBiometrics] = useState(user.biometrics != undefined ? user.biometrics : false);
@@ -64,9 +63,7 @@ const SettingsPage = ({ f7router }) => {
   const [letterGrades, changeLetterGrades] = useState(user.letterGrades != undefined ? user.letterGrades : false);
   document.documentElement.classList.add(pageTransition)
   function fixHexColor(hex) { let r = 0, g = 0, b = 0; if (hex.length === 4) { r = parseInt(hex[1] + hex[1], 16); g = parseInt(hex[2] + hex[2], 16); b = parseInt(hex[3] + hex[3], 16); } else if (hex.length === 7) { r = parseInt(hex[1] + hex[2], 16); g = parseInt(hex[3] + hex[4], 16); b = parseInt(hex[5] + hex[6], 16); } r /= 255; g /= 255; b /= 255; let max = Math.max(r, g, b), min = Math.min(r, g, b); let h, s, l = (max + min) / 2; if (max !== min) { let d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } else { h = s = 0; } s = 1; l = 0.5; let q = l < 0.5 ? l * (1 + s) : l + s - l * s; let p = 2 * l - q; r = hueToRgb(p, q, h + 1 / 3); g = hueToRgb(p, q, h); b = hueToRgb(p, q, h - 1 / 3); r = Math.round(r * 255); g = Math.round(g * 255); b = Math.round(b * 255); return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`; } function hueToRgb(p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 1 / 2) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; }
-  useEffect(() => {
-    user = store.state.currentUser;
-  }, [store.state.currentUser]);
+ 
   const updateUI = () => {
     setTimeout(() => {
       f7.views.forEach((view) => {
@@ -95,7 +92,7 @@ const SettingsPage = ({ f7router }) => {
   const setLetterGrades = (newLetterGrades) => {
     changeLetterGrades(newLetterGrades);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "letterGrades",
       value: newLetterGrades,
     });
@@ -107,7 +104,7 @@ const SettingsPage = ({ f7router }) => {
   const setPageTransition = (newTransition) => {
     changePageTransition(newTransition);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "pageTransition",
       value: newTransition,
     });
@@ -116,7 +113,7 @@ const SettingsPage = ({ f7router }) => {
   const setRoundGrades = (newRound) => {
     changeRoundGrades(newRound);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "roundGrades",
       value: newRound,
     });
@@ -129,7 +126,7 @@ const SettingsPage = ({ f7router }) => {
   const setView = (newView) => {
     changeView(newView);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "gradesView",
       value: newView,
     });
@@ -140,7 +137,7 @@ const SettingsPage = ({ f7router }) => {
     changeScheme(newScheme);
     f7.setDarkMode(newScheme === "dark");
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "scheme",
       value: newScheme,
     });
@@ -151,7 +148,7 @@ const SettingsPage = ({ f7router }) => {
     changeTheme(newColor);
     f7.setColorTheme(newColor);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "theme",
       value: newColor,
     });
@@ -169,7 +166,7 @@ const SettingsPage = ({ f7router }) => {
     else
       newlayouttxt = "Apple";
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "layout",
       value: newLayout,
     });
@@ -180,7 +177,7 @@ const SettingsPage = ({ f7router }) => {
   const setStream = (newStream) => {
     changeStream(newStream);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "stream",
       value: newStream,
     });
@@ -191,7 +188,7 @@ const SettingsPage = ({ f7router }) => {
     return () => {
       window.f7alert = f7.dialog.prompt("Enter your new name", "Change Name", (name) => {
         store.dispatch("changeUserData", {
-          userNumber: store.state.currentUserNumber,
+          
           item: "name",
           value: name,
         });
@@ -203,17 +200,21 @@ const SettingsPage = ({ f7router }) => {
   const setAnim = (newAnim) => {
     changeAnim(newAnim);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
       item: "anim",
       value: newAnim,
     });
+    if (newAnim) {
+      document.documentElement.classList.add("animated");
+    } else {
+      document.documentElement.classList.remove("animated");
+    }
     updateUI();
   };
 
   const setMatchColorCards = (newMatchColorCards) => {
     changeMatchColorCards(newMatchColorCards);
     store.dispatch("changeUserData", {
-      userNumber: store.state.currentUserNumber,
+      
       item: "matchColorCards",
       value: newMatchColorCards,
     });
@@ -234,7 +235,7 @@ const SettingsPage = ({ f7router }) => {
 
         if (image?.dataUrl) {
           store.dispatch("changeUserData", {
-            userNumber: store.state.currentUserNumber,
+            
             item: "pfp",
             value: image.dataUrl,
           });
@@ -399,7 +400,7 @@ const SettingsPage = ({ f7router }) => {
                   changeGroupLists(!groupLists);
                   store.dispatch("changeUserData",
                     {
-                      userNumber: store.state.currentUserNumber,
+                      
                       item: "groupLists", value: !groupLists,
                     }
                   );
@@ -418,7 +419,7 @@ const SettingsPage = ({ f7router }) => {
                     changeGroupLists(!groupLists);
                     store.dispatch("changeUserData",
                       {
-                        userNumber: store.state.currentUserNumber,
+                        
                         item: "groupLists", value: !groupLists,
                       }
                     );
@@ -577,7 +578,14 @@ const SettingsPage = ({ f7router }) => {
                 }
               />
             </ListItem>
-
+            <ListButton
+              onClick={() => { 
+                f7.emit('clearCache');
+                store.dispatch('setGradelist', { gradelist: {} });
+              }}
+            >
+              Clear Cache
+            </ListButton>
           </List>
         </CardContent>
       </Card>
@@ -591,7 +599,6 @@ const SettingsPage = ({ f7router }) => {
                 changeBiometrics(!biometrics);
                 store.dispatch("changeUserData",
                   {
-                    userNumber: store.state.currentUserNumber,
                     item: "biometrics", value: !biometrics,
                   });
               }}
@@ -610,7 +617,6 @@ const SettingsPage = ({ f7router }) => {
                   changeBiometrics(!biometrics);
                   store.dispatch("changeUserData",
                     {
-                      userNumber: store.state.currentUserNumber,
                       item: "biometrics", value: !biometrics,
                     });
                 }}

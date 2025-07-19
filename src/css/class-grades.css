@@ -3,6 +3,7 @@
     flex-wrap: nowrap;
     overflow: auto;
     gap: var(--f7-typography-margin);
+    padding: 0px var(--f7-typography-padding);
 }
 
 .assignment-grade-item {
@@ -31,11 +32,49 @@
     max-height: calc(50% - calc(var(--f7-typography-margin) * 1.5));
 }
 
+.timeline-info {
+    display: inline-flex;
+    gap: calc(var(--f7-typography-margin) / 2);
+    overflow-x: scroll;
+    width: 100%;
+}
+
+.timeline-info .grade-category-item {
+    height: auto;
+    width: fit-content !important;
+    flex: 0 0 auto;
+}
+
+.timeline-info .mini-grade-display {
+    padding: 0px var(--f7-typography-margin);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+}
+
+.timeline-info .mini-grade-display h1 {
+    margin-left: calc(var(--f7-typography-margin) / 1) !important;
+    font-size: xx-large;
+}
+
+.grades-number.changed-down {
+    background-color: #ff796a;
+}
+.grades-number.changed-up {
+    background-color: #00cf63;
+}
+
+
 .category-number {
     display: flex;
     justify-content: space-between;
     align-items: center;
     line-height: 28px;
+}
+
+.category-number i {
+    margin-left: 12px;
 }
 
 .assignments-list .item-content {
@@ -167,4 +206,31 @@
     width: 100%;
     display: block;
     overflow: hidden
+}
+
+.class-grades-tab {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    transform: translateY(-16px);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+.class-grades-tab.active {
+    opacity: 1;
+    z-index: 100;
+}
+
+.analyze-subtabs {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    width: 100%;
+    z-index: 1;
+    height: 100%;
+}
+.analyze-subtabs.active {
+    opacity: 1;
+    z-index: 100;
 }

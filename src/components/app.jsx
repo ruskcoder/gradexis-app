@@ -29,7 +29,7 @@ import {
 import PropTypes from 'prop-types';
 import routes from "../js/routes";
 import store from "../js/store";
-import subscribe from "../js/notifications";
+import registerSW from "../js/register-sw";
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
@@ -66,21 +66,9 @@ export const mdThemeFromColor = (theme, value) => {
   let mdTheme = themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme];
   console.log(hexFromArgb(mdTheme[value]))
 }
-export const initEmits = (f7, f7router) => {
-  f7.on('/grades/', () => {
-    f7router.navigate('/grades/')
-  })
-  f7.on('/', () => {
-    f7router.navigate('/')
-  })
-  f7.on('/todo/', () => {
-    f7router.navigate('/todo/')
-  })
-  f7.on('/settings/', () => {
-    f7router.navigate('/settings/')
-  })
-}
+
 export const errorDialog = (err = "") => {
+  console.log(err)
   if (err.includes("not valid JSON") || err.includes("Failed to fetch") || err.includes('<html')) {
     err = "Unable to fetch server. Perhaps it is blocked?"
   }
@@ -137,14 +125,8 @@ const Gradexis = ({ f7router }) => {
   var f7params = {
     name: "Gradexis",
     theme: store.state.currentUser.layout,
-    pushState: true,
-    browserHistory: true,
     touch: {
       tapHold: true,
-    },
-    view: {
-      // history: true,
-      // browserHistory: true,
     },
     store: store,
     routes: routes,
@@ -169,28 +151,8 @@ const Gradexis = ({ f7router }) => {
       window.init = true;
       history.replaceState(null, null, "/");
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
-
-      f7.on('/grades/', () => {
-        history.pushState({ url: "/grades/" }, null, "/grades/");
-      })
-      f7.on('/', () => {
-        if (window.backing == true) {
-          history.pushState({ url: "/home/" }, null, "/home/");
-          window.backing = false;
-        }
-        else {
-          history.pushState({ url: "/" }, null, "/");
-        }
-      })
-      f7.on('/todo/', () => {
-        history.pushState({ url: "/todo/" }, null, "/todo/");
-      })
-      f7.on('/settings/', () => {
-        history.pushState({ url: "/settings/" }, null, "/settings/");
-      })
-      if (store.state.currentUserNumber != -1) {
-        subscribe(store.state.users[0])
-      }
+      registerSW();
+      
       {/*if (localStorage.getItem('appPopupDismissed') != "true") {
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
@@ -263,6 +225,10 @@ const Gradexis = ({ f7router }) => {
       f7.setColorTheme(store.state.currentUser.theme);
       f7.setDarkMode(store.state.currentUser.scheme === "dark");
 
+      if (store.state.currentUser.anim) { 
+        document.documentElement.classList.add("animated");
+      }
+
       const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
@@ -331,13 +297,13 @@ const Gradexis = ({ f7router }) => {
           />
         </Toolbar>
 
-        <View iosSwipeBack={false} id="view-home" tab tabActive main url="/" />
+        <View iosSwipeBack={true} id="view-home" tab tabActive main url="/" />
 
-        <View iosSwipeBack={false} id="view-grades" name="grades" tab url="/grades/" />
+        <View iosSwipeBack={true} id="view-grades" name="grades" tab url="/grades/" />
 
-        <View iosSwipeBack={false} id="view-todo" name="todo" tab url="/todo/" />
+        <View iosSwipeBack={true} id="view-todo" name="todo" tab url="/todo/" />
 
-        <View iosSwipeBack={false} id="view-settings" name="settings" tab url="/settings/" />
+        <View iosSwipeBack={true} id="view-settings" name="settings" tab url="/settings/" />
       </Views>
     </App>
   );

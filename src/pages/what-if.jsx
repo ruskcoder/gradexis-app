@@ -9,7 +9,6 @@ import store from '../js/store';
 import terminal from 'virtual:terminal'
 
 const WhatIfPage = ({ f7router, ...props }) => {
-  updateRouter(f7router);
   const [scores, setScores] = useState([]);
   const [editScores, setEditScores] = useState([]);
   const [categories, setCategories] = useState({});
@@ -18,6 +17,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const [loading, setLoading] = useState(true);
   const [averageType, setAverageType] = useState('categorywise');
   const user = useStore('currentUser');
+  updateRouter(f7router);
 
   useEffect(() => {
     if (user.username) {
@@ -37,12 +37,11 @@ const WhatIfPage = ({ f7router, ...props }) => {
         else if (user.platform == 'powerschool') {
           setAverageType('scorewise');
         }
-        store.state.currentUser.gradelist[user.term][props.course].averageType = averageType;
-        store.dispatch('changeUserData', {
-          userNumber: store.state.currentUserNumber,
-          item: "gradelist",
-          value: store.state.currentUser.gradelist,
-        })
+        var updatedGradelist = user.gradelist
+        updatedGradelist[user.term][props.course].averageType = averageType;
+        store.dispatch('setGradelist', {
+          gradelist: updatedGradelist
+        });
       }
     }
   }, [user.username]);
@@ -296,7 +295,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   return (
     <Page>
       <Navbar title={"What If: " + props.course} backLink="Back" />
-      <Block className="margin-top margin-bottom" >
+      <Block className="margin-top margin-bottom no-padding" >
         <div className="assignment-grade-container margin-top">
           <Card className="no-margin assignment-grade-item">
             <Gauge

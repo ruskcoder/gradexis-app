@@ -15,7 +15,7 @@ import {
 } from 'framework7-react';
 import { OverviewItem, OverviewIcon } from '../components/overview-item.jsx';
 import store from '../js/store.js';
-import { primaryFromColor, errorDialog, initEmits, updateRouter } from '../components/app.jsx';
+import { primaryFromColor, errorDialog, updateRouter } from '../components/app.jsx';
 import { createRoot } from 'react-dom/client';
 import { getClasses } from '../js/grades-api.js';
 const HomePage = ({ f7router }) => {

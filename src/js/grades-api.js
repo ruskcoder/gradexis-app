@@ -1,9 +1,13 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
-
+  
 export var apiUrl = 'https://api.gradexis.com';
-// export var apiUrl = 'http://localhost:3000';
-
+if (location.hostname == 'localhost') {
+    apiUrl = 'http://localhost:3000';
+}
+if (location.hostname == '192.168.86.29') {
+    apiUrl = 'http://192.168.86.29:3000'
+}
 if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
     apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
 }
@@ -11,7 +15,7 @@ if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
 const platformList = ['hac', 'powerschool']
 function updateSession(data) {
     // if (store.state.currentUser.platform != 'powerschool') {
-    if (data.session) {
+    if (data.session.cookies.length > 0) {
         store.dispatch('setSession', data.session);
     }
     // } // TODO: This is a temporary fix for powerschool, we need to find a better way to handle this

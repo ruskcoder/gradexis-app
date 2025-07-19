@@ -82,7 +82,7 @@ const TeachersPage = ({ f7router }) => {
                             </ListItem>
                         ))
                     ) : (
-                        <Block strong>No teacher data available</Block>
+                        <Block strong inset>No teacher data available</Block>
                     )}
                 </List>
             )}

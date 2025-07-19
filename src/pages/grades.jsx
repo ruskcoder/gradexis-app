@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef, useCallback, use } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useCallback, use, useDebugValue } from 'react';
 import {
   Page,
   Card,
@@ -21,323 +21,139 @@ import {
   CardFooter,
 } from 'framework7-react';
 import { GradeItem, CardGradeItem } from '../components/grades-item.jsx';
-import { errorDialog, initEmits } from '../components/app.jsx';
+import { errorDialog } from '../components/app.jsx';
 import { getClasses } from '../js/grades-api.js';
-import $ from 'dom7';
+import $, { prev } from 'dom7';
 import { createRoot } from 'react-dom/client';
 import { terminal } from 'virtual:terminal'
 import store from '../js/store.js';
-import e from 'cors';
-const GradesPage = ({ f7router }) => {
-  // initEmits(f7, f7router);
-  const user = useStore('currentUser');
-  const [sortMode, setSortMode] = useState(false);
-  const [globalgradelist, setGradelist] = useState(store.state.currentUser.gradelist);
-  const useCacheToast = useRef(null);
+import { updateGradelist, updateScoresIncludedHistory, updateTermGradelist } from '../js/gradelist.jsx';
 
-  const [activeButtonIndex, setActiveButtonIndex] = useState(store.state.activeButtonIndex);
+const GradesPage = ({ f7router }) => {
+  const user = useStore('currentUser');
+  const userNumber = useStore('currentUserNumber');
+
+  const [sortMode, setSortMode] = useState(false);
+  const globalgradelist = useStore('gradelist')
+
+  const [activeButtonIndex, setActiveButtonIndex] = useState(-1);
 
   const [loading, setLoading] = useState(false);
   const [progressPercent, setProgressPercent] = useState(0);
   const [progressMessage, setProgressMessage] = useState('Logging In...');
   const [termsLoading, setTermsLoading] = useState(false);
   const [usingCache, setUsingCache] = useState(false);
-  const [cardColor, setCardColor] = useState(store.state.currentUser.theme)
+  const [invalidData, setInvalidData] = useState(false);
 
   useEffect(() => {
-    store.state.activeButtonIndex = activeButtonIndex;
-  }, [activeButtonIndex])
-
-  const updateTermGradelist = (term, classes) => {
-    const previousTerm = Object.keys(store.state.currentUser.gradelist).pop();
-    const previousTermGradelist = store.state.currentUser.gradelist[previousTerm] || {};
-    const updatedTermGradelist = Object.keys(previousTermGradelist).reduce((acc, key) => {
-      const item = classes.find(cls => cls.name === key);
-      if (item) {
-        acc[key] = {
-          ...previousTermGradelist[key],
-          average: item.average,
-          course: item.course,
-          scores: item.scores || [],
-          categories: item.categories || {},
-        };
+    if (user.username) {
+      if (window.classesFetch) {
+        window.classesFetch.abort();
       }
-      return acc;
-    }, {});
-
-    classes.forEach(item => {
-      if (!updatedTermGradelist[item.name]) {
-        updatedTermGradelist[item.name] = {
-          hide: false,
-          rename: item.name,
-          average: item.average,
-          course: item.course,
-          scores: item.scores || [],
-          categories: item.categories || {},
-        };
-      }
-    });
-
-    updatedTermGradelist.lastUpdated = new Date();
-
-    const updatedGradelist = {
-      ...store.state.currentUser.gradelist,
-      [term]: updatedTermGradelist,
-    };
-
-    store.dispatch('changeUserData', {
-      userNumber: store.state.currentUserNumber,
-      item: 'gradelist',
-      value: updatedGradelist,
-    });
-
-    setGradelist(updatedGradelist);
-    return updatedGradelist;
-  };
-
-  const cacheToastTimeout = (newterm) => {
-    const timeoutId = setTimeout(() => {
-      if (useCacheToast.current == null
-        && Object.keys(store.state.currentUser.gradelist).length > 0
-        && store.state.currentUser.gradelist[newterm] != undefined) {
-        useCacheToast.current = f7.toast.create({
-          text: `Taking a while to load. Use cached data for term ${newterm}?`,
-          closeButton: true,
-          closeButtonText: 'Yes',
-          closeButtonColor: 'red',
-          closeTimeout: 10000,
-          buttons: [
-            {
-              text: 'No',
-              color: 'blue',
-              onClick: () => {
-                if (useCacheToast.current) {
-                  useCacheToast.current.close();
-                }
-                setLoading(false);
-                setTermsLoading(false);
-                setUsingCache(false);
-              }
-            }
-          ],
-          on: {
-            close: () => {
-              useCacheToast.current = null;
-            },
-            closeButtonClick: () => {
-              if (useCacheToast.current) {
-                useCacheToast.current.close();
-              }
-              setActiveButtonIndex(store.state.currentUser.termList.indexOf(newterm));
-              store.dispatch('changeUserData', {
-                userNumber: store.state.currentUserNumber,
-                item: 'term',
-                value: newterm,
-              });
-              store.state.loaded = true;
-              store.state.useCache = true;
-              setGradelist(store.state.currentUser.gradelist);
-              setLoading(false);
-              setTermsLoading(false);
-              setUsingCache(true);
-            }
-          }
-        });
-        const checkTabActive = async () => {
-          while (!$('#view-grades').attr('class').includes('tab-active')) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-          if (useCacheToast.current) {
-            useCacheToast.current.open();
-          }
-          while ($('#view-grades').attr('class').includes('tab-active') && useCacheToast.current) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-          if (useCacheToast.current) { useCacheToast.current.close(); }
-        };
-        checkTabActive();
-      }
-    }, 3000);
-
-    return timeoutId;
-  };
-
-  useEffect(() => {
-    return () => {
-      if (window.cacheToastTimeout) {
-        clearTimeout(window.cacheToastTimeout);
-      }
-    };
-  }, []);
-
-  const closeCacheToast = (timeout) => {
-    clearTimeout(timeout);
-    if (useCacheToast.current) {
-      useCacheToast.current.close();
-      useCacheToast.current = null;
-    }
-  }
-
-  useEffect(() => {
-    f7.on('userChanged', function () {
-      if (!loading) {
-        if (window.classesFetch) {
-          window.classesFetch.abort();
-        }
-        useCacheToast.current = null;
-        closeCacheToast(window.cacheToastTimeout);
-        setLoading(true);
-        setTermsLoading(true);
-        setUsingCache(false);
-        setProgressPercent(0);
-        setProgressMessage('Logging In...');
-        setActiveButtonIndex(-1);
-        fetchClasses();
-      }
-    })
-    const fetchClasses = async () => {
-      try {
-        setTermsLoading(true);
-        setLoading(true);
-        window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.term);
-        const classesGen = getClasses();
-        let done = false;
-        let data;
-        while (done == false) {
-          let result = await classesGen.next()
-          done = result.done;
-          if (done) { data = result.value; break; }
-          if (result.value) {
-            setProgressPercent(result.value.percent);
-            setProgressMessage(result.value.message);
-          }
-        }
-
-        closeCacheToast(window.cacheToastTimeout);
-
-        if (data.success !== false && !usingCache && data.termList.length > 0) {
-          if (store.state.currentUser.termList != data.termList) {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'termList',
-              value: data.termList,
-            });
-          }
-          store.dispatch('changeUserData', {
-            userNumber: store.state.currentUserNumber,
-            item: 'term',
-            value: data.term,
-          });
-          if (data.scoresIncluded) {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'scoresIncluded',
-              value: true,
-            });
-          }
-          else {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'scoresIncluded',
-              value: false,
-            });
-          }
-          if (!usingCache) {
-            setActiveButtonIndex(data.termList.indexOf(data.term));
-            setTermsLoading(false);
-            setLoading(false);
-            store.state.loaded = true;
-            setTimeout(
-              function () {
-                const subnavbar = document.querySelector('.subnavbar-terms .segmented');
-                if (subnavbar) {
-                  subnavbar.scrollTo({
-                    left: subnavbar.scrollWidth,
-                    behavior: 'smooth'
-                  });
-                }
-              }, 10
-            )
-          }
-          updateTermGradelist(data.term, data.classes);
-        }
-      } catch (err) {
-        clearTimeout(window.cacheToastTimeout); // Clear the timeout if an error occurs
-        errorDialog(err);
-        throw err;
-      }
-    };
-
-    if (user.username && !store.state.loaded) {
+      setInvalidData(false);
+      setLoading(true);
+      setTermsLoading(true);
+      setUsingCache(false);
+      setProgressPercent(0);
+      setProgressMessage('Logging In...');
+      setActiveButtonIndex(-1);
       fetchClasses();
     }
-  }, [user.username, store.state.currentUser.username]);
+  }, [userNumber]);
 
-  const switchTerm = async (index) => {
+  f7.on('clearCache', () => {
+    if (user.username) {
+      if (window.classesFetch) {
+        window.classesFetch.abort();
+      }
+      setInvalidData(false);
+      setLoading(true);
+      setTermsLoading(true);
+      setUsingCache(false);
+      setProgressPercent(0);
+      setProgressMessage('Logging In...');
+      setActiveButtonIndex(-1);
+      fetchClasses();
+    }
+  });
+
+  async function fetchClasses(index = -1) {
     if (window.classesFetch) {
       window.classesFetch.abort();
     }
-    const selectedTerm = store.state.currentUser.termList[index];
-    setProgressMessage('Logging In...');
-    setUsingCache(false);
-    store.state.useCache = false;
-    store.state.loaded = false;
-    try {
-      setLoading(true);
+    var selectedTerm = null;
+    if (index == -1) {
+      setTermsLoading(true);
+    } else {
+      selectedTerm = user.termList[index];
       setActiveButtonIndex(index);
-      closeCacheToast(window.cacheToastTimeout);
-      window.cacheToastTimeout = cacheToastTimeout(store.state.currentUser.termList[index]);
-
-      const classesGen = getClasses(selectedTerm);
-      let done = false;
-      let data;
-      while (done == false) {
-        let result = await classesGen.next()
-        done = result.done;
-        if (done) { data = result.value; break; }
-        if (result.value) {
-          setProgressPercent(result.value.percent);
-          setProgressMessage(result.value.message);
-        }
+    }
+    setLoading(true);
+    setProgressPercent(0);
+    setProgressMessage('Fetching Classes...');
+    setUsingCache(false);
+    const classesGen = getClasses(selectedTerm);
+    let done = false;
+    let data;
+    while (done == false) {
+      let result = await classesGen.next()
+      done = result.done;
+      if (done) { data = result.value; break; }
+      if (result.value) {
+        setProgressPercent(result.value.percent);
+        setProgressMessage(result.value.message);
       }
+    }
+    if (data.success !== false) {
+      setProgressPercent(100);
+      setProgressMessage('Done!');
+      if (data.termList.length > 0) {
 
-      if (data.success !== false) {
         updateTermGradelist(data.term, data.classes);
-        if (data.termList[store.state.activeButtonIndex] == data.term) {
-          closeCacheToast(window.cacheToastTimeout);
 
-          if (data.scoresIncluded) {
-            store.dispatch('changeUserData', {
-              userNumber: store.state.currentUserNumber,
-              item: 'scoresIncluded',
-              value: true,
+        store.dispatch('changeUserData', {
+          item: 'termList',
+          value: data.termList,
+        });
+        store.dispatch('changeUserData', {
+          item: 'term',
+          value: data.term,
+        });
+        store.dispatch('changeUserData', {
+          item: 'scoresIncluded',
+          value: !!data.scoresIncluded,
+        });
+        if (data.scoresIncluded) {
+          updateScoresIncludedHistory(data.term, data.classes);
+        }
+        setActiveButtonIndex(data.termList.indexOf(data.term));
+        setTermsLoading(false);
+        setLoading(false);
+        setUsingCache(false);
+        store.state.loaded = true;
+        setTimeout(() => {
+          const subnavbar = document.querySelector('.subnavbar-terms .segmented');
+          if (subnavbar) {
+            subnavbar.scrollTo({
+              left: subnavbar.scrollWidth,
+              behavior: 'smooth'
             });
           }
-          store.dispatch('changeUserData', {
-            userNumber: store.state.currentUserNumber,
-            item: 'term',
-            value: data.term,
-          });
-          store.state.loaded = true;
-          setActiveButtonIndex(store.state.currentUser.termList.indexOf(data.term));
-          setTermsLoading(false);
-          setLoading(false);
-        }
-      } else {
-        if (data.message != "abort") {
-          closeCacheToast(window.cacheToastTimeout);
-          errorDialog(data.message);
-        }
+        }, 10);
       }
-    } catch (err) {
-      closeCacheToast(window.cacheToastTimeout);
-      errorDialog(err.message);
-      throw err;
+      else {
+        setInvalidData(true);
+      }
     }
-  };
+    else if (data.success === false) {
+      if (data.message !== "abort") {
+        errorDialog(data.message);
+      }
+    }
+  }
 
   const ptr = (done) => {
-    getClasses(store.state.currentUser.termList[activeButtonIndex]).then((data) => {
+    getClasses(user.termList[activeButtonIndex]).then((data) => {
       if (data.success != false) {
         done();
         store.dispatch('setClasses', data.classes);
@@ -350,22 +166,8 @@ const GradesPage = ({ f7router }) => {
     }).catch((e) => { errorDialog(e.message) })
   };
 
-  // Update updateGradelist to handle term-based gradelist
-  const updateGradelist = useCallback((term, termGradelist) => {
-    const updatedGradelist = {
-      ...store.state.currentUser.gradelist,
-      [term]: { ...termGradelist, lastUpdated: store.state.currentUser.gradelist[term].lastUpdated },
-    };
-    store.dispatch('changeUserData', {
-      userNumber: store.state.currentUserNumber,
-      item: 'gradelist',
-      value: updatedGradelist,
-    });
-    setGradelist({ ...updatedGradelist });
-  }, []);
-
   const handleCourseAction = useCallback((course, action) => {
-    const termGradelist = store.state.currentUser.gradelist[user.term];
+    const termGradelist = user.gradelist[user.term];
     if (!termGradelist) return;
 
     const key = Object.keys(termGradelist).find(key => termGradelist[key].course === course);
@@ -424,7 +226,7 @@ const GradesPage = ({ f7router }) => {
   const completeSorting = () => {
     setSortMode(false);
     const list = $('.grades-list-item');
-    const termGradelist = store.state.currentUser.gradelist[user.term];
+    const termGradelist = user.gradelist[user.term];
     if (!termGradelist) return;
 
     let newTermGradelist = {};
@@ -449,17 +251,16 @@ const GradesPage = ({ f7router }) => {
     updateGradelist(user.term, newTermGradelist);
   };
 
-  // Update the click and taphold handlers in the useEffect
   useEffect(() => {
     $('.grades-list-item, .grade-card').each(function () {
       const course = $(this).find('.item-subtitle, .subtitle').text().trim();
 
       $(this).on('click', function () {
         if (!(window.f7alert && window.f7alert.opened == true)) {
-          const cls = Object.keys(store.state.currentUser.gradelist[user.term]).find(
-            key => store.state.currentUser.gradelist[user.term][key].course === course
+          const cls = Object.keys(user.gradelist[user.term]).find(
+            key => user.gradelist[user.term][key].course === course
           );
-          const opts = store.state.currentUser.gradelist[user.term][cls];
+          const opts = user.gradelist[user.term][cls];
           try {
             if (opts.hide) {
               createDialog(course, true);
@@ -478,7 +279,7 @@ const GradesPage = ({ f7router }) => {
       if ($(this).attr('class') && !$(this).attr('class').includes('grade-card')) {
         $(this).on('taphold', function () {
           if (!(window.f7alert && window.f7alert.opened == true)) {
-            const hidden = Object.values(store.state.currentUser.gradelist[user.term]).find(
+            const hidden = Object.values(user.gradelist[user.term]).find(
               item => item.course === course
             ).hide;
             createDialog(course, hidden);
@@ -490,7 +291,7 @@ const GradesPage = ({ f7router }) => {
     [sortMode, termsLoading, user.gradelist, createDialog, f7router, user.term]);
 
   const lastUpdated = () => {
-    const lastUpdated = new Date(store.state.currentUser.gradelist[store.state.currentUser.term].lastUpdated);
+    const lastUpdated = new Date(user.gradelist[user.term].lastUpdated);
     try {
       return lastUpdated.toLocaleString('en-US', {
         month: 'long',
@@ -505,17 +306,28 @@ const GradesPage = ({ f7router }) => {
       return ""
     }
   }
-  f7.on('themeUpdated', function () {
-    if (cardColor != user.theme) {
-      setCardColor(user.theme);
+
+  const setCacheMode = () => {
+    setUsingCache(true);
+    setLoading(false);
+    if (activeButtonIndex === -1) {
+      setActiveButtonIndex(user.termList.indexOf(user.term));
     }
-  })
+    else {
+      store.dispatch('changeUserData', {
+        item: 'term',
+        value: user.termList[activeButtonIndex],
+      });
+    }
+    setTermsLoading(false);
+  }
+
   return (
     <Page name="grades" >
       <Navbar title="Grades" subtitle={usingCache ? `Last Updated: ${lastUpdated()}` : ""} sliding={true} className='navbar-grades'>
 
       </Navbar>
-      {loading &&
+      {loading && !invalidData &&
         <Block className='display-flex align-items-center flex-direction-column justify-content-center'>
           {user.stream != false &&
             <>
@@ -526,20 +338,27 @@ const GradesPage = ({ f7router }) => {
           {user.stream == false &&
             <Preloader />
           }
+          <Button small fillIos outlineMd className='margin-top-half' onClick={() => setCacheMode()} disabled={!Object.keys(globalgradelist).includes(user.term)}>
+            Load from Storage
+          </Button>
         </Block>
       }
 
-      {!termsLoading && store.state.currentUser.termList &&
+      {invalidData &&
+        <Block strong inset>No valid data was returned</Block>
+      }
+
+      {!termsLoading && user.termList &&
         <Subnavbar sliding={true} style={{ marginTop: "-1px !important" }} className='subnavbar-terms'>
           <Segmented strong>
-            {store.state.currentUser.termList.map((_, index) => (
+            {user.termList.map((_, index) => (
               <Button
                 key={index}
                 smallMd
                 active={activeButtonIndex === index}
-                onClick={() => switchTerm(index)}
+                onClick={() => fetchClasses(index)}
               >
-                {store.state.currentUser.termList[index]}
+                {user.termList[index]}
               </Button>
             ))}
           </Segmented>
@@ -552,14 +371,14 @@ const GradesPage = ({ f7router }) => {
         </Button>
       }
 
-      {!loading && store.state.currentUser.gradesView == "card" &&
+      {!loading && user.gradesView == "card" &&
         <div className='cards-grades'>
           {Object.keys(globalgradelist[user.term] || {}).map((item, index) => (
             globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (
               <CardGradeItem
                 key={index}
                 index={index}
-                theme={cardColor}
+                theme={user.theme}
                 title={globalgradelist[user.term][item].rename}
                 subtitle={globalgradelist[user.term][item].course}
                 grade={globalgradelist[user.term][item].average}
@@ -569,7 +388,7 @@ const GradesPage = ({ f7router }) => {
         </div>
       }
 
-      {!loading && (store.state.currentUser.gradesView ? store.state.currentUser.gradesView == "list" : true) &&
+      {!loading && (user.gradesView ? user.gradesView == "list" : true) &&
         <>
           <List
             dividersIos={user.groupLists == true}
@@ -585,12 +404,14 @@ const GradesPage = ({ f7router }) => {
               globalgradelist[user.term][item] && globalgradelist[user.term][item].hide == false && (
                 <ListItem key={index}
                   link="#"
-                  className='grades-list-item'>
+                  className='grades-list-item'
+                  style={{ "--index": index }}
+                >
                   <GradeItem
+                    index={index}
                     title={globalgradelist[user.term][item].rename}
                     subtitle={globalgradelist[user.term][item].course}
                     grade={globalgradelist[user.term][item].average}
-                  // prevGrade=
                   />
                 </ListItem>
               )

@@ -8,11 +8,13 @@ const SchedulePage = ({ f7router }) => {
     updateRouter(f7router);
     const [loading, setLoading] = useState(true);
     const [schedule, setSchedule] = useState([]);
+    const [hasData, setHasData] = useState(false);
 
     useEffect(() => {
         getSchedule().then((data) => {
             if (data.success != false) {
                 setSchedule(data);
+                setHasData(data.schedule.length > 0)
                 setLoading(false);
             }
             else {
@@ -58,11 +60,12 @@ const SchedulePage = ({ f7router }) => {
     return (
         <Page>
             <Navbar title="Schedule" backLink="Back" />
-            {loading ? (
-                <div className='display-flex align-items-center justify-content-center' style={{ height: '100%', width: '100%' }}>
+            {loading &&
+                <div className='loader-container'>
                     <Preloader />
                 </div>
-            ) : (
+            }
+            {!loading && hasData &&
                 <List mediaList inset strong className="margin-top" noChevron>
                     {schedule.schedule.map((item, index) => (
                         <ListItem
@@ -93,7 +96,9 @@ const SchedulePage = ({ f7router }) => {
                         </ListItem>
                     ))}
                 </List>
-            )}
+            }
+            {!loading && !hasData && <Block strong inset>No data available</Block>}
+
         </Page>
     );
 }
