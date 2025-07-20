@@ -73,11 +73,14 @@ export const errorDialog = (err = "") => {
     err = "Unable to fetch server. Perhaps it is blocked?"
   }
   let text = `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`;
-  if (store.state.currentUser.platform == 'powerschool') {
-    text = `This feature is still in progress. Please wait for an update.`;
+  let title = "Error";
+  if (err.includes("404")) { 
+    text = "This feature is still in progress! Please try again later.";
+    title = "Work in Progress";
   }
+
   window.f7alert = f7.dialog.create({
-    title: 'Error',
+    title: title,
     text: text,
     cssClass: "error-dialog",
     buttons: [

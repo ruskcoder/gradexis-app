@@ -1,3 +1,10 @@
+/* @font-face {
+    font-family: 'Bree Serif';
+    src: url('/BreeSerif-Regular.tff') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} */
+
 .login {
     display: block;
     position: absolute;
@@ -6,6 +13,48 @@
     right: 0;
     z-index: 9999;
     transition: all 0.3s;
+}
+
+.login-page {
+    display: flex;
+    align-items: center;
+    --theme: rgb(217, 238, 255);
+    --opposite-theme: #003078;
+    background-color: var(--theme);
+}
+
+.dark .login-page {
+    --theme: #1b1b1f;
+    background-color: #1b1b1f;
+    --opposite-theme: #a4d2f8;
+}
+
+.preview-district ul {
+    background-color: rgba(0, 132, 255, 0.151);
+}
+
+.login-screen-title {
+    font-family: 'Bree Serif';
+    font-weight: 700;
+    font-size: 4rem;
+    color: var(--opposite-theme);
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    line-height: 4.5rem;
+}
+
+.md .login-page .select-button {
+    color: var(--opposite-theme);
+}
+.md .login-page .login-btn {
+    background-color: var(--opposite-theme);
+    color: var(--theme);
+}
+
+.login-page > .page-content {
+    height: auto;
+    width: 100%;
+    padding-top: 0;
 }
 
 .login-hidden {
@@ -52,4 +101,12 @@
 .md .login-form .platform-input .item-input-outline .item-label,
 .md .login-form .link-input .item-input-outline .item-label {
     transform: scale(1) translateY(4px) !important;
+}
+
+.login-page .item-label {
+  background-color: var(--theme) !important;
+}
+
+.districts-popup .page-content {
+    padding-top: 10px;
 }

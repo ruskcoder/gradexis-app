@@ -36,10 +36,6 @@
   width: 54px;
 }
 
-.login-screen-content .item-label {
-  background-color: var(--f7-login-screen-content-bg-color) !important;
-}
-
 .md .link-input .item-input-wrap {
   display: flex;
 }

@@ -10,11 +10,11 @@ import {
   ListItem,
   Checkbox,
   Icon,
-  useStore,
+  Link,
   Searchbar,
-  Subnavbar,
+  Popup,
   Navbar,
-  ListButton
+  NavRight
 } from "framework7-react";
 import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from 'react-dom/client';
@@ -23,26 +23,35 @@ import store from "../js/store";
 const LoginPage = ({ f7router }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [platform, setPlatform] = useState("hac");
+  const [platform, setPlatform] = useState("");
+  const [district, setDistrict] = useState("");
   const [useClasslink, setUseClasslink] = useState(false);
   const [classlink, setClasslink] = useState("");
   const [link, setLink] = useState("");
+  const [customMode, setCustomMode] = useState(false);
 
   const [loginLoading, setLoginLoading] = useState(false);
   const platformDefaults = {
     "hac": "homeaccess.katyisd.org",
-    "powerschool": "hisdconnect.houstonisd.org"
+    "powerschool": "hisdconnect.houstonisd.org",
+    "demo": "demo.gradexis.com"
   }
   const platformNames = {
     "hac": "HAC",
-    "powerschool": "PowerSchool SIS"
+    "powerschool": "PowerSchool SIS",
+    "demo": "Demo Platform"
   }
-  const defaults = {
+  const presets = {
     "Katy ISD": { platform: "hac", link: "homeaccess.katyisd.org", classlink: false },
     "Houston ISD": { platform: "powerschool", link: "hisdconnect.houstonisd.org", classlink: false },
     "Cypress-Fairbanks ISD": { platform: "hac", link: "home-access.cfisd.net", classlink: false },
     "Conroe ISD": { platform: "hac", link: "conroeisd", classlink: true },
   }
+
+  useEffect(() => {
+    f7.emit('routeChange', { url: '/login/', route: { path: "/login/"} })
+  }, []);
+
   const signIn = () => {
     setLoginLoading(true);
     const existingUser = store.state.users.find(user => user.username === username);
@@ -80,6 +89,11 @@ const LoginPage = ({ f7router }) => {
       data.link = 'https://' + data.link.replace(/^(https?:\/\/)?([^/]+).*/, '$2') + "/";
     }
 
+    if (data.platform == "demo") {
+      data.username = "demo";
+      data.password = "demo";
+    }
+
     setTimeout(() => {
       console.log(data)
       store.dispatch("addUser",
@@ -87,108 +101,71 @@ const LoginPage = ({ f7router }) => {
       ).then((result) => {
         setLoginLoading(false)
         if (result) {
-          f7.emit('login')
-          f7router.back()
+          f7.emit('login');
+          f7router.back();
         }
       })
     }, 0);
   };
-  const createPopup = () => {
-    if (!popup.current) {
-      const PopupContent = ({ callback }) => {
-        return (
-          <Page>
-            <div className="navbar">
-              <div className="navbar-inner">
-                <div className="navbar-bg"></div>
-                <div className="title margin-left">Districts</div>
-                <div className="right">
-                  <a className="link popup-close" onClick={() => popup.current.close()}>Close</a>
-                </div>
-              </div>
-            </div>
-            <div className="page-content no-margin no-padding" style={{ height: "100%" }}>
-              <div className="block no-margin-top padding-top" style={{ height: "100%" }}>
-                <Searchbar
-                  searchContainer=".default-list"
-                  searchIn=".item-title"
-                  inline
-                  className="searchbar-districts"
-                />
-                <List mediaList inset strong noChevron className="default-list no-margin margin-top searchbar-found">
-                  {Object.keys(defaults).map((key) => (
-                    <ListItem
-                      key={key}
-                      link="#"
-                      title={key}
-                      subtitle={defaults[key].classlink ? `launchpad.classlink.com/${defaults[key].link}`: defaults[key].link}
-                      after={platformNames[defaults[key].platform]}
-                      onClick={() => { callback(key); }}
-                    />
-                  ))}
-                </List>
-              </div>
-            </div>
-          </Page>
-        );
-      };
-      const selectDistrict = (key) => {
-        setPlatform(defaults[key].platform);
-        setLink(defaults[key].link);
-        setUseClasslink(defaults[key].classlink);
-        setClasslink(defaults[key].classlink ? defaults[key].link : "");
-        popup.current.close();
-      }
 
-      popup.current = f7.popup.create({
-        content: `<div id="popup-districts" class="popup popup-districts"></div>`,
-      });
-      popup.current.open();
+  const [popupOpened, setPopupOpened] = useState(false);
 
-      const root = createRoot(document.getElementById('popup-districts'));
-      root.render(
-        <PopupContent callback={(key) => selectDistrict(key)} />
-      );
-      f7.searchbar.create({
-        el: '.searchbar-districts',
-        inputEl: '.searchbar-districts input',
-        searchContainer: '.default-list',
-        searchIn: '.item-title',
-      });
+  const selectDistrict = (key) => {
+    if (key === "custom") {
+      setCustomMode(true);
+    }
+    else if (key === "demo") {
+      setCustomMode(false);
+      setDistrict("Demo Platform");
+      setPlatform("demo");
+      setLink("demo.gradexis.com");
+      setUseClasslink(false);
+      setClasslink("");
     }
     else {
-      popup.current.open();
+      setCustomMode(false);
+      setDistrict(key);
+      setPlatform(presets[key].platform);
+      setLink(presets[key].link);
+      setUseClasslink(presets[key].classlink);
+      setClasslink(presets[key].classlink ? presets[key].link : "");
     }
-  };
-  const onPageBeforeRemove = () => {
-    // Destroy popup when page removed
-    if (popup.current) popup.current.destroy();
-  };
-  const [popupOpened, setPopupOpened] = useState(false);
-  const popup = useRef(null);
+    setPopupOpened(false);
+  }
+
+  f7.searchbar.create({
+    el: '.searchbar-districts',
+    inputEl: '.searchbar-districts input',
+    searchContainer: '.default-list',
+    searchIn: '.item-title',
+  });
 
   return (
-    <Page loginScreen onPageBeforeRemove={onPageBeforeRemove}>
-      <LoginScreenTitle>Login</LoginScreenTitle>
-      <List form className="login-form">
+    <Page className="login-page" dark={false}>
+      <LoginScreenTitle>
+        Gradexis
+      </LoginScreenTitle>
+      {customMode && <List className="no-margin-top no-margin-bottom login-form">
         <ListInput label="Platform" name="platform" className="platform-input"
           type="select"
           outline
           value={platform}
-          onChange={(e) => { setPlatform(e.target.value); setLink("") }}
+          onChange={(e) => { setPlatform(e.target.value); setLink(""); if (e.target.value === "demo") { selectDistrict("demo"); } }}
           tabindex={-1}
         >
-          <option value="hac">HAC</option>
-          <option value="powerschool">PowerSchool SIS</option>
+          {Object.keys(platformNames).map((key) => (
+            <option key={key} value={key}>{platformNames[key]}</option>
+          ))}
         </ListInput>
 
-        <ListItem checkbox className="classlink-sso" aria-label="ClasslinkOption"
+        {platform !== "demo" && <ListItem checkbox className="classlink-sso" aria-label="ClasslinkOption"
           checked={useClasslink}
           onChange={(e) => { setUseClasslink(e.target.checked); setLink("") }}>
           Use ClassLink SSO Login
         </ListItem>
+        }
 
-        {useClasslink &&
+        {platform !== "demo" && useClasslink &&
           <ListInput
             outline
             label="ClassLink Link"
@@ -202,13 +179,13 @@ const LoginPage = ({ f7router }) => {
           >
           </ListInput>
         }
-        {!useClasslink &&
+        {platform !== "demo" && !useClasslink &&
           <ListInput
             outline
             label="Link"
             type="text"
             name="link"
-            placeholder={ 
+            placeholder={
               platformDefaults[platform]
             }
             value={link}
@@ -219,14 +196,24 @@ const LoginPage = ({ f7router }) => {
           </ListInput>
         }
 
-        <li>
-          <Block className="margin-bottom margin-top-half">
-            <Button outline small onClick={createPopup}>
-              Select District
-            </Button>
-          </Block>
-          <hr />
-        </li>
+      </List>}
+
+      <Block className="margin-bottom margin-top-half">
+        <Button className={"select-button"} color={f7.theme == "ios" ? "blue" : ""} outline small onClick={() => { setPopupOpened(true); }}>
+          Select District
+        </Button>
+      </Block>
+
+      {!customMode && <List mediaList inset strong noChevron className="default-list margin preview-district">
+        <ListItem
+          link=""
+          title={district || "Select a district"}
+          subtitle={useClasslink ? classlink : link}
+          after={platformNames[platform]}
+        />
+      </List>}
+
+      <List form className={`login-form margin-top-half margin-bottom ${platform == "demo" ? "display-none" : ""}`}>
         <ListInput
           outline
           floatingLabel
@@ -250,15 +237,69 @@ const LoginPage = ({ f7router }) => {
           value={password}
           onInput={(e) => setPassword(e.target.value)}
           tabindex={-1}
-        >
-          <div slot="right">hi</div>
-        </ListInput>
+        ></ListInput>
       </List>
-      <Block>
-        <Button preloader loading={loginLoading} label="Login" aria-label="Login" onClick={signIn} large fill>
-          Login
-        </Button>
-      </Block>
+
+      <Button preloader
+        loading={loginLoading}
+        label="Login" aria-label="Login"
+        onClick={signIn} large fill
+        disabled={loginLoading || platform === "" || (platform !== "demo" && (username === "" || password === ""))}
+        className="margin no-margin-top login-btn"
+        color={f7.theme == "ios" ? "blue" : ""}
+      >
+        Login
+      </Button>
+      <Popup
+        className="demo-popup"
+        opened={popupOpened}
+        onPopupClosed={() => setPopupOpened(false)}
+      >
+        <Page colorTheme="blue">
+          <Navbar title="Select District">
+            <NavRight>
+              <Link popupClose>Close</Link>
+            </NavRight>
+          </Navbar>
+          <Block className="no-margin-top no-margin-bottom padding-top" style={{ height: "100%" }}>
+            <Searchbar
+              searchContainer=".default-list"
+              searchIn=".item-title"
+              inline
+              className="searchbar-districts"
+            />
+            <List mediaList inset strong noChevron className="default-list no-margin margin-top">
+              <ListItem
+                link="#"
+                title={"Custom"}
+                subtitle={"https://"}
+                after={"Custom"}
+                onClick={() => { selectDistrict("custom"); }}
+              />
+              <ListItem
+                link="#"
+                title={"Demo Platform"}
+                subtitle={"https://demo.gradexis.com/"}
+                after={"Demo"}
+                onClick={() => { selectDistrict("demo"); }}
+              />
+            </List>
+
+            <List mediaList inset strong noChevron className="default-list no-margin margin-top searchbar-found">
+              {Object.keys(presets).map((key) => (
+                <ListItem
+                  key={key}
+                  link="#"
+                  title={key}
+                  subtitle={presets[key].classlink ? `launchpad.classlink.com/${presets[key].link}` : presets[key].link}
+                  after={platformNames[presets[key].platform]}
+                  onClick={() => { selectDistrict(key); }}
+                />
+              ))}
+            </List>
+          </Block>
+        </Page>
+      </Popup>
     </Page>
   )
 };

@@ -336,7 +336,7 @@ const GradesPage = ({ f7router }) => {
             </>
           }
           {user.stream == false &&
-            <Preloader />
+            <Preloader className='margin-bottom' />
           }
           <Button small fillIos outlineMd className='margin-top-half' onClick={() => setCacheMode()} disabled={!Object.keys(globalgradelist).includes(user.term)}>
             Load from Storage

@@ -127,8 +127,8 @@
     position: relative;
 }
 .ios .scores-list .item-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible;
+    /* text-overflow: ellipsis; */
     white-space: nowrap;
     padding-right: 4px;
 }
@@ -148,16 +148,38 @@
 .ios a.item-link.active-state:before{
     background-color: var(--f7-list-link-pressed-bg-color);
 } */
-.md .scores-list .assignments-item:before {
+.ios .scores-list .active-state {
+    transition-timing-function: ease-out;
+}
+.scores-list .assignments-item::before, .ios .scores-list .assignments-item::after {
     content: '';
     position: absolute;
     background: linear-gradient(90deg, transparent 80%, var(--f7-list-strong-bg-color) 95%);
     width: calc(100% + 1px);
     height: 100%;
+    top: 0;
     padding: 0;
     margin: 0;
+    opacity: 1;
     z-index: 1;
+    transition: opacity 0.3s ease-out;
 }
+
+.ios .scores-list .assignments-item::after {
+    opacity: 0;
+    background: linear-gradient(90deg, transparent 80%, rgb(216.75, 216.75, 216.75) 95%);
+}
+
+.ios .scores-list .active-state .assignments-item::before {
+    opacity: 0;
+    transition-duration: 0ms;
+}
+.ios .scores-list .active-state .assignments-item::after {
+    opacity: 1;
+    transition-duration: 0ms;
+}
+
+
 
 /* Extra info Dialog */
 
@@ -207,30 +229,51 @@
     display: block;
     overflow: hidden
 }
-
-.class-grades-tab {
-    position: absolute;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    transform: translateY(-16px);
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-.class-grades-tab.active {
-    opacity: 1;
-    z-index: 100;
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        display: none;
+    }
+    to {
+        opacity: 1;
+        display: block;
+    }
 }
 
+@keyframes fadeOutTab {
+    from {
+        opacity: 1;
+        display: block;
+    }
+    to {
+        opacity: 0;
+        display: none;
+    }
+}
+
+.class-grades-tab,
 .analyze-subtabs {
     position: absolute;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transform: translateY(-16px);
     width: 100%;
+    height: auto;
     z-index: 1;
-    height: 100%;
+    pointer-events: none;
+    display: none;
+    animation-fill-mode: forwards;
 }
+
+.class-grades-tab.active,
 .analyze-subtabs.active {
     opacity: 1;
     z-index: 100;
+    pointer-events: auto;
+    display: block;
+    animation: fadeInTab 0.3s ease-in-out forwards;
+}
+
+.class-grades-tab:not(.active),
+.analyze-subtabs:not(.active) {
+    animation: fadeOutTab 0.3s ease-in-out forwards;
 }

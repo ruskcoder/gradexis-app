@@ -524,7 +524,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                   <Gauge
                     className="margin-half"
                     type="circle"
-                  value={parseFloat(average).toPrecision(4) / 100}
+                    value={parseFloat(average).toPrecision(4) / 100}
                     borderColor={color}
                     borderBgColor={gaugeBackgroundColor(user)}
                     borderWidth={20}
@@ -546,7 +546,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
       </div>
 
       <div className='class-grades-tab analyze-tab'>
-        <Block className="margin-top no-margin-bottom">
+        <Block className="margin-top margin-bottom">
           <Segmented tabbar strong inset small className="no-margin no-padding">
             {/* <Button small active={activeSubTabs === 0} onClick={() => switchSubTab('time-travel-tab')}>
               TimeTravel
@@ -600,7 +600,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
           </Page>
         </Popup>
 
-        <div className="analyze-subtabs statistics-tab active">
+        <div className="analyze-subtabs statistics-tab active padding-bottom">
           <Block inset strong className='margin-top margin-bottom'>
             <p className="margin-bottom-half" style={{ fontSize: 'var(--f7-table-title-font-size)' }}><strong>Past Averages: </strong></p>
             {generateBarChart('overall', color)}
@@ -616,7 +616,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
         <div className="analyze-subtabs timeline-tab">
           <div className="timeline margin-top">
             {Object.keys(history).toReversed().map((date, index) => (
-              <div className="timeline-item" key={date} onClick={() => {setHistoryDate(date); setPopupOpened(true);}}>
+              <div className="timeline-item" key={date} onClick={() => { setHistoryDate(date); setPopupOpened(true); }}>
                 <div className="timeline-item-date">
                   {formatTimelineDate(date)[0]} <small>{formatTimelineDate(date)[1]}</small>
                   <br />
@@ -628,7 +628,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                     <div className='timeline-info margin-bottom-half'>
                       {changedAverage(date) && (
                         <Card className='mini-grade-display'>
-                          <div className={`grades-number changed-${changedAverage(date).changedUpDown}`} style={{ padding: '4px 4px'}}>
+                          <div className={`grades-number changed-${changedAverage(date).changedUpDown}`} style={{ padding: '4px 4px' }}>
                             {changedAverage(date).changedUpDown === 'up' ? '+' : ''}{parseFloat(changedAverage(date).changed).toPrecision(3)}%
                           </div>
                           <h1 className="no-margin">
@@ -663,9 +663,7 @@ const ClassGradesPage = ({ f7router, ...props }) => {
                   {/* <div className="timeline-item-inner">Some text goes here</div> */}
                 </div>
               </div>
-            ))
-
-            }
+            ))}
           </div>
         </div>
       </div>

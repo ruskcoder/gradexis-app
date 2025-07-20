@@ -30,6 +30,7 @@ const defaultUser = {
   gradelist: {},
   scoresIncluded: false,
   stream: true,
+  anim: true,
   gradesView: 'card',
   roundGrades: false,
   letterGrades: false,
@@ -43,7 +44,9 @@ const randomColors = [
   '#ff8400',
   '#ffff00',
   '#8cff00',
-  '#00ffb3'
+  '#00ffb3',
+  '#00b3ff',
+  '#0000ff',
 ]
 const updateSW = () => {
   channel4Broadcast.postMessage({
@@ -93,6 +96,9 @@ const store = createStore({
           newUser.gradesView = 'list';
         }
         newUser.theme = randomColors[Math.floor(Math.random() * randomColors.length)];
+        if (state.currentUserNumber == -1) { 
+          newUser.theme = '#007aff'; // Default blue theme for first user
+        }
         state.users = [...state.users, { ...userData, ...newUser }];
         localStorage.setItem("users", JSON.stringify(state.users));
         updateSW();
