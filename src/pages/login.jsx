@@ -48,10 +48,6 @@ const LoginPage = ({ f7router }) => {
     "Conroe ISD": { platform: "hac", link: "conroeisd", classlink: true },
   }
 
-  useEffect(() => {
-    f7.emit('routeChange', { url: '/login/', route: { path: "/login/"} })
-  }, []);
-
   const signIn = () => {
     setLoginLoading(true);
     const existingUser = store.state.users.find(user => user.username === username);
