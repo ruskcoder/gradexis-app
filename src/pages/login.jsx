@@ -200,7 +200,7 @@ const LoginPage = ({ f7router }) => {
         </Button>
       </Block>
 
-      {!customMode && <List mediaList inset strong noChevron className="default-list margin preview-district">
+      {!customMode && <List mediaList inset strong noChevron className="margin preview-district">
         <ListItem
           link=""
           title={district || "Select a district"}

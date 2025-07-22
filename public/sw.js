@@ -1,9 +1,6 @@
-var apiUrl = 'https://api.gradexis.com';
-if (location.hostname == 'localhost') {
+export var apiUrl = 'https://api.gradexis.com';
+if (location.port == "5173") {
   apiUrl = 'http://localhost:3000';
-}
-if (location.hostname == '192.168.86.29') {
-  apiUrl = 'http://192.168.86.29:3000'
 }
 if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
   apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'

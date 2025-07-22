@@ -2,11 +2,8 @@ import store from "./store.js";
 import terminal from 'virtual:terminal';
 
 export var apiUrl = 'https://api.gradexis.com';
-if (location.hostname == 'localhost') {
+if (location.port == "5173") {
     apiUrl = 'http://localhost:3000';
-}
-if (location.hostname == '192.168.86.29') {
-    apiUrl = 'http://192.168.86.29:3000'
 }
 if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
     apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
@@ -29,6 +26,9 @@ function cleanup(params) {
 
 async function checkResponse(response) {
     if (!response.ok) {
+        if (response.status === 401) {
+            throw new Error("Incorrect username or password. Maybe your password has changed? Log out and log back in.");
+        }
         throw new Error(`HTTP error! Status Code: ${response.status}`);
     }
 }
@@ -38,7 +38,6 @@ export async function login(loginData) {
         const response = await fetch(
             `${apiUrl}/${loginData.platform}/info?${loginData.link ? "link=" + loginData.link : ""}${loginData.useClasslink ? "&classlink=" + loginData.classlink : ""}&username=${loginData.username}&password=${loginData.password}`,
         );
-        await checkResponse(response);
         const data = await response.json();
         updateSession(data);
         if (data.success == false) return data;
