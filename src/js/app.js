@@ -38,9 +38,9 @@ document.addEventListener("contextmenu", function (e) {
   e.preventDefault();
 }, false);
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  window.deferredPrompt = e;
-});
+// window.addEventListener('beforeinstallprompt', (e) => {
+//   window.deferredPrompt = e;
+// });
 window.addEventListener("load", function () {
   setTimeout(function () {
     window.scrollTo(0, 1);

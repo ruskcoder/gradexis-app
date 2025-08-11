@@ -16,11 +16,11 @@ import {
     Icon,
     f7
 } from 'framework7-react';
-import { updateRouter } from '@/components/app';
+
 import { getProgressReport } from "@/js/grades-api";
 
 const ProgressReportPage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
     const [progressReports, setProgressReports] = useState([]);
     const [selectedPeriod, setSelectedPeriod] = useState(0);

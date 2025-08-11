@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Navbar, Block, Checkbox, ListInput, Gauge, Card, List, ListItem, useStore, f7, ListButton, Button } from 'framework7-react';
-import { errorDialog, primaryFromColor, updateRouter } from '../components/app.jsx';
+import { errorDialog, primaryFromColor } from '../components/app.jsx';
 import { gaugeBackgroundColor, colorFromCategory } from '../pages/class-grades.jsx';
 import { WhatIfGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
@@ -17,7 +17,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   const [loading, setLoading] = useState(true);
   const [averageType, setAverageType] = useState('categorywise');
   const user = useStore('currentUser');
-  updateRouter(f7router);
+  
 
   useEffect(() => {
     if (user.username) {

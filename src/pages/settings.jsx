@@ -137,7 +137,6 @@ const SettingsPage = ({ f7router }) => {
     changeScheme(newScheme);
     f7.setDarkMode(newScheme === "dark");
     store.dispatch("changeUserData", {
-      
       item: "scheme",
       value: newScheme,
     });
@@ -148,7 +147,6 @@ const SettingsPage = ({ f7router }) => {
     changeTheme(newColor);
     f7.setColorTheme(newColor);
     store.dispatch("changeUserData", {
-      
       item: "theme",
       value: newColor,
     });
@@ -166,7 +164,6 @@ const SettingsPage = ({ f7router }) => {
     else
       newlayouttxt = "Apple";
     store.dispatch("changeUserData", {
-      
       item: "layout",
       value: newLayout,
     });
@@ -580,7 +577,7 @@ const SettingsPage = ({ f7router }) => {
             </ListItem>
             <ListButton
               onClick={() => { 
-                f7.emit('clearCache');
+                f7.emit('refetch');
                 store.dispatch('setGradelist', { gradelist: {} });
               }}
             >

@@ -61,7 +61,7 @@ const GradesPage = ({ f7router }) => {
     }
   }, [userNumber]);
 
-  f7.on('clearCache', () => {
+  f7.on('refetch', () => {
     if (user.username) {
       if (window.classesFetch) {
         window.classesFetch.abort();
@@ -145,7 +145,7 @@ const GradesPage = ({ f7router }) => {
         setInvalidData(true);
       }
     }
-    else if (data.success === false) {
+    else if (data.success == false) {
       if (data.message !== "abort") {
         errorDialog(data.message);
       }

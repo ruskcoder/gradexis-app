@@ -3,7 +3,7 @@ import terminal from 'virtual:terminal';
 
 export var apiUrl = 'https://api.gradexis.com';
 if (location.port == "5173") {
-    apiUrl = 'http://localhost:3000';
+    apiUrl = `http://${location.hostname}:3000`;
 }
 if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
     apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
@@ -14,7 +14,6 @@ function updateSession(data) {
     if (data.session && data.session.cookies.length > 0) {
         store.dispatch('setSession', data.session);
     }
-    // } // TODO: This is a temporary fix for powerschool, we need to find a better way to handle this
 }
 
 function cleanup(params) {
@@ -35,14 +34,26 @@ async function checkResponse(response) {
 
 export async function login(loginData) {
     try {
+        const queryParams = new URLSearchParams({
+            link: loginData.link || "",
+            clsession: loginData.clsession || "",
+            username: loginData.username || "",
+            password: loginData.password || "",
+        });
         const response = await fetch(
-            `${apiUrl}/${loginData.platform}/info?${loginData.link ? "link=" + loginData.link : ""}${loginData.useClasslink ? "&classlink=" + loginData.classlink : ""}&username=${loginData.username}&password=${loginData.password}`,
+            `${apiUrl}/${loginData.platform}/info?${cleanup(queryParams)}`,
         );
         const data = await response.json();
         updateSession(data);
         if (data.success == false) return data;
         if (!loginData.link) {
             loginData.link = data.link;
+        }
+        if (!loginData.username) {
+            loginData.username = data.username || "user";
+        }
+        if (data.district) {
+            loginData.district = data.district;
         }
         return { name: data.name, ...loginData };
     } catch (error) {
@@ -57,9 +68,9 @@ export async function* getClasses(term = null) {
     const stream = user.stream;
     const queryParams = new URLSearchParams({
         link: user.link || "",
-        classlink: user.classlink || "",
-        username: user.username,
-        password: user.password,
+        clsession: user.clsession || "",
+        username: user.username || "",
+        password: user.password || "",
         term: term || "",
         stream: stream || "",
         session: Object.keys(session).length ? JSON.stringify(session) : "",
@@ -101,7 +112,8 @@ export async function* getClasses(term = null) {
             data = await response.json();
         }
         if (!data || data.success == false) {
-            throw data.message || "Failed to fetch classes";
+            yield { percent: '0', message: "Failed to sign in" }
+            return data;
         }
         updateSession(data);
         return data;
@@ -109,7 +121,7 @@ export async function* getClasses(term = null) {
         if (error.name === "AbortError") {
             return { success: false, message: "abort" };
         }
-        throw error;
+        return { success: false, message: error.message };
     }
 }
 
@@ -118,7 +130,7 @@ export async function getGrades(className, term = null) {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/grades?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}&class=${className}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/grades?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}&class=${className}${term ? `&term=${term}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -134,7 +146,7 @@ export async function getAttendance(date = "") {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/attendance?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${date ? `&date=${date}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/attendance?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${date ? `&date=${date}` : ""}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -150,7 +162,7 @@ export async function getSchedule() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/schedule?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/schedule?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -166,7 +178,7 @@ export async function getTeachers() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/teachers?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/teachers?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -182,7 +194,7 @@ export async function getProgressReport() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/ipr?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/ipr?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -198,7 +210,7 @@ export async function getReportCard() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/reportCard?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/reportCard?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -214,7 +226,7 @@ export async function getTranscript() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/transcript?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/transcript?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();
@@ -230,7 +242,7 @@ export async function getBellSchedule() {
     const session = store.state.session;
     try {
         const response = await fetch(
-            `${apiUrl}/${user.platform}/bellSchedule?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&classlink=" + user.classlink : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
+            `${apiUrl}/${user.platform}/bellSchedule?${user.link ? "link=" + user.link : ""}${user.useClasslink ? "&clsession=" + user.clsession : ""}&username=${user.username}&password=${user.password}${Object.keys(session).length != 0 ? `&session=${JSON.stringify(session)}` : ""}`,
         );
         await checkResponse(response);
         const data = await response.json();

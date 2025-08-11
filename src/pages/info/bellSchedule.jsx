@@ -16,11 +16,11 @@ import {
     Icon,
     f7
 } from 'framework7-react';
-import { updateRouter } from '@/components/app';
+
 import { getProgressReport } from "@/js/grades-api";
 
 const BellSchedulePage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

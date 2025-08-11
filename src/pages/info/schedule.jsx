@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 import { Page, Navbar, Block, List, ListItem, Preloader, f7 } from 'framework7-react';
-import { updateRouter } from '@/components/app';
+
 import { getSchedule } from "@/js/grades-api";
 import { errorDialog } from "../../components/app";
 const SchedulePage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
     const [schedule, setSchedule] = useState([]);
     const [hasData, setHasData] = useState(false);

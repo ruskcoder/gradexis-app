@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Page, Navbar, Block, List, ListItem, f7, Preloader } from 'framework7-react';
-import { errorDialog, updateRouter } from '@/components/app';
+import { errorDialog } from '@/components/app';
 import { getAttendance } from '@/js/grades-api';
 import { argbFromHex } from '@material/material-color-utilities';
 
 const AttendancePage = ({ f7router }) => {
-  updateRouter(f7router);
+  
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
   const [currentEvents, setCurrentEvents] = useState([]);
@@ -130,7 +130,7 @@ const AttendancePage = ({ f7router }) => {
     })
   }
   const onPageBeforeRemove = () => {
-    calendarRef.current.destroy();
+    if (calendarRef.current) calendarRef.current.destroy();
   };
 
   return (

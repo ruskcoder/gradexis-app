@@ -30,6 +30,7 @@
     "@capacitor/core": "^7.2.0",
     "@capacitor/ios": "^7.2.0",
     "@capacitor/status-bar": "^7.0.1",
+    "@capgo/inappbrowser": "^7.16.2",
     "@hugotomazi/capacitor-navigation-bar": "https://github.com/NYPL/capacitor-navigation-bar/releases/download/v4.1.0-fix.1/hugotomazi-capacitor-navigation-bar-4.1.0-fix.1.tgz",
     "@material/material-color-utilities": "^0.3.0",
     "axios": "^1.7.7",

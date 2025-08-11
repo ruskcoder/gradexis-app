@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Page, Navbar, Block, List, ListItem, Preloader, Link, f7, useStore } from 'framework7-react';
-import { primaryFromColor, updateRouter } from '@/components/app';
+import { primaryFromColor } from '@/components/app';
 import { getTeachers } from "@/js/grades-api";
 import { errorDialog } from "../../components/app";
 
 const TeachersPage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
     const [teachers, setTeachers] = useState([]);
     const user = useStore('currentUser');

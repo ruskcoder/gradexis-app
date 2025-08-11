@@ -13,11 +13,11 @@ import {
     CardHeader,
     f7
 } from 'framework7-react';
-import { updateRouter } from '@/components/app';
+
 import { getReportCard } from "@/js/grades-api";
 
 const ReportCardPage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
     const [reportCards, setReportCards] = useState([]);
     const [selectedPeriod, setSelectedPeriod] = useState(0);
@@ -89,7 +89,7 @@ const ReportCardPage = ({ f7router }) => {
                                 </tbody>
                                 <tfoot style={{ borderTop: '1px solid var(--f7-table-cell-border-color)' }}>
                                     <tr>
-                                        <td colSpan={Object.keys(reportCards[selectedPeriod].report[0]).length} className="table-cell string-padding padding-top padding-bottom"><strong>Total Earned Credit:</strong> {reportCards[selectedPeriod].report.find(item => item.totalEarnedCredit).totalEarnedCredit}</td>
+                                        <td colSpan={Object.keys(reportCards[selectedPeriod].report[0]).length} className="table-cell string-padding padding-top padding-bottom"><strong>Total Earned Credit:</strong> {reportCards[selectedPeriod].report.find(item => item.totalEarnedCredit)?.totalEarnedCredit}</td>
                                     </tr>
                                 </tfoot>
                             </table>

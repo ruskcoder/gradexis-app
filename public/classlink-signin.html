@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gradexis ClassLink Login</title>
+    <link rel="shortcut icon" href="/icons/favicon.png" type="image/x-icon" />
+    <style>
+      @font-face {
+        font-family: "BreeSerif";
+        src: url("/BreeSerif-Regular.woff2") format("truetype");
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #dceffe;
+        display: flex;
+        /* justify-content: center; */
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 600px;
+        width: 90vw;
+        margin: 30vh 0;
+        padding-bottom: 30vh;
+      }
+
+      .card {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"] {
+        width: 90%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      .brand-title {
+        font-family: "Bree Serif", serif;
+        font-size: 48px;
+        font-weight: bold;
+        color: #103074;
+        margin-bottom: 10px;
+      }
+
+      .classlink-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .classlink-note {
+        font-size: 18px;
+        color: #103074;
+        font-weight: 500;
+      }
+
+      .classlink-logo {
+        width: 40px;
+        height: auto;
+      }
+
+      input[type="text"] {
+        width: 80%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #103074;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0c255a;
+      }
+
+      .instructions {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #103074;
+        text-align: center;
+        width: 100%;
+      }
+
+      .code-display {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 20px;
+        word-break: break-word;
+        color: #103074;
+      }
+      .code-display code {
+        color: black;
+        padding: 2px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-weight: 400;
+      }
+
+      /* Accordion Styles */
+      .accordion {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .accordion-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: #103074;
+        transition: background-color 0.3s ease;
+      }
+
+      .accordion-header:hover {
+        background: #e9ecef;
+      }
+
+      .accordion-header.active {
+        background: #103074;
+        color: white;
+      }
+
+      .accordion-icon {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+      }
+
+      .accordion-header.active .accordion-icon {
+        transform: rotate(180deg);
+      }
+
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: white;
+      }
+
+      .accordion-content.active {
+        max-height: 500px;
+      }
+
+      .accordion-body {
+        padding: 20px;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .accordion-body h4 {
+        color: #103074;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .accordion-body ol, .accordion-body ul {
+        padding-left: 20px;
+        margin-bottom: 15px;
+      }
+
+      .accordion-body li {
+        margin-bottom: 8px;
+      }
+
+      .highlight {
+        background-color: #fff3cd;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-weight: 500;
+      }
+
+      .instructions h3 {
+        color: #103074;
+        margin-bottom: 20px;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card" id="card">
+        <!-- Content will be injected here -->
+      </div>
+      <div class="instructions">
+        <h3>How to Login</h3>
+        
+        <div class="accordion">
+          <div class="accordion-header" onclick="toggleAccordion(0)">
+            <span>Extensions Not Allowed (School Devices)</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <h4>For Chromebooks and Managed School Devices</h4>
+              <ol>
+                <li>Click on <span class="highlight">"Login with ClassLink"</span></li>
+                <li>You'll be redirected to this page</li>
+                <li>Follow the below instructions on another Windows/Mac device</li>
+                <li>Copy the login code from that device and send it to this device</li>
+                <li>Click <span class="highlight">"Submit"</span> to complete your login</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion">
+          <div class="accordion-header" onclick="toggleAccordion(1)">
+            <span>Android/iOS (Website)</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <h4>For Android/iOS (Website)</h4>
+              <ol>
+                <li>Click on <span class="highlight">"Login with ClassLink"</span></li>
+                <li>You'll be redirected to this page</li>
+                <li>Follow the below instructions on another Windows/Mac device</li>
+                <li>Copy the login code from that device and send it to this device</li>
+                <li>Click <span class="highlight">"Submit"</span> to complete your login</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion">
+          <div class="accordion-header" onclick="toggleAccordion(2)">
+            <span>Chrome/Edge on Windows/Mac</span>
+            <span class="accordion-icon">▼</span>
+          </div>
+          <div class="accordion-content">
+            <div class="accordion-body">
+              <h4>Install the Gradexis Browser Extension</h4>
+              <ol>
+                <li>Download the Gradexis Login extension: <a href="https://raw.githubusercontent.com/ruskcoder/gradexis-login/refs/heads/main/gradexis-login.zip">Gradexis Extension</a></li>
+                <li>Unzip the files into a folder</li>
+                <li>Go to <a href="chrome://extensions" style="user-select: all;">chrome://extensions</a> (copy and paste it)</li>
+                <li>Turn on the <span class="highlight">Developer mode</span> switch</li>
+                <li>Click <span class="highlight">Load Unpacked</span> and select the Gradexis Extension</li>
+                <li>Reload this page to automatically login</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const clsession = params.has("clsession") ? params.get("clsession") : null;
+      const card = document.getElementById("card");
+
+      const logoHTML = `<img src="/classlink-logo.png" alt="ClassLink Logo" class="classlink-logo">`;
+
+      const classlinkSection = `
+  <div class="classlink-section">
+    <img src="/classlink-logo.png" alt="ClassLink Logo" class="classlink-logo">
+    <div class="classlink-note">Logging in Using ClassLink</div>
+  </div>
+`;
+
+      if (clsession) {
+        card.innerHTML = `
+    <div class="brand-title">Gradexis</div>
+    ${classlinkSection}
+    <div class="code-display">
+        <div style="margin-bottom: 8px;">Login Code:</div>
+            <code>${clsession}</code>
+    </div>
+    <button onclick="copyCode()">Copy</button>
+    <div style="color: #d32f2f; font-size: 13px; margin-top: 18px;">
+      You have been logged in. This tab can safely be closed.
+    </div>
+  `;
+        localStorage.setItem("clsession", clsession);
+
+//       <button onclick="login()" style="background-color: green">Login</button>
+      } else {
+        card.innerHTML = `
+    <div class="brand-title">Gradexis</div>
+    ${classlinkSection}
+    <input type="text" id="loginCode" placeholder="Enter Login Code" />
+    <br>
+    <button onclick="submitCode()">Submit</button>
+  `;
+      }
+
+      function submitCode() {
+        const code = document.getElementById("loginCode").value.trim();
+        if (code) {
+          window.location.href = `?clsession=${encodeURIComponent(code)}`;
+        }
+      }
+
+      function copyCode() {
+        navigator.clipboard.writeText(clsession).then(() => {
+          console.log("Copied to clipboard!");
+        });
+      }
+
+      function toggleAccordion(index) {
+        const accordions = document.querySelectorAll('.accordion');
+        const accordion = accordions[index];
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        
+        // Toggle active state
+        const isActive = header.classList.contains('active');
+        
+        // Close all accordions
+        document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+        document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
+        
+        // If this accordion wasn't active, open it
+        if (!isActive) {
+          header.classList.add('active');
+          content.classList.add('active');
+        }
+      }
+    </script>
+  </body>
+</html>

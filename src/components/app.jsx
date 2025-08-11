@@ -68,6 +68,10 @@ export const mdThemeFromColor = (theme, value) => {
 }
 
 export const errorDialog = (err = "") => {
+  if (err.includes('Invalid Session') || err.includes('Invalid')) { 
+    f7.views.current.router.navigate('/login/#relogin');
+    return;
+  }
   console.log(err)
   if (err.includes("not valid JSON") || err.includes("Failed to fetch") || err.includes('<html')) {
     err = "Unable to fetch server. Perhaps it is blocked?"
@@ -95,34 +99,6 @@ export const errorDialog = (err = "") => {
   })
   window.f7alert.open();
 }
-export const updateRouter = (f7router) => {
-  window.router = f7router;
-  window.onpopstate = function (event) {
-    if (!window.closingDialog) {
-      if (window.f7alert && window.f7alert.opened === true) {
-        window.f7alert.close();
-        window.closingDialog = true;
-        history.forward(1);
-      } else {
-        window.backing = true;
-        if (location.pathname == "/" && ['/', '/grades/', '/todo/', '/settings/'].includes(f7router.currentRoute.url)) {
-          document.querySelector('a[data-tab="#view-home"]').click();
-        } else if (location.pathname == "/home/") {
-          CapacitorApp.exitApp();
-          history.back();
-        } else {
-          f7router.back();
-          if (location.pathname == "/") {
-            history.pushState({ url: "/home/" }, null, "/home/");
-          }
-        }
-      }
-    }
-    else {
-      window.closingDialog = false;
-    }
-  };
-};
 
 const Gradexis = ({ f7router }) => {
   var f7params = {
@@ -149,10 +125,10 @@ const Gradexis = ({ f7router }) => {
   }, [f7router]);
 
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
+  
   f7ready(async () => {
     if (!window.init) {
       window.init = true;
-      history.replaceState(null, null, "/");
       // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
       registerSW();
       
@@ -235,16 +211,10 @@ const Gradexis = ({ f7router }) => {
       const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
-        let invalid = ["/", "/grades/", "/todo/", "/settings/", "/login/"]
-        if (!invalid.includes(route.url) && !window.backing) {
-          history.pushState({ url: route.url }, null, route.url);
-        }
-        else if (window.backing) {
-          window.backing = false;
-        }
       });
       f7.on('login', () => {
-        setShowLogin(false)
+        setShowLogin(false);
+        updateStatusBars();
       })
       updateStatusBars();
     }
@@ -267,7 +237,6 @@ const Gradexis = ({ f7router }) => {
 
       <View url="/login/" className={`login ${showLogin ? "" : "login-hidden"}`}></View>
       <Views className="safe-areas" tabs>
-
         <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>
           <Link
             tabLink="#view-home"

@@ -1,4 +1,4 @@
-export var apiUrl = 'https://api.gradexis.com';
+var apiUrl = 'https://api.gradexis.com';
 if (location.port == "5173") {
   apiUrl = 'http://localhost:3000';
 }

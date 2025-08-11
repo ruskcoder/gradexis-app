@@ -2,7 +2,7 @@ import { apiUrl } from './grades-api.js';
 
 export default async function subscribe() {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
-        const publicKey = "BMsCbudBN3my0pcAZQhVGd6Z1XwloKFdM5Gwv58geE20j-DUbQYCO4xzUeMZsrXiM4a0CYAqqT0KKkrbB3SlJHM";
+        const publicKey = "BBXwLd6Bj9NMB8PrS7CoWUMvY345XnMrqlEyjhWF_bEJjbhO465fN0m637BMmcYqtHX0BGPiLzQd33c6tlUDfNI";
 
         try {
             const registration = await navigator.serviceWorker.ready;

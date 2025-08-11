@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Bree Serif';
-    src: url('/BreeSerif-Regular.tff') format('truetype');
+    src: url('/BreeSerif-Regular.woff2') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -19,6 +19,7 @@
     display: flex;
     align-items: center;
     --theme: rgb(217, 238, 255);
+    /* --theme: white; */
     --opposite-theme: #003078;
     background-color: var(--theme);
 }

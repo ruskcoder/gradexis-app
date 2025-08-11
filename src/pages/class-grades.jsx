@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Page, Navbar, Block, Segmented, Button, Gauge, Card, List, ListItem, useStore, f7, Preloader, Link, NavRight, Range, Popup } from 'framework7-react';
 import { ClassGradeItem } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { errorDialog, primaryFromColor, updateRouter, roundGrade } from '../components/app.jsx';
+import { errorDialog, primaryFromColor, roundGrade } from '../components/app.jsx';
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { getGrades } from '../js/grades-api.js';
 import store from '../js/store.js';
@@ -56,8 +56,6 @@ const ClassGradesPage = ({ f7router, ...props }) => {
   const [activeSubTabs, setactiveSubTabs] = useState(0);
 
   const user = useStore('currentUser');
-
-  updateRouter(f7router);
 
   const [scores, setScores] = useState([]);
   const [categories, setCategories] = useState({});

@@ -9,11 +9,11 @@ import {
     CardHeader,
     f7
 } from 'framework7-react';
-import { updateRouter } from '@/components/app';
+
 import { getTranscript } from '@/js/grades-api';
 
 const TranscriptPage = ({ f7router }) => {
-    updateRouter(f7router);
+    
     const [loading, setLoading] = useState(true);
     const [transcriptData, setTranscriptData] = useState(null);
     const [hasData, setHasData] = useState(false);

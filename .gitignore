@@ -38,8 +38,7 @@ Thumbs.db
 
 .idea/
 
-
-
+test*
 
 # Production build
 www/
