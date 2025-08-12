@@ -29,7 +29,6 @@ const TeachersPage = ({ f7router }) => {
     function filterTeachers(teachers) {
         let unique = {};
         teachers = teachers.filter(obj => !unique[obj.teacher] && (unique[obj.teacher] = true) && (obj.teacher !== ""));
-        console.log(teachers);
         return teachers;
     }
 

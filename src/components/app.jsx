@@ -207,11 +207,69 @@ const Gradexis = ({ f7router }) => {
       if (store.state.currentUser.anim) { 
         document.documentElement.classList.add("animated");
       }
+      history.replaceState({ path: "/" }, "", "/");
 
       const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
+        if (route.path == f7?.views?.current?.router?.previousRoute.path || store.state.refreshing) { 
+          return;
+        }
+        if (store.state.loadedCounter >= 5) {
+          if (store.state.backing) {
+            store.state.backing = false;
+          }
+          else if (f7.views.current.router.history[f7.views.current.router.history.length - 1] == route.path && !store.state.refreshing) {
+            store.state.backing = true;
+            history.back();
+            setTimeout(() => {
+              store.state.backing = false;
+            }, 100);
+          }
+          else {
+            history.pushState({}, "", route.path);
+          }
+        }
+        store.state.loadedCounter = (store.state.loadedCounter || 0) + 1;
       });
+      ['#view-home', '#view-todo', '#view-grades', '#view-settings'].forEach(id => {
+        f7.$(id).on("tab:show", function () {
+          const path = f7.views.current.router.currentRoute.path;
+          if (store.state.backing) {
+            store.state.backing = false;
+          } else {
+            history.pushState({}, "", path);
+          }
+        });
+      });
+      window.onpopstate = (event) => {
+        const path = event.target.location.pathname;
+        const tabsRoutes = ["/", "/grades/", "/todo/", "/settings/"];
+        const current = f7.views.current.router.currentRoute.path;
+        if (window?.f7alert?.opened) {
+          window.f7alert.close();
+          setTimeout(() => {
+            history.pushState({}, "", current);
+          }, 10);
+        }
+        else {
+          if (tabsRoutes.includes(path) && tabsRoutes.includes(current)) {
+            if (current == "/" && !store.state.backing) {
+              console.log('Exiting App')
+              window.close();
+              CapacitorApp.exitApp();
+            } else {
+              store.state.backing = true;
+              f7.tab.show(f7.views.find(view => view.router.initialUrl === path).el);
+            }
+          }
+          else {
+            store.state.backing = true;
+            f7.views.current.router.back();
+          }
+        }
+      }
+
       f7.on('login', () => {
         setShowLogin(false);
         updateStatusBars();

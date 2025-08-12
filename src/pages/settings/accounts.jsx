@@ -14,7 +14,7 @@ import { primaryFromColor } from "../../components/app.jsx";
 
 const AccountsPage = ({ f7router }) => {
   var users = useStore('users');
-  
+
   const logout = (username) => {
     return () => {
       window.f7alert = f7.dialog.confirm("Are you sure you want to logout of this account?", "Logout", () => {
@@ -24,7 +24,7 @@ const AccountsPage = ({ f7router }) => {
         }
         else {
           store.dispatch("removeUser", username);
-          f7router.refreshPage();
+          f7router.refreshPage()
         }
 
       });

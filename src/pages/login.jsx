@@ -58,7 +58,7 @@ const LoginPage = ({ f7router, ...props }) => {
   const signIn = () => {
     setLoginLoading(true);
     const existingUser = store.state.users.find(user => user.username === username);
-    if (existingUser) {
+    if (existingUser && !reloginMode) {
       f7.dialog.alert("This account already exists.", "Login Failed", () => {
         try {
           f7router.back();
@@ -107,7 +107,8 @@ const LoginPage = ({ f7router, ...props }) => {
           setLoginLoading(false)
           if (result) {
             f7.emit('login');
-            f7router.back();
+            store.state.backing = true;
+            history.back();
           }
           else {
             setCLSession("")
@@ -119,6 +120,10 @@ const LoginPage = ({ f7router, ...props }) => {
           item: "clsession",
           value: clSession
         });
+        store.dispatch('changeUserData', {
+          item: "password",
+          value: password
+        });
         login(data).then((userData) => {
           if (userData.success == false) {
             f7.dialog.alert(userData.message, "Login Failed");
@@ -128,8 +133,8 @@ const LoginPage = ({ f7router, ...props }) => {
           }
           else {
             f7.emit('login');
-            f7.emit('refetch')
-            f7router.back();
+            f7.emit('refetch');
+            history.back();
           }
         });
       }
@@ -246,6 +251,7 @@ const LoginPage = ({ f7router, ...props }) => {
       setLink(user.link ? user.link.replace('https://', '').replace('/', "") : "Unknown Link");
       setPlatform(user.platform);
       setUseClasslink(user.useClasslink);
+      setUsername(user.username);
     }
     // let newColor = store.state.currentUser.scheme == "dark" ? "#1b1b1f" : "#d9eeff";
     // await StatusBar.setStyle({ style: store.state.currentUser.scheme == "dark" ? Style.Dark : Style.Light });
@@ -345,6 +351,7 @@ const LoginPage = ({ f7router, ...props }) => {
           aria-label="EnterUsername"
           placeholder="Username"
           value={username}
+          disabled={reloginMode}
           onInput={(e) => setUsername(e.target.value)}
           tabindex={-1}
         ></ListInput>

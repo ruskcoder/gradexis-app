@@ -27,6 +27,14 @@ var routes = [
     keepAlive: true,
   },
   {
+    path: '/todo/',
+    component: TodoPage,
+  },
+    {
+    path: '/settings/',
+    component: SettingsPage,
+  },
+  {
     path: '/grades/:course/',
     component: ClassGradesPage,
     hideTabbar: true
@@ -37,17 +45,9 @@ var routes = [
     hideTabbar: true,
   },
   {
-    path: '/todo/',
-    component: TodoPage,
-  },
-  {
     path: '/login/',
     component: LoginPage,
     hideTabbar: true
-  },
-  {
-    path: '/settings/',
-    component: SettingsPage,
   },
   {
     path: '/settings/accounts/',

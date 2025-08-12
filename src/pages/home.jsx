@@ -19,7 +19,7 @@ import { primaryFromColor, errorDialog } from '../components/app.jsx';
 import { createRoot } from 'react-dom/client';
 import { getClasses } from '../js/grades-api.js';
 const HomePage = ({ f7router }) => {
-  
+
   const users = useStore('users');
   const user = useStore('currentUser');
 
