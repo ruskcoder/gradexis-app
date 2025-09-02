@@ -266,7 +266,9 @@ const GradesPage = ({ f7router }) => {
               createDialog(course, true);
             } else {
               if (opts.average !== "" && sortMode === false) {
-                f7router.navigate(`/grades/${encodeURIComponent(cls)}/`)
+                setTimeout(() => {
+                  f7router.navigate(`/grades/${encodeURIComponent(cls)}/`);
+                }, 0);
               }
             }
           }

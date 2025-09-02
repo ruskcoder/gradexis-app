@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Checkbox, List, ListInput, Button, ListItem, Icon, f7, f7ready } from "framework7-react";
+import { Checkbox, List, ListInput, Button, ListItem, Icon, f7, Sheet } from "framework7-react";
 import store from "../js/store";
+import { callback } from "chart.js/helpers";
 
 const WhatIfEditDialog = ({ layout, startingGrade, badges, callback }) => {
   const [checked, setIsChecked] = useState(false);
@@ -51,6 +52,55 @@ const WhatIfEditDialog = ({ layout, startingGrade, badges, callback }) => {
           Done
         </Button>
       )}
+      
+    </>
+  );
+};
+
+const WhatIfAddCategoryDialog = ({layout, callback}) => {
+  const [name, setName] = useState("");
+  const [weight, setWeight] = useState("");
+
+  useEffect(() => {
+    window.currentWhatIfEdit = {
+      name: name,
+      weight: weight,
+    };
+  }, [name, weight]);
+
+  return (
+    <>
+      <List className="no-margin margin-top-half">
+        <ListInput
+          outline
+          label="Category Name"
+          type="text"
+          placeholder="Enter category name"
+          floatingLabel
+          clearButton
+          value={name}
+          onInput={(e) => setName(e.target.value)}
+          className="no-margin dialog-input"
+        ></ListInput>
+        <ListInput
+          outline
+          label="Weight"
+          type="number"
+          placeholder="Enter weight (e.g., 60.00)"
+          floatingLabel
+          clearButton
+          validate
+          required
+          value={weight}
+          onInput={(e) => setWeight(e.target.value)}
+          className="no-margin dialog-input"
+        ></ListInput>
+      </List>
+      {layout == "md" && (
+        <Button fill className="margin-top" onClick={() => { window.f7alert.close(); callback(name ? name : "Untitled Category", weight) }}>
+          Done
+        </Button>
+      )}
     </>
   );
 };
@@ -71,7 +121,7 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
       cols: [
         {
           textAlign: "center",
-          values: categories,
+          values: [...categories, "Add Category"],
         },
       ],
       on: {
@@ -81,7 +131,9 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
       },
     });
   }, [categories]);
-
+  const changeCategory = (cat) => {
+    setCategory(cat);
+  };
   useEffect(() => {
     window.currentWhatIfEdit = {
       name: name,
@@ -101,8 +153,6 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
           floatingLabel
           clearButton
           value={name}
-          validate
-          required
           onInput={(e) => setName(e.target.value)}
           className="no-margin dialog-input"
         ></ListInput>
@@ -119,22 +169,25 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
           onInput={(e) => setScore(e.target.value)}
           className="no-margin dialog-input"
         ></ListInput>
-        <ListInput
-          placeholder="Select category"
-          type="text"
-          className="no-margin dialog-input"
-          inputId={"category-select"}
-          readonly
-          outline
-        >
-        </ListInput>
+        <ListItem title="Category" smartSelect smartSelectParams={{
+          openIn: 'popover',
+        }}>
+          <select name="category" value={category} onChange={e => setCategory(e.target.value)}>
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat}>{cat}</option>
+            ))}
+            <option value="Add Category">Add Category</option>
+          </select>
+        </ListItem>
       </List>
       {layout == "md" && (
-        <Button fill className="margin-top" onClick={() => { window.f7alert.close(); callback(name, score, category) }}>
+        <Button fill className="margin-top" onClick={() => { window.f7alert.close(); callback(name ? name : "Untitled Assignment", score, category) }}>
           Done
         </Button>
       )}
     </>
   );
 };
-export { WhatIfEditDialog, WhatIfAddDialog };
+
+
+export { WhatIfEditDialog, WhatIfAddDialog, WhatIfAddCategoryDialog };

@@ -30,7 +30,7 @@ var routes = [
     path: '/todo/',
     component: TodoPage,
   },
-    {
+  {
     path: '/settings/',
     component: SettingsPage,
   },
@@ -104,3 +104,126 @@ if (store.state.currentUser.pageTransition != "default") {
 }
 
 export default routes;
+
+// import store from './store.js';
+
+// var routes = [
+//   {
+//     path: '/',
+//     async: function ({ resolve }) {
+//       import('../pages/home.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/grades/',
+//     keepAlive: true,
+//     async: function ({ resolve }) {
+//       import('../pages/grades.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/todo/',
+//     async: function ({ resolve }) {
+//       import('../pages/todo.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/settings/',
+//     async: function ({ resolve }) {
+//       import('../pages/settings.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/grades/:course/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/class-grades.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/whatif/:course/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/what-if.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/login/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/login.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/settings/accounts/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/settings/accounts.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/schedule/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/schedule.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/bellschedule',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/bellSchedule.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/attendance/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/attendance.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/teachers/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/teachers.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/ipr/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/ipr.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/reportCard/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/reportCard.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '/info/transcript/',
+//     hideTabbar: true,
+//     async: function ({ resolve }) {
+//       import('../pages/info/transcript.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+//   {
+//     path: '(.*)',
+//     async: function ({ resolve }) {
+//       import('../pages/404.jsx').then((module) => resolve({ component: module.default }));
+//     },
+//   },
+// ];
+
+// if (store.state.currentUser.pageTransition != "default") {
+//   routes.forEach(route => {
+//     route.options = {
+//       transition: store.state.currentUser.pageTransition,
+//     };
+//   });
+// }
+
+// export default routes;

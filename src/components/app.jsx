@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { terminal } from 'virtual:terminal';
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import subscribe from "../js/notifications.js";
+import notificationHandler from "../js/notification-handler.js";
 import {
   f7,
   f7ready,
@@ -33,7 +36,7 @@ import registerSW from "../js/register-sw";
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
 import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
-import { show } from "dom7";
+import { SplashScreen } from '@capacitor/splash-screen';
 
 export const roundGrade = (grade, letters = true) => {
   if (grade == "" || grade == "0.00") return letters ? "···" : "0.00";
@@ -64,11 +67,11 @@ export const primaryFromColor = (theme) => {
 }
 export const mdThemeFromColor = (theme, value) => {
   let mdTheme = themeFromSourceColor(argbFromHex(theme), []).schemes[store.state.currentUser.scheme];
-  console.log(hexFromArgb(mdTheme[value]))
+  return (hexFromArgb(mdTheme[value]))
 }
 
 export const errorDialog = (err = "") => {
-  if (err.includes('Invalid Session') || err.includes('Invalid')) { 
+  if (err.includes('Invalid Session') || err.includes('Invalid')) {
     f7.views.current.router.navigate('/login/#relogin');
     return;
   }
@@ -78,7 +81,7 @@ export const errorDialog = (err = "") => {
   }
   let text = `An error occurred. Please restart the app and try again. ${err ? "<br> Error: " + err : ""}`;
   let title = "Error";
-  if (err.includes("404")) { 
+  if (err.includes("404")) {
     text = "This feature is still in progress! Please try again later.";
     title = "Work in Progress";
   }
@@ -107,6 +110,7 @@ const Gradexis = ({ f7router }) => {
     touch: {
       tapHold: true,
     },
+    iosSwipeBack: false,
     store: store,
     routes: routes,
   };
@@ -125,13 +129,30 @@ const Gradexis = ({ f7router }) => {
   }, [f7router]);
 
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
-  
+  if (store.state.users.length == 0) {
+    history.pushState({ path: "/login/" }, "", "/login/");
+  }
+
   f7ready(async () => {
     if (!window.init) {
       window.init = true;
-      // if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && !window.navigator.standalone) {
+      f7.setColorTheme(store.state.currentUser.theme);
+      f7.setDarkMode(store.state.currentUser.scheme === "dark");
+      setTimeout(() => {
+        updateStatusBars();
+        setTimeout(() => { 
+          SplashScreen.hide();
+        }, 100)
+      }, 0);
+
+      // Initialize notification handler for mobile
+      if (Capacitor.isNativePlatform()) {
+        await notificationHandler.init();
+      }
+
+      // Register service worker for web
       registerSW();
-      
+
       {/*if (localStorage.getItem('appPopupDismissed') != "true") {
         window.f7alert = f7.dialog.create({
           title: 'Add to Home Screen',
@@ -163,7 +184,29 @@ const Gradexis = ({ f7router }) => {
         window.f7alert.open()
       } */}
 
-      if ("Notification" in window && localStorage.getItem('notifications') != "dontshow") {
+      if (Capacitor.isNativePlatform()) {
+        // Handle mobile push notifications setup
+        if (localStorage.getItem('notifications') != "dontshow") {
+          window.f7alert = f7.dialog.confirm(
+            "This app uses notifications to notify you of new grades and assignments.",
+            "Notifications",
+            async () => {
+              try {
+                await subscribe();
+                window.f7alert = f7.dialog.alert("Notifications enabled successfully", "Notifications");
+                localStorage.setItem('notifications', "dontshow");
+              } catch (error) {
+                localStorage.setItem('notifications', "dontshow");
+                window.f7alert = f7.dialog.alert("Notifications not enabled. You can enable them in your system settings later on.", "Notifications");
+              }
+            },
+            () => {
+              localStorage.setItem('notifications', "dontshow");
+              window.f7alert = f7.dialog.alert("You can enable notifications in your system settings later on.", "Notifications");
+            }
+          );
+        }
+      } else if ("Notification" in window && localStorage.getItem('notifications') != "dontshow") {
         if (Notification.permission === "denied") {
           localStorage.setItem('notifications', "dontshow");
           window.f7alert = f7.dialog.alert("Please enable notifications to get the best experience", "Notifications");
@@ -201,71 +244,49 @@ const Gradexis = ({ f7router }) => {
         );
       }
 
-      f7.setColorTheme(store.state.currentUser.theme);
-      f7.setDarkMode(store.state.currentUser.scheme === "dark");
-
-      if (store.state.currentUser.anim) { 
+      if (store.state.currentUser.anim) {
         document.documentElement.classList.add("animated");
       }
       history.replaceState({ path: "/" }, "", "/");
 
-      const hideTabsRoutes = routes.filter((route) => route.hideTabbar == true).map((route) => route.path);
+      const hideTabsRoutes = routes.filter(route => route.hideTabbar).map(route => route.path);
+      const tabsRoutes = ["/", "/grades/", "/todo/", "/settings/"];
+
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
-        if (route.path == f7?.views?.current?.router?.previousRoute.path || store.state.refreshing) { 
-          return;
-        }
-        if (store.state.loadedCounter >= 5) {
-          if (store.state.backing) {
-            store.state.backing = false;
-          }
-          else if (f7.views.current.router.history[f7.views.current.router.history.length - 1] == route.path && !store.state.refreshing) {
-            store.state.backing = true;
-            history.back();
-            setTimeout(() => {
-              store.state.backing = false;
-            }, 100);
+        setTimeout(() => {
+          if (!f7.views.current.history.includes(route.url)) {
+            return;
           }
           else {
-            history.pushState({}, "", route.path);
+            if (location.pathname != route.path) {
+              history.pushState({}, "", route.path);
+            }
           }
-        }
-        store.state.loadedCounter = (store.state.loadedCounter || 0) + 1;
+        }, 0)
       });
+
       ['#view-home', '#view-todo', '#view-grades', '#view-settings'].forEach(id => {
-        f7.$(id).on("tab:show", function () {
+        f7.$(id).on("tab:show", () => {
           const path = f7.views.current.router.currentRoute.path;
-          if (store.state.backing) {
-            store.state.backing = false;
-          } else {
-            history.pushState({}, "", path);
-          }
+          history.pushState({}, "", path);
         });
       });
+
       window.onpopstate = (event) => {
-        const path = event.target.location.pathname;
-        const tabsRoutes = ["/", "/grades/", "/todo/", "/settings/"];
         const current = f7.views.current.router.currentRoute.path;
         if (window?.f7alert?.opened) {
           window.f7alert.close();
-          setTimeout(() => {
-            history.pushState({}, "", current);
-          }, 10);
+          setTimeout(() => history.pushState({}, "", current), 10);
+          return;
         }
         else {
-          if (tabsRoutes.includes(path) && tabsRoutes.includes(current)) {
-            if (current == "/" && !store.state.backing) {
-              console.log('Exiting App')
-              window.close();
-              CapacitorApp.exitApp();
-            } else {
-              store.state.backing = true;
-              f7.tab.show(f7.views.find(view => view.router.initialUrl === path).el);
-            }
+          let backLink = document.querySelector('a.link.back')
+          if (backLink) {
+            backLink.click();
           }
           else {
-            store.state.backing = true;
-            f7.views.current.router.back();
+            document.querySelector('.tab-link[data-tab="#view-home"]').click();
           }
         }
       }
@@ -274,7 +295,6 @@ const Gradexis = ({ f7router }) => {
         setShowLogin(false);
         updateStatusBars();
       })
-      updateStatusBars();
     }
 
   });
@@ -327,13 +347,13 @@ const Gradexis = ({ f7router }) => {
           />
         </Toolbar>
 
-        <View iosSwipeBack={true} id="view-home" tab tabActive main url="/" />
+        <View iosSwipeBack={false} id="view-home" tab tabActive main url="/" />
 
-        <View iosSwipeBack={true} id="view-grades" name="grades" tab url="/grades/" />
+        <View iosSwipeBack={false} id="view-grades" name="grades" tab url="/grades/" />
 
-        <View iosSwipeBack={true} id="view-todo" name="todo" tab url="/todo/" />
+        <View iosSwipeBack={false} id="view-todo" name="todo" tab url="/todo/" />
 
-        <View iosSwipeBack={true} id="view-settings" name="settings" tab url="/settings/" />
+        <View iosSwipeBack={false} id="view-settings" name="settings" tab url="/settings/" />
       </Views>
     </App>
   );

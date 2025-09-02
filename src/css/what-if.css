@@ -48,3 +48,17 @@
 .md .whatif-list .list-button {
     border-bottom: 0.5px solid var(--f7-list-button-text-color, var(--f7-theme-color));
 }
+.md .picker-category .picker-items {
+    /* padding: 8px; */
+}
+.add-cat-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.add-cat-div .add-cat {
+    font-size: 4em;
+}
+.add-cat-div div {
+    font-size: 2.5em;
+}

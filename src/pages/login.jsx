@@ -81,6 +81,8 @@ const LoginPage = ({ f7router, ...props }) => {
     }
     if (useClasslink) {
       data.link = "";
+      data.username = "";
+      data.password = "";
       if (clSession == "") {
         f7.dialog.alert("Please log in with ClassLink first.", "Login Failed");
         setLoginLoading(false);
@@ -185,6 +187,11 @@ const LoginPage = ({ f7router, ...props }) => {
         closeModalTitle: "Close Without Logging In",
         closeModalDescription: "Are you sure you want to close the browser without logging in?",
       });
+      if (reloginMode) {
+        await InAppBrowser.executeScript({
+          code: `document.querySelector('#username').value = '${store.state.currentUser.username}'`
+        })
+      }
 
       InAppBrowser.addListener('urlChangeEvent', async function (event) {
         if (event.url.includes('myapps.classlink.com')) {
@@ -253,12 +260,6 @@ const LoginPage = ({ f7router, ...props }) => {
       setUseClasslink(user.useClasslink);
       setUsername(user.username);
     }
-    // let newColor = store.state.currentUser.scheme == "dark" ? "#1b1b1f" : "#d9eeff";
-    // await StatusBar.setStyle({ style: store.state.currentUser.scheme == "dark" ? Style.Dark : Style.Light });
-    // await StatusBar.setBackgroundColor({ color: newColor });
-    // await NavigationBar.setColor({ color: newColor, darkButtons: store.state.currentUser.scheme == "light" });
-    // await StatusBar.setOverlaysWebView({ overlay: false });
-    // await StatusBar.show();
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("district")) {

@@ -11,7 +11,10 @@ export default async () => {
 
   return  {
     plugins: [
-      react(),
+      react({
+        fastRefresh: true,
+        include: "**/*.{jsx,tsx}",
+      }),
       Terminal()
 
     ],
@@ -33,10 +36,18 @@ export default async () => {
     },
     server: {
       host: true,
+      hmr: {
+        overlay: false,
+        port: 5174,
+      },
       allowedHosts: [
         '5173-ruskcoder-gradexis-app-em4szju5qc.app.codeanywhere.com'
       ]
     },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'framework7-react'],
+      force: true
+    }
 
   };
 }

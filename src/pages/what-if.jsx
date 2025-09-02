@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Navbar, Block, Checkbox, ListInput, Gauge, Card, List, ListItem, useStore, f7, ListButton, Button } from 'framework7-react';
+import { Page, Navbar, Block, Icon, ListInput, Gauge, Card, List, ListItem, useStore, f7, ListButton, Button } from 'framework7-react';
 import { errorDialog, primaryFromColor } from '../components/app.jsx';
 import { gaugeBackgroundColor, colorFromCategory } from '../pages/class-grades.jsx';
 import { WhatIfGradeItem, roundGrade } from '../components/grades-item.jsx';
 import { createRoot } from 'react-dom/client';
-import { WhatIfEditDialog, WhatIfAddDialog } from '../components/custom-dialogs.jsx';
+import { WhatIfEditDialog, WhatIfAddDialog, WhatIfAddCategoryDialog } from '../components/what-if-dialogs.jsx';
 import store from '../js/store';
 import terminal from 'virtual:terminal'
 
@@ -206,8 +206,7 @@ const WhatIfPage = ({ f7router, ...props }) => {
   };
 
   const createCategories = () => {
-    let categoryCards = []
-
+    let categoryCards = [];
     for (let category of Object.keys(categories)) {
       categoryCards.push(
         <div
@@ -292,6 +291,52 @@ const WhatIfPage = ({ f7router, ...props }) => {
     }
   }
 
+  const addCategory = () => {
+    return () => {
+      const afterDoneCat = (name, weight) => {
+        if (name === "" || weight === "") {
+          window.f7alert = f7.dialog.alert("Please fill out all fields.");
+          return;
+        }
+        const newCategory = {
+          studentsPoints: "0.0000",
+          maximumPoints: "0.00",
+          percent: "0.000%",
+          categoryWeight: weight,
+          categoryPoints: "0.000000"
+        };
+        setCategories({
+          ...categories,
+          [name]: newCategory
+        });
+      };
+
+      const dialog = f7.dialog.create({
+        title: "Add Category",
+        closeByBackdropClick: true,
+        cssClass: 'whatif-edit-dialog',
+        content: '<div id="whatif-add-category-dialog-container"></div>',
+        buttons: user.layout == 'ios' ? [
+          {
+            text: 'Done',
+            strong: true,
+            close: true,
+            onClick: () => {
+              afterDoneCat(window.currentWhatIfEdit.name, window.currentWhatIfEdit.weight);
+            }
+          }
+        ] : []
+      });
+
+      dialog.open();
+      createRoot(document.getElementById('whatif-add-category-dialog-container')).render(
+        <WhatIfAddCategoryDialog layout={user.layout} callback={afterDoneCat} />
+      );
+
+      window.f7alert = dialog;
+    }
+  }
+
   return (
     <Page>
       <Navbar title={"What If: " + props.course} backLink="Back" />
@@ -315,6 +360,9 @@ const WhatIfPage = ({ f7router, ...props }) => {
           {createCategories()}
         </div>
       </Block>
+      <Button fill className='margin-left margin-right' onClick={addCategory()}>
+        Add Category
+      </Button>
       <List dividersIos mediaList strongIos strong inset className="scores-list whatif-list no-chevron mod-list margin-top">
         <ListButton title="Add Grade" onClick={addGrade()} />
         {createGrades()}
