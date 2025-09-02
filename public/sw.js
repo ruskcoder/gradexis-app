@@ -42,14 +42,6 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('push', async function (event) {
   console.log('Push event received:', event);
-  
-  // Always show the "Testing 123" notification first
-  const testNotification = self.registration.showNotification("Testing 123", {
-    body: 'Push notification received successfully!',
-    icon: '/icons/192x192.png',
-    badge: '/icons/96x96.png',
-    tag: 'test-notification'
-  });
 
   // Then proceed with grade checking logic
   let users = self.users;
