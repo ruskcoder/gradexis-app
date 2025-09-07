@@ -21,8 +21,6 @@ import { createRoot } from 'react-dom/client';
 import store from "../js/store";
 import { apiUrl, login } from "../js/grades-api";
 import ClasslinkLogo from "../assets/classlink-logo.png";
-import { StatusBar, Style } from "@capacitor/status-bar";
-import { NavigationBar } from "@hugotomazi/capacitor-navigation-bar";
 import { InAppBrowser } from "@capgo/inappbrowser";
 import { errorDialog } from "../components/app";
 

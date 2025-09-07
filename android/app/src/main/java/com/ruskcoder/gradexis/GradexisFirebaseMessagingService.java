@@ -55,50 +55,61 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
 
     private void performGradeCheck() {
         try {
-            System.out.println(TAG + " Starting background grade check");
+            System.out.println(TAG + " Starting background grade check for all users");
             
             // Get stored user data from SharedPreferences
             SharedPreferences prefs = getSharedPreferences("CapacitorStorage", Context.MODE_PRIVATE);
             String usersJson = prefs.getString("users", "[]");
-            String currentUserNumberStr = prefs.getString("currentUserNumber", "-1");
-            
-            // Remove surrounding quotes if present (since it's stored as JSON string)
-            if (currentUserNumberStr.startsWith("\"") && currentUserNumberStr.endsWith("\"")) {
-                currentUserNumberStr = currentUserNumberStr.substring(1, currentUserNumberStr.length() - 1);
-            }
             
             System.out.println(TAG + " Users JSON: " + usersJson.substring(0, Math.min(500, usersJson.length())) + "...");
-            System.out.println(TAG + " Current user number (cleaned): " + currentUserNumberStr);
             
-            if ("-1".equals(currentUserNumberStr)) {
-                System.out.println(TAG + " No current user set, skipping grade check");
-                return;
-            }
-            
-            int currentUserNumber = Integer.parseInt(currentUserNumberStr);
             JSONArray users = new JSONArray(usersJson);
             
-            if (currentUserNumber >= users.length()) {
-                System.out.println(TAG + " Invalid user number, skipping grade check");
+            if (users.length() == 0) {
+                System.out.println(TAG + " No users found, skipping grade check");
                 return;
             }
             
-            JSONObject user = users.getJSONObject(currentUserNumber);
-            System.out.println(TAG + " Checking grades for user: " + user.optString("username", "unknown"));
+            System.out.println(TAG + " Found " + users.length() + " users to check");
             
-            // Fetch current grades
-            JSONObject currentGrades = fetchGrades(user);
-            if (currentGrades == null) {
-                System.out.println(TAG + " Failed to fetch current grades");
-                return;
+            // Check grades for all users
+            boolean anyChanges = false;
+            for (int userIndex = 0; userIndex < users.length(); userIndex++) {
+                try {
+                    JSONObject user = users.getJSONObject(userIndex);
+                    String username = user.optString("username", "unknown");
+                    System.out.println(TAG + " Checking grades for user " + (userIndex + 1) + "/" + users.length() + ": " + username);
+                    
+                    // Fetch current grades for this user
+                    JSONObject currentGrades = fetchGrades(user);
+                    if (currentGrades == null) {
+                        System.out.println(TAG + " Failed to fetch current grades for user: " + username);
+                        continue; // Skip this user and continue with next
+                    }
+                    
+                    // Compare with stored grades and show notification if changed
+                    boolean hasChanges = compareAndUpdateGrades(user, currentGrades, users, userIndex, prefs, username);
+                    if (hasChanges) {
+                        System.out.println(TAG + " Grade changes detected for user: " + username);
+                        anyChanges = true;
+                    } else {
+                        System.out.println(TAG + " No grade changes detected for user: " + username);
+                    }
+                    
+                    // Small delay between users to avoid overwhelming the server
+                    Thread.sleep(1000); // 1 second delay between users
+                    
+                } catch (Exception e) {
+                    System.out.println(TAG + " Error checking grades for user " + userIndex + ": " + e.getMessage());
+                    e.printStackTrace();
+                    // Continue with next user even if this one fails
+                }
             }
             
-            // Compare with stored grades and show notification if changed
-            boolean hasChanges = compareAndUpdateGrades(user, currentGrades, users, currentUserNumber, prefs);
-            if (hasChanges) {
-                System.out.println(TAG + " Grade changes detected, notification should be shown");
+            if (anyChanges) {
+                System.out.println(TAG + " Grade changes detected for one or more users");
             } else {
-                System.out.println(TAG + " No grade changes detected");
+                System.out.println(TAG + " No grade changes detected for any users");
             }
             
         } catch (Exception e) {
@@ -143,8 +154,8 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(10000);
-            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(30000); // 30 seconds connect timeout
+            connection.setReadTimeout(180000);   // 3 minutes read timeout for slow responses
             
             int responseCode = connection.getResponseCode();
             System.out.println(TAG + " HTTP response code: " + responseCode);
@@ -196,7 +207,7 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
                 System.out.println(TAG + " Error encoding parameter " + key + ": " + e.getMessage());
             }
         }
-    }    private boolean compareAndUpdateGrades(JSONObject user, JSONObject currentGrades, JSONArray users, int userIndex, SharedPreferences prefs) {
+    }    private boolean compareAndUpdateGrades(JSONObject user, JSONObject currentGrades, JSONArray users, int userIndex, SharedPreferences prefs, String username) {
         try {
             JSONObject gradelist = user.optJSONObject("gradelist");
             if (gradelist == null) {
@@ -262,7 +273,7 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
             
             // Show notification if there are changes
             if (hasChanges) {
-                showGradeChangeNotification(changes);
+                showGradeChangeNotification(changes, username);
             }
             
             return hasChanges;
@@ -274,10 +285,16 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
     
-    private void showGradeChangeNotification(JSONArray changes) {
+    private void showGradeChangeNotification(JSONArray changes, String username) {
         try {
             String title = "Grade Change";
             String body;
+            
+            // Add username prefix if there are multiple users
+            SharedPreferences prefs = getSharedPreferences("CapacitorStorage", Context.MODE_PRIVATE);
+            String usersJson = prefs.getString("users", "[]");
+            JSONArray users = new JSONArray(usersJson);
+            String userPrefix = users.length() > 1 ? username + ": " : "";
             
             if (changes.length() == 1) {
                 JSONObject change = changes.getJSONObject(0);
@@ -285,8 +302,8 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
                 double oldAverage = change.optDouble("oldAverage", 0.0);
                 double newAverage = change.optDouble("newAverage", 0.0);
                 
-                body = String.format("Your grade for %s has changed from %.1f%% to %.1f%%", 
-                                   className, oldAverage, newAverage);
+                body = String.format("%sYour grade for %s has changed from %.1f%% to %.1f%%", 
+                                   userPrefix, className, oldAverage, newAverage);
             } else {
                 int improvements = 0;
                 for (int i = 0; i < changes.length(); i++) {
@@ -299,11 +316,12 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
                 if (changes.length() == 2) {
                     JSONObject change1 = changes.getJSONObject(0);
                     JSONObject change2 = changes.getJSONObject(1);
-                    body = String.format("Grades changed for %s and %s", 
+                    body = String.format("%sGrades changed for %s and %s", 
+                                       userPrefix,
                                        change1.optString("className", "Class"),
                                        change2.optString("className", "Class"));
                 } else {
-                    body = String.format("%d grades have changed", changes.length());
+                    body = String.format("%s%d grades have changed", userPrefix, changes.length());
                     if (improvements > 0 && decreases > 0) {
                         body += String.format(" (%d improved, %d decreased)", improvements, decreases);
                     } else if (improvements > 0) {

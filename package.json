@@ -22,6 +22,7 @@
     "last 5 Firefox versions"
   ],
   "dependencies": {
+    "@aashu-dubey/capacitor-statusbar-safe-area": "^4.0.0",
     "@aparajita/capacitor-biometric-auth": "^9.0.0",
     "@capacitor/android": "^7.2.0",
     "@capacitor/app": "^7.0.1",
@@ -33,10 +34,8 @@
     "@capacitor/preferences": "^7.0.2",
     "@capacitor/push-notifications": "^7.0.2",
     "@capacitor/splash-screen": "^7.0.2",
-    "@capacitor/status-bar": "^7.0.1",
-    "@capawesome/capacitor-android-edge-to-edge-support": "^7.2.3",
+    "@capacitor/status-bar": "^7.0.3",
     "@capgo/inappbrowser": "^7.16.2",
-    "@hugotomazi/capacitor-navigation-bar": "https://github.com/NYPL/capacitor-navigation-bar/releases/download/v4.1.0-fix.1/hugotomazi-capacitor-navigation-bar-4.1.0-fix.1.tgz",
     "@material/material-color-utilities": "^0.3.0",
     "axios": "^1.7.7",
     "axios-cookiejar-support": "^6.0.2",
@@ -61,13 +60,15 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
+    "@eslint/js": "^9.35.0",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^9.1.2",
     "cpy-cli": "^5.0.0",
     "cross-env": "^7.0.3",
-    "eslint": "^9.26.0",
+    "eslint": "^9.35.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.3.0",
     "postcss-preset-env": "^10.1.6",
     "vite": "^6.3.3",
     "vite-plugin-terminal": "^1.2.0"

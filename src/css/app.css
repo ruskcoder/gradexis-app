@@ -3,6 +3,8 @@
   --f7-subnavbar-height: 48px !important;
   --f7-dialog-width: 300px !important;
   --f7-grid-gap: calc(var(--f7-typography-margin) * 3 / 4);
+  --f7-safe-area-top: var(--safe-area-inset-top, 0px);
+  --f7-safe-area-bottom: var(--safe-area-inset-bottom, 0px);
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -11,6 +13,36 @@
 
 ::-webkit-scrollbar {
   display: none;
+}
+.biometric-lock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--f7-bars-bg-color);
+  color: var(--f7-md-primary);
+  flex-direction: column;
+  text-align: center;
+  z-index: -1;
+  opacity: 0;
+  position: absolute;
+  transition: opacity 0.3s ease-in-out, z-index 0s 0.3s;
+}
+.biometric-lock-visible {
+  transition: opacity 0.3s ease-in-out, z-index 0s;
+  z-index: 10000;
+  opacity: 1;
+}
+
+.ios .biometric-lock {
+  color: var(--f7-ios-primary);
+}
+
+.biometric-lock i {
+  font-size: 120px;
+  margin-bottom: var(--f7-typography-margin);
+  transform: translateX(-6px);
 }
 
 .title-large-text {

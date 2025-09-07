@@ -12,28 +12,19 @@
   },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 300,
-      "launchAutoHide": false,
+      "launchShowDuration": 500,
+      "launchAutoHide": true,
       "launchFadeOutDuration": 300,
-      "backgroundColor": "blue",
+      "backgroundColor": "#ffffff",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
       "showSpinner": false,
-      "splashFullScreen": false,
-      "splashImmersive": false
+      "splashFullScreen": true,
+      "splashImmersive": true
     }
   },
   "android": {
     "allowMixedContent": true,
-    "buildOptions": {
-      "releaseSigning": {
-        "releaseType": "APK",
-        "keystorePath": "C:/Coding/gradexis-key.jks",
-        "keystorePassword": "gradexis",
-        "keyAlias": "key0",
-        "keysroeAliasPassword": "gradexis",
-        "keyPassword": "gradexis"
-      }
-    }
+    "webContentsDebuggingEnabled": false
   }
 }

@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
+include ':aashu-dubey-capacitor-statusbar-safe-area'
+project(':aashu-dubey-capacitor-statusbar-safe-area').projectDir = new File('../node_modules/@aashu-dubey/capacitor-statusbar-safe-area/android')
+
 include ':aparajita-capacitor-biometric-auth'
 project(':aparajita-capacitor-biometric-auth').projectDir = new File('../node_modules/@aparajita/capacitor-biometric-auth/android')
 
@@ -26,11 +29,5 @@ project(':capacitor-splash-screen').projectDir = new File('../node_modules/@capa
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
 
-include ':capawesome-capacitor-android-edge-to-edge-support'
-project(':capawesome-capacitor-android-edge-to-edge-support').projectDir = new File('../node_modules/@capawesome/capacitor-android-edge-to-edge-support/android')
-
 include ':capgo-inappbrowser'
 project(':capgo-inappbrowser').projectDir = new File('../node_modules/@capgo/inappbrowser/android')
-
-include ':hugotomazi-capacitor-navigation-bar'
-project(':hugotomazi-capacitor-navigation-bar').projectDir = new File('../node_modules/@hugotomazi/capacitor-navigation-bar/android')

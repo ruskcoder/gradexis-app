@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { terminal } from 'virtual:terminal';
-import { StatusBar, Style } from "@capacitor/status-bar";
 import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import subscribe from "../js/notifications.js";
@@ -9,34 +7,21 @@ import {
   f7,
   f7ready,
   App,
-  ListItem,
   Views,
   View,
-  Popup,
-  Page,
-  Navbar,
   Toolbar,
-  NavRight,
   Link,
-  Block,
-  BlockTitle,
-  LoginScreen,
-  LoginScreenTitle,
-  List,
-  Button,
-  ListInput,
-  ListButton,
-  BlockFooter,
-  useStore
+  Icon,
+  Button
 } from "framework7-react";
 import PropTypes from 'prop-types';
 import routes from "../js/routes";
 import store from "../js/store";
 import registerSW from "../js/register-sw";
 import { argbFromHex, hexFromArgb, themeFromSourceColor } from '@material/material-color-utilities';
-import { NavigationBar } from '@hugotomazi/capacitor-navigation-bar';
 import { updateStatusBars } from "../pages/settings";
-import { SplashScreen } from '@capacitor/splash-screen';
+import { SafeAreaController } from '@aashu-dubey/capacitor-statusbar-safe-area';
+import { BiometricAuth } from '@aparajita/capacitor-biometric-auth';
 
 export const roundGrade = (grade, letters = true) => {
   if (grade == "" || grade == "0.00") return letters ? "···" : "0.00";
@@ -129,27 +114,45 @@ const Gradexis = ({ f7router }) => {
   }, [f7router]);
 
   const [showLogin, setShowLogin] = useState(store.state.users.length == 0);
+  const [locked, setLocked] = useState(store.state.currentUser.biometrics)
   if (store.state.users.length == 0) {
     history.pushState({ path: "/login/" }, "", "/login/");
   }
-
+  const authenticate = async () => { 
+    const biometryAvailable = await BiometricAuth.checkBiometry();
+    if (biometryAvailable.isAvailable) {
+      try {
+        await BiometricAuth.authenticate({
+          reason: '',
+          cancelTitle: 'Cancel',
+          allowDeviceCredential: false,
+          iosFallbackTitle: 'Use passcode',
+          androidTitle: 'Log in to Gradexis',
+          androidSubtitle: '',
+          androidConfirmationRequired: false,
+          // androidBiometryStrength: AndroidBiometryStrength.weak,
+        });
+        setLocked(false);
+      } catch (error) {
+        console.log("Biometric auth failed", error);
+      }
+    }
+  }
   f7ready(async () => {
     if (!window.init) {
       window.init = true;
+      SafeAreaController.injectCSSVariables();
       f7.setColorTheme(store.state.currentUser.theme);
       f7.setDarkMode(store.state.currentUser.scheme === "dark");
       setTimeout(() => {
         updateStatusBars();
-        setTimeout(() => { 
-          SplashScreen.hide();
-        }, 100)
-      }, 0);
-
-      // Initialize notification handler for mobile
+      }, 750);
       if (Capacitor.isNativePlatform()) {
         await notificationHandler.init();
       }
-
+      if (locked) {
+        await authenticate();
+      }
       // Register service worker for web
       registerSW();
 
@@ -250,7 +253,6 @@ const Gradexis = ({ f7router }) => {
       history.replaceState({ path: "/" }, "", "/");
 
       const hideTabsRoutes = routes.filter(route => route.hideTabbar).map(route => route.path);
-      const tabsRoutes = ["/", "/grades/", "/todo/", "/settings/"];
 
       f7.on("routeChange", (route) => {
         setShowTabbar(!hideTabsRoutes.includes(route.route.path));
@@ -290,7 +292,12 @@ const Gradexis = ({ f7router }) => {
           }
         }
       }
-
+      f7.on('userChanged', () => {
+        if (store.state.currentUser.biometrics) {
+          setLocked(true);
+          authenticate();
+        }
+      });
       f7.on('login', () => {
         setShowLogin(false);
         updateStatusBars();
@@ -302,7 +309,7 @@ const Gradexis = ({ f7router }) => {
   const [showTabbar, setShowTabbar] = useState(true);
 
   return (
-    <App {...f7params} store={store}>
+    <App {...f7params} store={store} className='safe-areas'>
       {!showTabbar &&
         <style>
           {`
@@ -312,7 +319,10 @@ const Gradexis = ({ f7router }) => {
       `}
         </style>
       }
-
+      <div className={"biometric-lock" + (locked ? " biometric-lock-visible" : "")}>
+        <Icon ios="material:lock" md="material:lock"></Icon>
+        <Button onClick={authenticate} outline small>Unlock</Button>
+      </div>
       <View url="/login/" className={`login ${showLogin ? "" : "login-hidden"}`}></View>
       <Views className="safe-areas" tabs>
         <Toolbar tabbar icons bottom className={`tabbar ${showTabbar ? "" : "tabbar-hidden"}`}>

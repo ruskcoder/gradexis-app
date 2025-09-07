@@ -3,6 +3,6 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#007AFF</color>
-    <color name="splashBackground">#ffffff</color>
-    <color name="statusBarColor">#ffffff</color>
+    <color name="splashBackground">#93CEFF</color>
+    <color name="statusBarColor">#93CEFF</color>
 </resources>

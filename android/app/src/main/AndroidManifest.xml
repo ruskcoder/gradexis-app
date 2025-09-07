@@ -33,22 +33,23 @@
         <!-- Default notification channel -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="gradexis-channel" />
-            
+            android:value="gradexis-channel"
+        />
+
         <!-- Default notification icon (using app icon) -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher" />
-            
+            android:resource="@mipmap/ic_launcher"
+        />
+
         <!-- Default notification color (using blue color) -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@android:color/holo_blue_bright" />
-            
+            android:resource="@android:color/holo_blue_bright"
+        />
+
         <!-- Custom Firebase Messaging Service -->
-        <service
-            android:name=".GradexisFirebaseMessagingService"
-            android:exported="false">
+        <service android:name=".GradexisFirebaseMessagingService" android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
