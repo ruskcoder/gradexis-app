@@ -121,7 +121,7 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
       cols: [
         {
           textAlign: "center",
-          values: [...categories, "Add Category"],
+          values: categories,
         },
       ],
       on: {
