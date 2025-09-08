@@ -143,12 +143,13 @@ public class GradexisFirebaseMessagingService extends FirebaseMessagingService {
             addParam(queryParams, "term", "");
             addParam(queryParams, "stream", "");
             
-            // Remove trailing &
-            if (queryParams.length() > 0) {
-                queryParams.setLength(queryParams.length() - 1);
+            // Remove trailing & if present
+            String queryString = queryParams.toString();
+            if (queryString.endsWith("&")) {
+                queryString = queryString.substring(0, queryString.length() - 1);
             }
             
-            String urlString = apiUrl + "/" + platform + "/classes?" + queryParams.toString();
+            String urlString = apiUrl + "/" + platform + "/classes?" + queryString;
             System.out.println(TAG + " Fetching grades from: " + urlString);
             
             URL url = new URL(urlString);
