@@ -1,0 +1,3 @@
+- Timeline uses the same MP for all tracking; it should be resetting as per marking period
+- Add category option in the What If causes app to crash
+- 
