@@ -1,7 +1,7 @@
 import store from "./store.js";
 import terminal from 'virtual:terminal';
 
-export var apiUrl = 'https://api.gradexis.com';
+export var apiUrl = 'https://api.gradexis.app';
 if (location.port == "5173") {
     apiUrl = `http://${location.hostname}:3000`;
 }
