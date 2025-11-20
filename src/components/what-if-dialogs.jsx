@@ -176,7 +176,6 @@ const WhatIfAddDialog = ({ layout, categories, callback }) => {
             {categories.map((cat, idx) => (
               <option key={idx} value={cat}>{cat}</option>
             ))}
-            <option value="Add Category">Add Category</option>
           </select>
         </ListItem>
       </List>
