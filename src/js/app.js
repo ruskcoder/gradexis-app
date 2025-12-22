@@ -1,5 +1,5 @@
 // Import React and ReactDOM
-import React, { useState } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { terminal } from 'virtual:terminal'
@@ -7,7 +7,7 @@ import { terminal } from 'virtual:terminal'
 import Framework7 from 'framework7/lite-bundle';
 
 // Import Framework7-React Plugin
-import Framework7React, { f7 } from 'framework7-react';
+import Framework7React from 'framework7-react';
 
 // Import Framework7 Styles
 import 'framework7/css/bundle';
@@ -30,6 +30,7 @@ import '../css/tables.css';
 // Import App Component
 import App from '../components/app.jsx';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 Framework7.use(Framework7React);
 const root = createRoot(document.getElementById('app'));
 root.render(React.createElement(App));

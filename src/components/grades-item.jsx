@@ -13,10 +13,10 @@ const accentRed = "#ff796a";
 
 function colorFromGrade(grade, badges=[]) {
   if (badges.includes('missing')) return "#ff796a";
-  if (grade == "···" || grade == "") {
+  if (grade === "···" || grade === "") {
     return "#a9a9a9";
   }
-  if (grade == "X") {
+  if (grade === "X") {
     return accentBlue;
   }
   if (grade >= 90 || grade.toString().includes('A')) {
@@ -30,9 +30,9 @@ function colorFromGrade(grade, badges=[]) {
   }
 }
 
-const GradeItem = ({ index, title, subtitle, grade, prevGrade }) => {
+const GradeItem = ({title, subtitle, grade}) => {
   let color = colorFromGrade(grade);
-  grade = grade == "" ? "" : parseFloat(grade).toPrecision(4);
+  grade = grade === "" ? "" : parseFloat(grade).toPrecision(4);
   grade = roundGrade(grade);
   return (
     <>
@@ -95,7 +95,6 @@ function cardColor(subtitle, sat, light, theme) {
     // eslint-disable-next-line no-undef
     const sha = sha256(subtitle);
     const hash = Array.from(sha).reduce((acc, char) => acc + char.charCodeAt(0) / 2, 0);
-    // const hash = sha.replace(/\D/g, '');
     hue = hash % 360;
   }
   return `hsl(${hue}, ${sat}%, ${light}%)`;
@@ -112,7 +111,7 @@ const CardGradeItem = ({ index, theme, title, subtitle, grade }) => {
         style={{
           backgroundColor: cardColor(subtitle, 44, 42, theme),
         }}
-        className={grade == "--" ? "progress-hidden" : ""}
+        className={grade === "--" ? "progress-hidden" : ""}
       >
         <span className='grade-number' style={{ color: cardColor(subtitle, 100, 95, theme) }}>{grade}</span>
         <div className='progressbar-container' style={{ color: cardColor(subtitle, 100, 95, theme) }}>

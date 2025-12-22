@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
 import store from '../js/store.js';
 
 function updateGradelist(term, termGradelist) {
@@ -9,7 +8,7 @@ function updateGradelist(term, termGradelist) {
     };
     store.dispatch('setGradelist', {
         gradelist: updatedGradelist
-    });
+    }).then(r => r);
 }
 
 const updateTermGradelist = (term, classes) => {
@@ -54,7 +53,7 @@ const updateTermGradelist = (term, classes) => {
 
     store.dispatch('setGradelist', {
         gradelist: updatedGradelist
-    })
+    }).then(r => r)
 
 
     return updatedGradelist;
@@ -86,7 +85,7 @@ const updateScoresIncludedHistory = (term, classes) => {
 
     store.dispatch('setGradelist', {
         gradelist: updatedGradelist
-    });
+    }).then(r => r);
 
     return updatedGradelist;
 };

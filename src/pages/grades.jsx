@@ -410,7 +410,6 @@ const GradesPage = ({ f7router }) => {
                   style={{ "--index": index }}
                 >
                   <GradeItem
-                    index={index}
                     title={globalgradelist[user.term][item].rename}
                     subtitle={globalgradelist[user.term][item].course}
                     grade={globalgradelist[user.term][item].average}

@@ -1,18 +1,16 @@
 import store from "./store.js";
-import terminal from 'virtual:terminal';
 
 export var apiUrl = 'https://api.gradexis.app';
-if (location.port == "5173") {
+/*
+if (location.port === "5173") {
     apiUrl = `http://${location.hostname}:3000`;
 }
-if (location.host == 'supreme-trout-w6vv69pgppx3p4p-5173.app.github.dev') {
-    apiUrl = 'https://supreme-trout-w6vv69pgppx3p4p-3000.app.github.dev'
-}
+ */
 
 function updateSession(data) {
     // if (store.state.currentUser.platform != 'powerschool') {
     if (data.session && data.session.cookies.length > 0) {
-        store.dispatch('setSession', data.session);
+        store.dispatch('setSession', data.session).then(r => r);
     }
 }
 
